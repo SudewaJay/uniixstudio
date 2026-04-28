@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import { site } from "@/lib/content";
+import {
+  organizationSchema,
+  localBusinessSchema,
+  webSiteSchema,
+  schemaGraph,
+} from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -68,25 +75,13 @@ export const metadata: Metadata = {
   },
 };
 
-const schema = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: site.name,
-  url: site.url,
-  description: site.description,
-  telephone: site.whatsapp,
-  email: site.email,
-  priceRange: "$$",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Colombo",
-    addressRegion: "Western Province",
-    addressCountry: "LK",
-  },
-  geo: { "@type": "GeoCoordinates", latitude: 6.9271, longitude: 79.8612 },
-  areaServed: ["Sri Lanka", "Australia", "United Kingdom"],
-  sameAs: [site.socials.instagram, site.socials.facebook, site.socials.linkedin],
-};
+// Site-wide JSON-LD bundle: Organization + LocalBusiness + WebSite
+// Per Masterplan §5 — these three are required on every page via the layout.
+const siteSchema = schemaGraph(
+  organizationSchema(),
+  localBusinessSchema(),
+  webSiteSchema(),
+);
 
 export default function RootLayout({
   children,
@@ -96,10 +91,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <JsonLd data={siteSchema} />
       </head>
       <body className="font-sans">
         <a href="#main-content" className="skip-link">Skip to main content</a>

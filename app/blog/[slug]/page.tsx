@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 import Reveal from "@/components/Reveal";
 import { getPost, posts, formatDate } from "@/lib/blog";
+import { articleSchema, breadcrumbSchema, schemaGraph } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
+  return posts.filter((p) => !p.isStub).map((p) => ({ slug: p.slug }));
 }
 
 export function generateMetadata({
@@ -17,13 +20,13 @@ export function generateMetadata({
   if (!post) return { title: "Article" };
   return {
     title: post.title,
-    description: post.excerpt,
+    description: post.metaDescription,
     openGraph: {
       title: post.title,
-      description: post.excerpt,
+      description: post.metaDescription,
       images: [{ url: post.coverImage }],
       type: "article",
-      publishedTime: post.date,
+      publishedTime: post.publishDate,
     },
   };
 }
@@ -34,20 +37,32 @@ export default function BlogPostPage({
   params: { slug: string };
 }) {
   const post = getPost(params.slug);
-  if (!post) notFound();
+  if (!post || post.isStub) notFound();
 
-  const related = posts.filter((p) => p.slug !== params.slug).slice(0, 3);
+  const related = posts
+    .filter((p) => !p.isStub && p.slug !== params.slug)
+    .slice(0, 3);
+
+  const pageSchema = schemaGraph(
+    articleSchema(post),
+    breadcrumbSchema([
+      { name: "Home", url: "/" },
+      { name: "Insights", url: "/blog/" },
+      { name: post.title, url: `/blog/${post.slug}/` },
+    ]),
+  );
 
   return (
     <article>
+      <JsonLd data={pageSchema} />
       {/* Header */}
       <section className="pt-32 md:pt-40 pb-12 md:pb-16">
         <div className="wrap">
           <Reveal>
             <div className="max-w-3xl mx-auto text-center">
-              <div className="flex items-center justify-center gap-3 text-xs mb-6">
+              <div className="flex items-center justify-center gap-3 text-xs mb-6 flex-wrap">
                 <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
-                  {formatDate(post.date)}
+                  {formatDate(post.publishDate)}
                 </span>
                 <span className="text-ink-mute">·</span>
                 <span className="rounded-full border border-line bg-bg-warm px-3 py-1.5 font-medium text-ink-2 text-[11px]">
@@ -102,33 +117,91 @@ export default function BlogPostPage({
       {/* Body */}
       <section className="pb-20 md:pb-28">
         <div className="wrap">
-          <div className="max-w-[68ch] mx-auto">
-            {post.body.map((section, i) => (
-              <Reveal key={i} delay={(i % 4) as 0 | 1 | 2 | 3}>
-                {section.heading && (
-                  <h2
-                    className="font-display font-medium text-ink mt-12 mb-5 leading-[1.15] tracking-[-0.015em]"
-                    style={{ fontSize: "clamp(24px,2.6vw,32px)" }}
-                  >
-                    {section.heading}
-                  </h2>
-                )}
-                {section.paragraphs.map((p, j) => (
-                  <p
-                    key={j}
-                    className="text-[17px] leading-[1.75] text-ink-2 mb-5"
-                  >
-                    {p}
-                  </p>
-                ))}
-              </Reveal>
-            ))}
+          <div className="max-w-[68ch] mx-auto prose-uniix">
+            <Reveal>
+              <ReactMarkdown
+                components={{
+                  h1: ({ children }) => (
+                    <h1
+                      className="font-display font-medium text-ink mt-12 mb-6 leading-[1.1] tracking-[-0.02em]"
+                      style={{ fontSize: "clamp(28px,3.4vw,40px)" }}
+                    >
+                      {children}
+                    </h1>
+                  ),
+                  h2: ({ children }) => (
+                    <h2
+                      className="font-display font-medium text-ink mt-12 mb-5 leading-[1.15] tracking-[-0.015em]"
+                      style={{ fontSize: "clamp(24px,2.6vw,32px)" }}
+                    >
+                      {children}
+                    </h2>
+                  ),
+                  h3: ({ children }) => (
+                    <h3 className="font-display font-medium text-ink mt-8 mb-3 text-[22px] leading-[1.2] tracking-[-0.01em]">
+                      {children}
+                    </h3>
+                  ),
+                  p: ({ children }) => (
+                    <p className="text-[17px] leading-[1.75] text-ink-2 mb-5">
+                      {children}
+                    </p>
+                  ),
+                  ul: ({ children }) => (
+                    <ul className="list-disc pl-6 my-5 text-[17px] leading-[1.75] text-ink-2 space-y-2">
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({ children }) => (
+                    <ol className="list-decimal pl-6 my-5 text-[17px] leading-[1.75] text-ink-2 space-y-2">
+                      {children}
+                    </ol>
+                  ),
+                  strong: ({ children }) => (
+                    <strong className="text-ink font-semibold">{children}</strong>
+                  ),
+                  blockquote: ({ children }) => (
+                    <blockquote className="border-l-4 border-brand-3 pl-5 my-7 italic text-ink-2 text-[18px] leading-[1.6]">
+                      {children}
+                    </blockquote>
+                  ),
+                  a: ({ href, children }) => (
+                    <a
+                      href={href}
+                      className="text-brand-4 underline underline-offset-4 hover:text-brand-3 transition-colors"
+                    >
+                      {children}
+                    </a>
+                  ),
+                }}
+              >
+                {post.body}
+              </ReactMarkdown>
+            </Reveal>
           </div>
         </div>
       </section>
 
+      {/* CTA block */}
+      {post.ctaBlock && (
+        <section className="bg-bg-paper border-y border-line-soft py-16 md:py-20">
+          <div className="wrap">
+            <Reveal>
+              <div className="max-w-3xl mx-auto text-center">
+                <p className="text-[20px] md:text-[24px] leading-[1.4] text-ink mb-6 font-display font-medium tracking-[-0.015em]">
+                  {post.ctaBlock}
+                </p>
+                <Link href="/contact" className="btn btn-primary inline-flex">
+                  Get a free brand audit ↗
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
       {/* Related */}
-      <section className="bg-bg-paper border-t border-line-soft py-20 md:py-28">
+      <section className="bg-bg py-20 md:py-28">
         <div className="wrap">
           <Reveal>
             <h2
@@ -156,7 +229,7 @@ export default function BlogPostPage({
                   </Link>
                   <div className="flex items-center gap-x-3 text-xs">
                     <time className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
-                      {formatDate(rp.date)}
+                      {formatDate(rp.publishDate)}
                     </time>
                     <span className="rounded-full border border-line bg-bg px-3 py-1 font-medium text-ink-2 text-[11px]">
                       {rp.category}

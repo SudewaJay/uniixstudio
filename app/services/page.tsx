@@ -1,34 +1,23 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
-import ServicesSection from "@/components/ServicesSection";
 import ProcessSection from "@/components/ProcessSection";
 import CTASection from "@/components/CTASection";
 import Reveal from "@/components/Reveal";
-import { services } from "@/lib/content";
+import { pillars, getServicesForPillar } from "@/lib/services";
 
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Brand identity, web design and development, performance marketing, SEO and digital strategy — all under one roof. Explore Uniix Studio's three service pillars: Design, Growth, Technology.",
+    "Brand identity, web design and development, performance marketing, SEO and digital strategy — all under one roof. Explore Uniix Studio's three service pillars: Design, Technology, Growth.",
 };
 
-const benefits: Record<string, string[]> = {
-  design: [
-    "Brand systems that scale across every touchpoint",
-    "Conversion-focused web and product UI",
-    "Style guides your team can actually use",
-  ],
-  growth: [
-    "Campaigns measured in revenue, not impressions",
-    "Local + technical SEO that compounds month-over-month",
-    "Funnels rebuilt around real conversion data",
-  ],
-  technology: [
-    "Modern stacks (Next.js, React) tuned for Core Web Vitals",
-    "Custom apps and dashboards built for your workflow",
-    "Long-term maintenance and uptime monitoring",
-  ],
-};
+const pillarHeadlines: Record<string, { headline: string; accentText: string }> =
+  {
+    design: { headline: "Design that", accentText: "moves people." },
+    technology: { headline: "Technology built", accentText: "to scale." },
+    growth: { headline: "Growth driven", accentText: "by data." },
+  };
 
 export default function ServicesPage() {
   return (
@@ -39,87 +28,93 @@ export default function ServicesPage() {
           <>
             Three pillars.
             <br />
-            <span className="italic-display gradient-text">One creative partner.</span>
+            <span className="italic-display gradient-text">
+              One creative partner.
+            </span>
           </>
         }
-        lede="Design, Growth and Technology — unified under one strategic team. Pick a single service or combine them. Either way, you get the same senior team and the same standard of work."
+        lede="Design, Technology and Growth — unified under one strategic team. Pick a single service or combine them. Either way, you get the same senior team and the same standard of work."
       />
 
-      <ServicesSection showHead={false} />
-
-      {/* Detailed sub-services */}
-      <section className="py-20 md:py-28">
+      {/* Pillar deep-dives */}
+      <section className="py-16 md:py-24">
         <div className="wrap flex flex-col gap-20 md:gap-28">
-          {services.map((pillar) => (
-            <div key={pillar.slug} id={`${pillar.slug}-detail`} className="scroll-mt-28">
-              <div className="grid lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-20 items-start mb-12">
-                <Reveal>
-                  <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-brand-4">
-                    {pillar.num} / {pillar.title}
-                  </span>
-                  <h2
-                    className="display mt-4"
-                    style={{ fontSize: "clamp(40px,5vw,72px)" }}
-                  >
-                    {pillar.title === "Design" && (
-                      <>
-                        Design that{" "}
-                        <span className="italic-display gradient-text">moves people.</span>
-                      </>
-                    )}
-                    {pillar.title === "Growth" && (
-                      <>
-                        Growth driven{" "}
-                        <span className="italic-display gradient-text">by data.</span>
-                      </>
-                    )}
-                    {pillar.title === "Technology" && (
-                      <>
-                        Tech built{" "}
-                        <span className="italic-display gradient-text">to scale.</span>
-                      </>
-                    )}
-                  </h2>
-                </Reveal>
-                <Reveal delay={1}>
-                  <div className="flex flex-col gap-5">
-                    <p className="text-[18px] leading-[1.6] text-ink-2 max-w-[60ch]">
-                      {pillar.positioning}
-                    </p>
-                    <ul className="flex flex-col gap-2.5">
-                      {benefits[pillar.slug].map((b) => (
-                        <li
-                          key={b}
-                          className="flex items-start gap-3 text-[15px] text-ink-2"
-                        >
-                          <span className="w-5 h-5 rounded-full bg-brand-grad text-white grid place-items-center text-[10px] mt-0.5 flex-shrink-0">
-                            ✓
-                          </span>
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </Reveal>
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {pillar.items.map((item, i) => (
-                  <Reveal key={item.name} delay={(i % 3) as 0 | 1 | 2}>
-                    <div className="bg-bg-paper border border-line rounded-lg2 p-7 md:p-8 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-sm2 hover:border-brand-3/40">
-                      <h4
-                        className="font-display font-medium mb-3"
-                        style={{ fontSize: "20px", letterSpacing: "-0.015em" }}
+          {pillars.map((pillar, idx) => {
+            const services = getServicesForPillar(pillar.slug);
+            const head = pillarHeadlines[pillar.slug];
+            return (
+              <div
+                key={pillar.slug}
+                id={`${pillar.slug}-detail`}
+                className="scroll-mt-28"
+              >
+                <div className="grid lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-20 items-start mb-12">
+                  <Reveal>
+                    <span
+                      className="font-mono text-[11px] tracking-[0.22em] uppercase"
+                      style={{ color: pillar.accent }}
+                    >
+                      {String(idx + 1).padStart(2, "0")} / {pillar.label}
+                    </span>
+                    <h2
+                      className="display mt-4"
+                      style={{ fontSize: "clamp(40px,5vw,72px)" }}
+                    >
+                      {head.headline}{" "}
+                      <span className="italic-display gradient-text">
+                        {head.accentText}
+                      </span>
+                    </h2>
+                  </Reveal>
+                  <Reveal delay={1}>
+                    <div className="flex flex-col gap-5">
+                      <p className="text-[18px] leading-[1.6] text-ink-2 max-w-[60ch]">
+                        {pillar.description}
+                      </p>
+                      <Link
+                        href={`/services/${pillar.slug}/`}
+                        className="inline-flex items-center gap-2 text-[14px] font-medium text-brand-4 hover:translate-x-1 transition-transform duration-300 self-start"
                       >
-                        {item.name}
-                      </h4>
-                      <p className="text-ink-2 text-[14.5px] leading-[1.55]">{item.desc}</p>
+                        Explore the {pillar.label.toLowerCase()} pillar
+                        <span aria-hidden="true">→</span>
+                      </Link>
                     </div>
                   </Reveal>
-                ))}
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {services.map((s, i) => (
+                    <Reveal key={s.slug} delay={(i % 3) as 0 | 1 | 2}>
+                      <Link
+                        href={`/services/${pillar.slug}/${s.slug}/`}
+                        className="group block bg-bg-paper border border-line rounded-lg2 p-7 md:p-8 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-sm2 hover:border-transparent"
+                      >
+                        <span
+                          className="font-mono text-[10px] tracking-[0.22em] uppercase block mb-3"
+                          style={{ color: pillar.accent }}
+                        >
+                          Service
+                        </span>
+                        <h4
+                          className="font-display font-medium text-ink mb-3 group-hover:text-brand-4 transition-colors"
+                          style={{ fontSize: "20px", letterSpacing: "-0.015em" }}
+                        >
+                          {s.name}
+                        </h4>
+                        <p className="text-ink-2 text-[14.5px] leading-[1.55] line-clamp-3">
+                          {s.metaDescription}
+                        </p>
+                        <span className="inline-flex items-center gap-1.5 mt-4 text-[12px] font-medium text-brand-4 transition-transform duration-300 group-hover:translate-x-1">
+                          Learn more
+                          <span aria-hidden="true">→</span>
+                        </span>
+                      </Link>
+                    </Reveal>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

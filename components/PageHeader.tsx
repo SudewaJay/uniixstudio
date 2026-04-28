@@ -1,7 +1,7 @@
 import Reveal from "./Reveal";
 
 type Props = {
-  eyebrow: string;
+  eyebrow: React.ReactNode;
   title: React.ReactNode;
   lede?: React.ReactNode;
 };
