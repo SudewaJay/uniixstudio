@@ -1,7 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion, Variants } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion, Variants } from "framer-motion";
+import HeroGradientMesh from "./HeroGradientMesh";
+import { clients } from "@/lib/content";
+
+const ROTATING_WORDS = ["perform.", "convert.", "scale."];
+const WORD_ROTATE_MS = 3500;
+const LETTER_STAGGER = 0.04;
+const LETTER_DUR = 0.55;
 
 const EASE_OUT = [0.21, 0.47, 0.32, 0.98] as const;
 
@@ -35,82 +43,165 @@ const cardRise: Variants = {
 export default function Hero() {
   const reduce = useReducedMotion();
   const initial = reduce ? "show" : "hidden";
+  const [wordIdx, setWordIdx] = useState(0);
+
+  useEffect(() => {
+    if (reduce) return;
+    const t = setInterval(() => {
+      setWordIdx((i) => (i + 1) % ROTATING_WORDS.length);
+    }, WORD_ROTATE_MS);
+    return () => clearInterval(t);
+  }, [reduce]);
 
   return (
-    <section className="pt-40 pb-20 md:pt-44 relative overflow-hidden">
+    <section className="pt-32 pb-20 md:pt-36 relative overflow-hidden">
+      <HeroGradientMesh />
       <div className="hero-grid-bg" />
-      <div className="wrap">
+      <div className="wrap relative z-10">
         <motion.div
           variants={containerVariants}
           initial={initial}
           animate="show"
         >
+          {/* Scarcity status — replaces the redundant location eyebrow */}
           <motion.div
             variants={fadeUp}
-            className="flex items-center gap-6 flex-wrap mb-10"
+            className="flex items-center justify-center mb-10"
           >
-            <span className="eyebrow">Creative Digital Studio</span>
-            <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.12em] uppercase text-ink-mute">
+            <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-2 border border-line rounded-full px-3.5 py-1.5 bg-bg-paper/60 backdrop-blur-sm">
               <span className="status-dot" />
-              Colombo · Working globally
+              Available for Q3 2026 — 2 slots left
             </span>
           </motion.div>
 
-          <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-20 items-end">
-            <div>
-              <h1
-                className="display"
-                style={{ fontSize: "clamp(56px,9vw,128px)" }}
-              >
-                <span className="word">
-                  <motion.span variants={wordRise} className="block">
-                    We design
-                  </motion.span>
-                </span>
-                <br />
-                <span className="word">
-                  <motion.span variants={wordRise} className="block">
-                    brands that
-                  </motion.span>
-                </span>
-                <br />
-                <span className="word">
+          {/* Floating side anchors — flank the centered headline so it doesn't read as empty */}
+          <div className="relative">
+            <motion.div
+              variants={fadeUp}
+              aria-hidden="true"
+              className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 items-center gap-3 font-mono text-[10px] tracking-[0.22em] uppercase text-ink-mute"
+              style={{ writingMode: "vertical-rl", transform: "translateY(-50%) rotate(180deg)" }}
+            >
+              <span className="w-8 h-px bg-ink-mute/40" />
+              Est. 2022 — Colombo
+            </motion.div>
+
+            <motion.div
+              variants={fadeUp}
+              aria-hidden="true"
+              className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 items-center gap-3 font-mono text-[10px] tracking-[0.22em] uppercase text-ink-mute"
+              style={{ writingMode: "vertical-rl" }}
+            >
+              Scroll to explore
+              <span className="w-8 h-px bg-ink-mute/40" />
+            </motion.div>
+
+            <div className="flex flex-col items-center text-center">
+            <h1
+              className="display"
+              style={{ fontSize: "clamp(56px,9vw,128px)" }}
+            >
+              <span className="word">
+                <motion.span variants={wordRise} className="block">
+                  We design brands that
+                </motion.span>
+              </span>
+              <br />
+              <span className="word" style={{ minWidth: "1ch" }}>
+                <AnimatePresence mode="wait" initial={false}>
                   <motion.span
-                    variants={wordRise}
+                    key={ROTATING_WORDS[wordIdx]}
+                    aria-label={ROTATING_WORDS[wordIdx]}
                     className="block italic-display gradient-text"
                   >
-                    perform.
+                    {ROTATING_WORDS[wordIdx].split("").map((char, i, arr) => (
+                      <motion.span
+                        key={i}
+                        aria-hidden="true"
+                        style={{ display: "inline-block", whiteSpace: "pre" }}
+                        initial={
+                          reduce
+                            ? { y: "0%", opacity: 1 }
+                            : { y: "110%", opacity: 0 }
+                        }
+                        animate={{
+                          y: "0%",
+                          opacity: 1,
+                          transition: {
+                            duration: LETTER_DUR,
+                            ease: [0.21, 0.47, 0.32, 0.98],
+                            delay: reduce ? 0 : i * LETTER_STAGGER,
+                          },
+                        }}
+                        exit={
+                          reduce
+                            ? { y: "0%", opacity: 1 }
+                            : {
+                                y: "-110%",
+                                opacity: 0,
+                                transition: {
+                                  duration: LETTER_DUR * 0.7,
+                                  ease: [0.55, 0, 0.35, 1],
+                                  delay: (arr.length - 1 - i) * LETTER_STAGGER * 0.5,
+                                },
+                              }
+                        }
+                      >
+                        {char}
+                      </motion.span>
+                    ))}
                   </motion.span>
-                </span>
-              </h1>
-              <motion.p
-                variants={fadeUp}
-                className="text-[clamp(17px,1.4vw,20px)] text-ink-2 max-w-[60ch] leading-[1.55] mt-7"
-              >
-                Uniix Studio is a creative digital agency building bold brand
-                identities, conversion-focused websites, and growth systems for
-                ambitious companies in Sri Lanka, Australia and beyond.
-              </motion.p>
-              <motion.div variants={fadeUp} className="flex gap-3.5 flex-wrap mt-8">
-                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
-                  <Link href="/contact" className="btn btn-primary">
-                    Start a project ↗
-                  </Link>
-                </motion.div>
-                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
-                  <Link href="/portfolio" className="btn btn-ghost">
-                    View our work
-                  </Link>
-                </motion.div>
+                </AnimatePresence>
+              </span>
+            </h1>
+            <motion.p
+              variants={fadeUp}
+              className="text-[clamp(17px,1.4vw,20px)] text-ink-2 max-w-[60ch] leading-[1.55] mt-7 mx-auto"
+            >
+              Uniix Studio is a creative digital agency building bold brand
+              identities, conversion-focused websites, and growth systems for
+              ambitious companies in Sri Lanka, Australia and beyond.
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex gap-3.5 flex-wrap justify-center mt-8">
+              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
+                <Link href="/contact" className="btn btn-primary">
+                  Start a project ↗
+                </Link>
               </motion.div>
-            </div>
+              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
+                <Link href="/portfolio" className="btn btn-ghost">
+                  View our work
+                </Link>
+              </motion.div>
+            </motion.div>
 
-            <div className="flex flex-col gap-6">
+            {/* Trust strip — kills empty space below CTAs, adds proof above the fold */}
+            <motion.div variants={fadeUp} className="mt-14 w-full max-w-[820px]">
+              <div className="flex items-center gap-4 mb-5">
+                <span className="flex-1 h-px bg-line" />
+                <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-ink-mute">
+                  Trusted by
+                </span>
+                <span className="flex-1 h-px bg-line" />
+              </div>
+              <div className="flex items-center justify-center gap-x-10 gap-y-4 flex-wrap">
+                {clients.map((c) => (
+                  <span
+                    key={c.name}
+                    className={`${c.style} text-[20px] md:text-[22px] leading-none text-ink-mute/70 hover:text-ink-2 transition-colors duration-300 select-none`}
+                  >
+                    {c.name}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16 w-full max-w-[960px]">
               <motion.div
                 variants={cardRise}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
-                className="bg-brand-grad text-white rounded-lg2 p-8 relative overflow-hidden shadow-sm2"
+                className="bg-brand-grad text-white rounded-lg2 p-7 relative overflow-hidden shadow-sm2 text-left"
               >
                 <div
                   className="absolute inset-0 pointer-events-none"
@@ -123,51 +214,50 @@ export default function Hero() {
                   <div className="font-mono text-[10px] tracking-[0.18em] uppercase opacity-85 mb-3.5">
                     Selected since 2022
                   </div>
-                  <div className="font-display font-medium text-[64px] leading-none tracking-[-0.03em]">
+                  <div className="font-display font-medium text-[56px] leading-none tracking-[-0.03em]">
                     50<span className="opacity-70">+</span>
                   </div>
                   <div className="mt-2.5 text-[13px] leading-[1.45] text-white/90">
-                    Projects shipped across branding, web and growth — from
-                    Colombo founders to Australian-based companies.
+                    Projects shipped across branding, web and growth.
                   </div>
                 </div>
               </motion.div>
 
-              <div className="grid grid-cols-2 gap-3.5">
-                <motion.div
-                  variants={cardRise}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className="bg-bg-paper border border-line rounded-lg2 p-8 shadow-sm2"
-                >
-                  <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-3.5">
-                    Avg. growth
-                  </div>
-                  <div className="font-display font-medium text-[64px] leading-none tracking-[-0.03em] gradient-text">
-                    3×
-                  </div>
-                  <div className="mt-2.5 text-[13px] leading-[1.45] text-ink-2">
-                    Average traffic lift in 90 days post-launch.
-                  </div>
-                </motion.div>
-                <motion.div
-                  variants={cardRise}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className="bg-bg-paper border border-line rounded-lg2 p-8 shadow-sm2"
-                >
-                  <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-3.5">
-                    Client retention
-                  </div>
-                  <div className="font-display font-medium text-[64px] leading-none tracking-[-0.03em] gradient-text">
-                    92<span className="opacity-70">%</span>
-                  </div>
-                  <div className="mt-2.5 text-[13px] leading-[1.45] text-ink-2">
-                    Of clients return for a second engagement.
-                  </div>
-                </motion.div>
-              </div>
+              <motion.div
+                variants={cardRise}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.3 }}
+                className="bg-bg-paper border border-line rounded-lg2 p-7 shadow-sm2 text-left"
+              >
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-3.5">
+                  Avg. growth
+                </div>
+                <div className="font-display font-medium text-[56px] leading-none tracking-[-0.03em] gradient-text">
+                  3×
+                </div>
+                <div className="mt-2.5 text-[13px] leading-[1.45] text-ink-2">
+                  Average traffic lift in 90 days post-launch.
+                </div>
+              </motion.div>
+
+              <motion.div
+                variants={cardRise}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.3 }}
+                className="bg-bg-paper border border-line rounded-lg2 p-7 shadow-sm2 text-left"
+              >
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-3.5">
+                  Client retention
+                </div>
+                <div className="font-display font-medium text-[56px] leading-none tracking-[-0.03em] gradient-text">
+                  92<span className="opacity-70">%</span>
+                </div>
+                <div className="mt-2.5 text-[13px] leading-[1.45] text-ink-2">
+                  Of clients return for a second engagement.
+                </div>
+              </motion.div>
             </div>
+          </div>
           </div>
         </motion.div>
       </div>

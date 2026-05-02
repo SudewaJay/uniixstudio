@@ -49,10 +49,10 @@ export default function BlogSection() {
 
                 <div className="flex items-center gap-x-4 text-xs">
                   <time
-                    dateTime={post.date}
+                    dateTime={post.publishDate}
                     className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute"
                   >
-                    {formatDate(post.date)}
+                    {formatDate(post.publishDate)}
                   </time>
                   <span className="rounded-full border border-line bg-bg-warm px-3 py-1.5 font-medium text-ink-2 text-[11px] tracking-wide hover:bg-bg transition-colors">
                     {post.category}

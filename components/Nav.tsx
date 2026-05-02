@@ -41,11 +41,12 @@ export default function Nav() {
     <>
       <nav
         className={clsx(
-          "fixed top-0 inset-x-0 z-[100] bg-bg transition-all duration-300",
+          "fixed inset-x-0 z-[100] bg-bg transition-all duration-300",
           scrolled
             ? "py-3 border-b border-line shadow-[0_1px_20px_-6px_rgba(26,20,16,0.10)]"
             : "py-4 border-b border-line-soft"
         )}
+        style={{ top: 36 }}
       >
         <div className="wrap flex items-center justify-between gap-4">
 

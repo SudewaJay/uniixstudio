@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Lexend, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import ThirdPartyScripts from "@/components/ThirdPartyScripts";
 import { site } from "@/lib/content";
+import {
+  organizationSchema,
+  localBusinessSchema,
+  webSiteSchema,
+  schemaGraph,
+} from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 import Nav from "@/components/Nav";
+import PromoBar from "@/components/PromoBar";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
@@ -11,7 +22,7 @@ const display = Fraunces({
   variable: "--font-display",
   axes: ["opsz", "SOFT"],
 });
-const sans = Inter({
+const sans = Lexend({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-sans",
@@ -55,6 +66,14 @@ export const metadata: Metadata = {
     description: site.description,
   },
   robots: { index: true, follow: true },
+  // Search Console verification — set env vars in Vercel to activate.
+  // Empty/undefined values are omitted from the rendered <meta> tags.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+      : undefined,
+  },
   icons: {
     icon: [
       {
@@ -68,25 +87,13 @@ export const metadata: Metadata = {
   },
 };
 
-const schema = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: site.name,
-  url: site.url,
-  description: site.description,
-  telephone: site.whatsapp,
-  email: site.email,
-  priceRange: "$$",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Colombo",
-    addressRegion: "Western Province",
-    addressCountry: "LK",
-  },
-  geo: { "@type": "GeoCoordinates", latitude: 6.9271, longitude: 79.8612 },
-  areaServed: ["Sri Lanka", "Australia", "United Kingdom"],
-  sameAs: [site.socials.instagram, site.socials.facebook, site.socials.linkedin],
-};
+// Site-wide JSON-LD bundle: Organization + LocalBusiness + WebSite
+// Per Masterplan §5 — these three are required on every page via the layout.
+const siteSchema = schemaGraph(
+  organizationSchema(),
+  localBusinessSchema(),
+  webSiteSchema(),
+);
 
 export default function RootLayout({
   children,
@@ -96,16 +103,17 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <JsonLd data={siteSchema} />
       </head>
       <body className="font-sans">
         <a href="#main-content" className="skip-link">Skip to main content</a>
+        <PromoBar />
         <Nav />
         <main id="main-content">{children}</main>
         <Footer />
+        <Analytics />
+        <SpeedInsights />
+        <ThirdPartyScripts />
       </body>
     </html>
   );
