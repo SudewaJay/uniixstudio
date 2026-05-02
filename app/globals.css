@@ -113,14 +113,11 @@
   display: inline-block;
 }
 
-/* Hero grid backdrop */
+/* Hero grid backdrop — sits above WebGL mesh, provides tactile structure */
 .hero-grid-bg {
   position: absolute;
   inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(60% 50% at 80% 20%, rgba(248, 200, 74, 0.18), transparent 70%),
-    radial-gradient(50% 50% at 10% 90%, rgba(232, 98, 26, 0.10), transparent 70%);
+  z-index: 1;
   pointer-events: none;
 }
 .hero-grid-bg::after {

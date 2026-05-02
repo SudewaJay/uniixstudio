@@ -2,7 +2,7 @@ import Link from "next/link";
 import Hero from "@/components/Hero";
 import LogoCloud from "@/components/LogoCloud";
 import ServicesSection from "@/components/ServicesSection";
-import WorkGrid from "@/components/WorkGrid";
+import WorkStack from "@/components/WorkStack";
 import ProcessSection from "@/components/ProcessSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CTASection from "@/components/CTASection";
@@ -21,8 +21,8 @@ export default function HomePage() {
 
       <ServicesSection />
 
-      {/* Selected work */}
-      <section id="work" className="py-24 md:py-32">
+      {/* Selected work — pinned scroll-stack */}
+      <section id="work" className="pt-24 md:pt-32">
         <div className="wrap">
           <div className="grid lg:grid-cols-[1fr_auto] gap-8 lg:gap-12 items-end mb-16 lg:mb-20">
             <Reveal>
@@ -39,8 +39,8 @@ export default function HomePage() {
               </Link>
             </Reveal>
           </div>
-          <WorkGrid limit={4} />
         </div>
+        <WorkStack limit={4} />
       </section>
 
       <IndustriesSection />

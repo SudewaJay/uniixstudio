@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Lexend, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThirdPartyScripts from "@/components/ThirdPartyScripts";
@@ -12,6 +12,7 @@ import {
 } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import Nav from "@/components/Nav";
+import PromoBar from "@/components/PromoBar";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
@@ -21,7 +22,7 @@ const display = Fraunces({
   variable: "--font-display",
   axes: ["opsz", "SOFT"],
 });
-const sans = Inter({
+const sans = Lexend({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-sans",
@@ -106,6 +107,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans">
         <a href="#main-content" className="skip-link">Skip to main content</a>
+        <PromoBar />
         <Nav />
         <main id="main-content">{children}</main>
         <Footer />
