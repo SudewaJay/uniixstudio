@@ -3,7 +3,7 @@ export const site = {
   tagline: "Creative Digital Agency",
   url: "https://uniixstudio.com",
   description:
-    "Uniix Studio is a creative digital agency designing brand identities, building performance websites, and growing businesses through data-driven marketing. Based in Colombo. Working globally.",
+    "Uniix Studio is a creative digital agency in Sri Lanka offering brand identity, web development, and digital marketing. We design brands that perform.",
   email: "hello@uniixstudio.com",
   whatsapp: "+94000000000",
   whatsappLink: "https://wa.me/94000000000",

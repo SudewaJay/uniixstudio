@@ -12,6 +12,12 @@ export type Service = {
   metaDescription: string;
   /** Markdown body — render with react-markdown */
   body: string;
+  /**
+   * Optional FAQ block (Masterplan §3.1 / §5.3).
+   * When provided, the service page renders a visible FAQ section AND
+   * emits FAQPage JSON-LD schema for AEO/PAA targeting.
+   */
+  faqs?: Array<{ question: string; answer: string }>;
 };
 
 export type Pillar = {

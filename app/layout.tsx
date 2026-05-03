@@ -36,7 +36,7 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — ${site.tagline} in Sri Lanka & Australia`,
+    default: `${site.name} | Creative Design & Digital Agency in Sri Lanka`,
     template: `%s · ${site.name}`,
   },
   description: site.description,

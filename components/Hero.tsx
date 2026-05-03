@@ -1,15 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion, Variants } from "framer-motion";
-import HeroGradientMesh from "./HeroGradientMesh";
+import { motion, useReducedMotion, Variants } from "framer-motion";
 import { clients } from "@/lib/content";
-
-const ROTATING_WORDS = ["perform.", "convert.", "scale."];
-const WORD_ROTATE_MS = 3500;
-const LETTER_STAGGER = 0.04;
-const LETTER_DUR = 0.55;
+import { ContainerTextFlip } from "./ui/ContainerTextFlip";
 
 const EASE_OUT = [0.21, 0.47, 0.32, 0.98] as const;
 
@@ -43,19 +37,9 @@ const cardRise: Variants = {
 export default function Hero() {
   const reduce = useReducedMotion();
   const initial = reduce ? "show" : "hidden";
-  const [wordIdx, setWordIdx] = useState(0);
-
-  useEffect(() => {
-    if (reduce) return;
-    const t = setInterval(() => {
-      setWordIdx((i) => (i + 1) % ROTATING_WORDS.length);
-    }, WORD_ROTATE_MS);
-    return () => clearInterval(t);
-  }, [reduce]);
 
   return (
     <section className="pt-32 pb-20 md:pt-36 relative overflow-hidden">
-      <HeroGradientMesh />
       <div className="hero-grid-bg" />
       <div className="wrap relative z-10">
         <motion.div
@@ -97,61 +81,63 @@ export default function Hero() {
             </motion.div>
 
             <div className="flex flex-col items-center text-center">
-            <h1
-              className="display"
-              style={{ fontSize: "clamp(56px,9vw,128px)" }}
-            >
+            {/* H1 — Masterplan §2.3 verbatim. Three lines, last line italic gradient. */}
+            <h1 style={{ fontSize: "clamp(36px,5.2vw,80px)" }}>
               <span className="word">
-                <motion.span variants={wordRise} className="block">
-                  We design brands that
+                <motion.span
+                  variants={wordRise}
+                  className="block font-display font-medium leading-[1.05] tracking-[-0.025em] text-ink whitespace-nowrap"
+                >
+                  Sri Lanka&apos;s Creative Digital Agency
                 </motion.span>
               </span>
               <br />
-              <span className="word" style={{ minWidth: "1ch" }}>
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.span
-                    key={ROTATING_WORDS[wordIdx]}
-                    aria-label={ROTATING_WORDS[wordIdx]}
-                    className="block italic-display gradient-text"
-                  >
-                    {ROTATING_WORDS[wordIdx].split("").map((char, i, arr) => (
-                      <motion.span
-                        key={i}
-                        aria-hidden="true"
-                        style={{ display: "inline-block", whiteSpace: "pre" }}
-                        initial={
-                          reduce
-                            ? { y: "0%", opacity: 1 }
-                            : { y: "110%", opacity: 0 }
-                        }
-                        animate={{
-                          y: "0%",
-                          opacity: 1,
-                          transition: {
-                            duration: LETTER_DUR,
-                            ease: [0.21, 0.47, 0.32, 0.98],
-                            delay: reduce ? 0 : i * LETTER_STAGGER,
-                          },
-                        }}
-                        exit={
-                          reduce
-                            ? { y: "0%", opacity: 1 }
-                            : {
-                                y: "-110%",
-                                opacity: 0,
-                                transition: {
-                                  duration: LETTER_DUR * 0.7,
-                                  ease: [0.55, 0, 0.35, 1],
-                                  delay: (arr.length - 1 - i) * LETTER_STAGGER * 0.5,
-                                },
-                              }
-                        }
-                      >
-                        {char}
-                      </motion.span>
-                    ))}
-                  </motion.span>
-                </AnimatePresence>
+              <span className="word">
+                <motion.span
+                  variants={wordRise}
+                  className="block italic-display font-display font-medium tracking-[-0.03em] leading-[1.0] mt-2"
+                >
+                  {/*
+                    Each pillar word flips through brand-aligned alternates.
+                    First word in each array stays SEO-anchored (renders SSR).
+                    gradient-text-animated is applied INSIDE each flip so the
+                    background-clip:text doesn't get broken by the nested 3D
+                    transform contexts the flipper introduces.
+                  */}
+                  {[
+                    {
+                      base: "Design.",
+                      words: ["Design.", "Branding.", "Identity."],
+                    },
+                    {
+                      base: "Technology.",
+                      words: ["Technology.", "Engineering.", "Code."],
+                    },
+                    {
+                      base: "Growth.",
+                      words: ["Growth.", "Marketing.", "Performance."],
+                    },
+                  ].map((p, i) => (
+                    <motion.span
+                      key={p.base}
+                      initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.7,
+                        ease: [0.21, 0.47, 0.32, 0.98],
+                        delay: reduce ? 0 : 0.4 + i * 0.18,
+                      }}
+                      style={{ display: "inline-block", whiteSpace: "pre" }}
+                    >
+                      {i > 0 && " "}
+                      <ContainerTextFlip
+                        words={p.words}
+                        interval={2400 + i * 350}
+                        wordClassName="gradient-text-animated"
+                      />
+                    </motion.span>
+                  ))}
+                </motion.span>
               </span>
             </h1>
             <motion.p
@@ -165,12 +151,12 @@ export default function Hero() {
             <motion.div variants={fadeUp} className="flex gap-3.5 flex-wrap justify-center mt-8">
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
                 <Link href="/contact" className="btn btn-primary">
-                  Start a project ↗
+                  Get a Quote ↗
                 </Link>
               </motion.div>
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
                 <Link href="/portfolio" className="btn btn-ghost">
-                  View our work
+                  View Our Work
                 </Link>
               </motion.div>
             </motion.div>

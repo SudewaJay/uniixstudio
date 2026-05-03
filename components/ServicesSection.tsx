@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { services } from "@/lib/content";
+import { getServicesForPillar, type ServicePillar } from "@/lib/services";
 import Reveal from "./Reveal";
 
 export default function ServicesSection({
@@ -147,24 +149,49 @@ export default function ServicesSection({
                     </p>
                   </div>
 
+                  {/* Sub-service deep links — Masterplan §2.5 internal-link requirement */}
                   <ul
                     className={`service-list relative z-[2] list-none flex flex-col border-t mt-auto ${
                       isGrowth ? "border-line" : "border-white/[0.18]"
                     }`}
                   >
-                    {s.items.map((item) => (
+                    {getServicesForPillar(s.slug as ServicePillar).map((sub) => (
                       <li
-                        key={item.name}
+                        key={sub.slug}
                         className={
                           isGrowth ? "border-line" : "border-white/[0.18]"
                         }
-                        style={{
-                          letterSpacing: "-0.005em",
-                        }}
+                        style={{ letterSpacing: "-0.005em" }}
                       >
-                        <span>{item.name}</span>
+                        <Link
+                          href={`/services/${sub.pillar}/${sub.slug}/`}
+                          className={`block w-full ${
+                            isGrowth
+                              ? "text-ink hover:text-brand-4"
+                              : "text-white hover:text-white/100"
+                          } transition-colors`}
+                        >
+                          {sub.name}
+                        </Link>
                       </li>
                     ))}
+                    <li
+                      className={`pt-3 ${
+                        isGrowth ? "border-line" : "border-white/[0.18]"
+                      }`}
+                    >
+                      <Link
+                        href={`/services/${s.slug}/`}
+                        className={`inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase ${
+                          isGrowth
+                            ? "text-brand-4 hover:text-brand-3"
+                            : "text-white/85 hover:text-white"
+                        } transition-colors`}
+                      >
+                        Explore {s.title.toLowerCase()}
+                        <span aria-hidden="true">→</span>
+                      </Link>
+                    </li>
                   </ul>
                 </article>
               </Reveal>
