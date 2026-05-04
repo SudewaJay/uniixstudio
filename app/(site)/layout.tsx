@@ -14,7 +14,7 @@ import JsonLd from "@/components/JsonLd";
 import Nav from "@/components/Nav";
 import PromoBar from "@/components/PromoBar";
 import Footer from "@/components/Footer";
-import "./globals.css";
+import "../globals.css";
 
 const display = Fraunces({
   subsets: ["latin"],
