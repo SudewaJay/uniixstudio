@@ -9,10 +9,11 @@ export const contentType = "image/png";
 export default async function ServiceOG({
   params,
 }: {
-  params: { pillar: string; service: string };
+  params: Promise<{ pillar: string; service: string }>;
 }) {
-  const service = getService(params.pillar, params.service);
-  const pillar = getPillar(params.pillar);
+  const { pillar: pillarSlug, service: serviceSlug } = await params;
+  const service = getService(pillarSlug, serviceSlug);
+  const pillar = getPillar(pillarSlug);
 
   const accent = pillar?.accent ?? "#F07B20";
   const serviceName = service?.name ?? "Service";

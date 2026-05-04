@@ -23,12 +23,13 @@ export function generateStaticParams() {
   return services.map((s) => ({ pillar: s.pillar, service: s.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { pillar: string; service: string };
-}): Metadata {
-  const service = getService(params.pillar, params.service);
+  params: Promise<{ pillar: string; service: string }>;
+}): Promise<Metadata> {
+  const { pillar, service: serviceSlug } = await params;
+  const service = getService(pillar, serviceSlug);
   if (!service) return { title: "Service" };
   return {
     title: service.pageTitle,
@@ -40,17 +41,18 @@ export function generateMetadata({
   };
 }
 
-export default function ServiceDetailPage({
+export default async function ServiceDetailPage({
   params,
 }: {
-  params: { pillar: string; service: string };
+  params: Promise<{ pillar: string; service: string }>;
 }) {
-  const service = getService(params.pillar, params.service);
-  const pillar = getPillar(params.pillar);
+  const { pillar: pillarSlug, service: serviceSlug } = await params;
+  const service = getService(pillarSlug, serviceSlug);
+  const pillar = getPillar(pillarSlug);
   if (!service || !pillar) notFound();
 
-  const sibling = getServicesForPillar(params.pillar)
-    .filter((s) => s.slug !== params.service)
+  const sibling = getServicesForPillar(pillarSlug)
+    .filter((s) => s.slug !== serviceSlug)
     .slice(0, 3);
 
   // Strip the leading H1 from the markdown body if present (we render our own H1)

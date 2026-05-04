@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { process } from "@/lib/content";
 import Reveal from "./Reveal";
 

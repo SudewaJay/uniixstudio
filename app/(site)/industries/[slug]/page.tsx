@@ -9,12 +9,13 @@ export function generateStaticParams() {
   return industries.map((ind) => ({ slug: ind.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const ind = industries.find((i) => i.slug === params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const ind = industries.find((i) => i.slug === slug);
   if (!ind) return { title: "Industry" };
   return {
     title: ind.name,
@@ -22,15 +23,16 @@ export function generateMetadata({
   };
 }
 
-export default function IndustryDetailPage({
+export default async function IndustryDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const industry = industries.find((i) => i.slug === params.slug);
+  const { slug } = await params;
+  const industry = industries.find((i) => i.slug === slug);
   if (!industry) notFound();
 
-  const others = industries.filter((i) => i.slug !== params.slug).slice(0, 4);
+  const others = industries.filter((i) => i.slug !== slug).slice(0, 4);
 
   return (
     <>

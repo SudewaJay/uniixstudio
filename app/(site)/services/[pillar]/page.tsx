@@ -15,12 +15,13 @@ export function generateStaticParams() {
   return pillars.map((p) => ({ pillar: p.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { pillar: string };
-}): Metadata {
-  const pillar = getPillar(params.pillar);
+  params: Promise<{ pillar: string }>;
+}): Promise<Metadata> {
+  const { pillar: pillarSlug } = await params;
+  const pillar = getPillar(pillarSlug);
   if (!pillar) return { title: "Services" };
   return {
     title: `${pillar.label} Services in Sri Lanka`,
@@ -28,12 +29,13 @@ export function generateMetadata({
   };
 }
 
-export default function PillarPage({
+export default async function PillarPage({
   params,
 }: {
-  params: { pillar: string };
+  params: Promise<{ pillar: string }>;
 }) {
-  const pillar = getPillar(params.pillar);
+  const { pillar: pillarSlug } = await params;
+  const pillar = getPillar(pillarSlug);
   if (!pillar) notFound();
 
   const services = getServicesForPillar(pillar.slug);

@@ -11,12 +11,13 @@ export function generateStaticParams() {
   return posts.filter((p) => !p.isStub).map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const post = getPost(params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPost(slug);
   if (!post) return { title: "Article" };
   return {
     title: post.title,
@@ -31,16 +32,17 @@ export function generateMetadata({
   };
 }
 
-export default function BlogPostPage({
+export default async function BlogPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const post = getPost(params.slug);
+  const { slug } = await params;
+  const post = getPost(slug);
   if (!post || post.isStub) notFound();
 
   const related = posts
-    .filter((p) => !p.isStub && p.slug !== params.slug)
+    .filter((p) => !p.isStub && p.slug !== slug)
     .slice(0, 3);
 
   const pageSchema = schemaGraph(
