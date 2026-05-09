@@ -58,7 +58,13 @@ export default buildConfig({
   editor: lexicalEditor({}),
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      // Accept both Vercel/Neon convention (DATABASE_URL) and Payload-docs
+      // convention (DATABASE_URI). Vercel-Neon integration provides DATABASE_URL.
+      connectionString:
+        process.env.DATABASE_URL ||
+        process.env.DATABASE_URI ||
+        process.env.POSTGRES_URL ||
+        '',
     },
   }),
   plugins: [],
