@@ -2,15 +2,19 @@
  * One-shot migration from /lib/*.ts → Payload CMS.
  *
  * Run with:
- *   npx tsx scripts/migrate-to-payload.ts          # safe — skips existing
- *   FORCE=1 npx tsx scripts/migrate-to-payload.ts  # nuke and re-create
+ *   npx payload run scripts/migrate-to-payload.ts          # recommended (safe — skips existing)
+ *   FORCE=1 npx payload run scripts/migrate-to-payload.ts  # nuke and re-create
+ *
+ * If `payload run` is unavailable, fall back to:
+ *   node --import tsx --env-file=.env scripts/migrate-to-payload.ts
  *
  * Idempotent by default: if a doc already exists (matched by slug or unique
  * field), it's skipped. Globals are upserted unconditionally.
- *
- * Note: rich-text bodies are migrated as raw markdown strings. Convert to
- * Lexical JSON via Payload's importer when wiring the frontend reads.
  */
+
+// Load .env BEFORE importing payload — bypasses the broken loadEnv.js shim
+// in payload@3.84 + @next/env on Node 24.
+import 'dotenv/config'
 
 import { getPayload } from 'payload'
 import configPromise from '../payload.config'
@@ -103,21 +107,24 @@ async function main() {
     accentColor: p.accent,
   }))
 
+  // Pre-resolve pillar IDs once — Services need relationship IDs, not slugs
+  const pillarIdBySlug = await buildSlugToIdMap(payload, 'pillars')
+
   await migrateCollection(payload, 'services', services, (s) => ({
     slug: s.slug,
     name: s.name,
     rawName: s.rawName,
-    pillar: s.pillar,
+    pillar: pillarIdBySlug.get(s.pillar) ?? null,
     pageTitle: s.pageTitle,
-    metaDescription: s.metaDescription,
-    body: s.body,
+    metaDescription: truncate(s.metaDescription, 160),
+    body: mdToLexical(s.body),
   }))
 
   await migrateCollection(payload, 'industries', industries, (ind) => ({
     slug: ind.slug,
     name: ind.name,
     description: ind.description,
-    image: ind.image,
+    // image is an upload field — manual upload via /admin after migration
     accent: ind.accent,
     bgGradient: ind.bg,
   }))
@@ -205,6 +212,9 @@ async function main() {
     'name',
   )
 
+  // Pre-resolve author IDs by name — BlogPosts.author is a relationship
+  const authorIdByName = await buildNameToIdMap(payload, 'authors')
+
   await migrateCollection(
     payload,
     'blog-posts',
@@ -212,9 +222,9 @@ async function main() {
     (post) => ({
       slug: post.slug,
       title: post.title,
-      excerpt: post.excerpt,
-      body: post.body,
-      coverImage: post.coverImage,
+      excerpt: truncate(post.excerpt, 200),
+      body: mdToLexical(post.body),
+      // coverImage is required — uploaded manually via /admin after migration
       coverImageAlt: post.title,
       category: post.category,
       primaryKeyword: post.primaryKeyword || '',
@@ -222,7 +232,10 @@ async function main() {
       status: 'published',
       readTime: post.readTime,
       wordCount: post.wordCount || 0,
+      author: authorIdByName.get(post.author.name) ?? null,
     }),
+    'slug',
+    { draft: true }, // bypass required-field validation for missing coverImage
   )
 
   console.log('\n✅ Migration complete.\n')
@@ -239,6 +252,7 @@ async function migrateCollection<T>(
   items: T[],
   shape: (item: T, index: number) => Record<string, unknown>,
   uniqueField: string = 'slug',
+  options: { draft?: boolean } = {},
 ) {
   console.log(`  → ${slug}: ${items.length} items`)
   let created = 0
@@ -261,15 +275,101 @@ async function migrateCollection<T>(
           continue
         }
       }
-      await payload.create({ collection: slug as never, data: data as never })
+      await payload.create({
+        collection: slug as never,
+        data: data as never,
+        draft: options.draft,
+      })
       created++
     } catch (e: unknown) {
       errored++
       const msg = e instanceof Error ? e.message : String(e)
-      console.warn(`    ! ${slug}[${i}] (${matchValue}): ${msg.slice(0, 120)}`)
+      console.warn(`    ! ${slug}[${i}] (${matchValue}): ${msg.slice(0, 200)}`)
     }
   }
   console.log(`     ${created} created · ${skipped} skipped · ${errored} errored`)
+}
+
+/* ---------- Lookup helpers ---------- */
+
+async function buildSlugToIdMap(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  collection: string,
+): Promise<Map<string, unknown>> {
+  const res = await payload.find({ collection: collection as never, limit: 200 })
+  const map = new Map<string, unknown>()
+  for (const doc of res.docs as Array<{ slug?: string; id: unknown }>) {
+    if (doc.slug) map.set(doc.slug, doc.id)
+  }
+  return map
+}
+
+async function buildNameToIdMap(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  collection: string,
+): Promise<Map<string, unknown>> {
+  const res = await payload.find({ collection: collection as never, limit: 200 })
+  const map = new Map<string, unknown>()
+  for (const doc of res.docs as Array<{ name?: string; id: unknown }>) {
+    if (doc.name) map.set(doc.name, doc.id)
+  }
+  return map
+}
+
+/* ---------- String + content helpers ---------- */
+
+function truncate(s: string | undefined, max: number): string {
+  if (!s) return ''
+  if (s.length <= max) return s
+  // Cut at the last word boundary that fits
+  const cut = s.slice(0, max - 1)
+  const lastSpace = cut.lastIndexOf(' ')
+  return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd() + '…'
+}
+
+/**
+ * Convert plain markdown text into the minimal Lexical JSON shape Payload's
+ * richText field accepts. We don't parse markdown syntax — we drop the entire
+ * body into one paragraph node. The editor can re-format inside /admin.
+ *
+ * For full markdown→Lexical conversion later, swap this with Payload's
+ * official converter from @payloadcms/richtext-lexical.
+ */
+function mdToLexical(markdown: string): unknown {
+  const text = (markdown || '').trim()
+  return {
+    root: {
+      type: 'root',
+      format: '',
+      indent: 0,
+      version: 1,
+      direction: 'ltr',
+      children: text
+        ? [
+            {
+              type: 'paragraph',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'ltr',
+              textFormat: 0,
+              textStyle: '',
+              children: [
+                {
+                  type: 'text',
+                  format: 0,
+                  style: '',
+                  mode: 'normal',
+                  text,
+                  detail: 0,
+                  version: 1,
+                },
+              ],
+            },
+          ]
+        : [],
+    },
+  }
 }
 
 function dedupeBy<T extends Record<string, unknown>>(arr: T[], key: keyof T): T[] {

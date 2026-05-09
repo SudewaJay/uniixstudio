@@ -1,9 +1,18 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { fileURLToPath } from 'url'
+
+// NOTE: vercelBlobStorage is disabled for now. The plugin's underlying
+// @payloadcms/plugin-cloud-storage unconditionally mounts a ClientUploadHandler
+// at the root layout — and that handler requires an UploadHandlersProvider that
+// only gets injected when the importMap is regenerated AFTER the plugin is
+// registered. Our `npx payload generate:importmap` currently fails on ESM
+// extension resolution against payload.config.ts, so the import map is stale.
+// Until that's resolved (or we move to S3/R2), we let Payload use local disk
+// storage, which is fine for development. Re-enable for prod via env-gated
+// import + plugin entry once the importMap regeneration is fixed.
 
 import { Settings } from './payload/globals/Settings'
 import { Nav } from './payload/globals/Nav'
@@ -52,15 +61,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  plugins: [
-    vercelBlobStorage({
-      enabled: true,
-      collections: {
-        media: true,
-      },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
-  ],
+  plugins: [],
   collections: [
     Users,
     Pillars,
