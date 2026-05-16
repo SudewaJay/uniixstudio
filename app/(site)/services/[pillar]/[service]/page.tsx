@@ -14,6 +14,7 @@ import {
 import {
   serviceSchema,
   breadcrumbSchema,
+  faqPageSchema,
   schemaGraph,
 } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
@@ -22,12 +23,13 @@ export function generateStaticParams() {
   return services.map((s) => ({ pillar: s.pillar, service: s.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { pillar: string; service: string };
-}): Metadata {
-  const service = getService(params.pillar, params.service);
+  params: Promise<{ pillar: string; service: string }>;
+}): Promise<Metadata> {
+  const { pillar, service: serviceSlug } = await params;
+  const service = getService(pillar, serviceSlug);
   if (!service) return { title: "Service" };
   return {
     title: service.pageTitle,
@@ -39,24 +41,25 @@ export function generateMetadata({
   };
 }
 
-export default function ServiceDetailPage({
+export default async function ServiceDetailPage({
   params,
 }: {
-  params: { pillar: string; service: string };
+  params: Promise<{ pillar: string; service: string }>;
 }) {
-  const service = getService(params.pillar, params.service);
-  const pillar = getPillar(params.pillar);
+  const { pillar: pillarSlug, service: serviceSlug } = await params;
+  const service = getService(pillarSlug, serviceSlug);
+  const pillar = getPillar(pillarSlug);
   if (!service || !pillar) notFound();
 
-  const sibling = getServicesForPillar(params.pillar)
-    .filter((s) => s.slug !== params.service)
+  const sibling = getServicesForPillar(pillarSlug)
+    .filter((s) => s.slug !== serviceSlug)
     .slice(0, 3);
 
   // Strip the leading H1 from the markdown body if present (we render our own H1)
   const bodyWithoutH1 = service.body.replace(/^#\s+.*\n/, "").trim();
 
-  // JSON-LD: Service + BreadcrumbList
-  const pageSchema = schemaGraph(
+  // JSON-LD: Service + BreadcrumbList (+ FAQPage when service.faqs is populated)
+  const schemas: object[] = [
     serviceSchema(service, pillar),
     breadcrumbSchema([
       { name: "Home", url: "/" },
@@ -64,7 +67,11 @@ export default function ServiceDetailPage({
       { name: pillar.label, url: `/services/${pillar.slug}/` },
       { name: service.name, url: `/services/${pillar.slug}/${service.slug}/` },
     ]),
-  );
+  ];
+  if (service.faqs && service.faqs.length > 0) {
+    schemas.push(faqPageSchema(service.faqs));
+  }
+  const pageSchema = schemaGraph(...schemas);
 
   return (
     <>
@@ -206,6 +213,62 @@ export default function ServiceDetailPage({
           </div>
         </div>
       </section>
+
+      {/* FAQ — Masterplan §3.1. Renders only when faqs are populated on the service. */}
+      {service.faqs && service.faqs.length > 0 && (
+        <section className="bg-bg border-t border-line-soft py-20 md:py-28">
+          <div className="wrap">
+            <div className="grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20 items-start">
+              <Reveal>
+                <span
+                  className="font-mono text-[11px] tracking-[0.22em] uppercase block mb-4"
+                  style={{ color: pillar.accent }}
+                >
+                  FAQ
+                </span>
+                <h2
+                  className="font-display font-medium text-ink leading-[1.05] tracking-[-0.02em]"
+                  style={{ fontSize: "clamp(32px,4vw,52px)" }}
+                >
+                  Frequently asked
+                  <br />
+                  <span className="italic-display gradient-text">questions.</span>
+                </h2>
+                <p className="text-ink-2 text-[15px] leading-[1.6] mt-5 max-w-[36ch]">
+                  Quick answers to what clients ask most before starting a
+                  {" "}{service.name.toLowerCase()} engagement.
+                </p>
+              </Reveal>
+
+              <div className="divide-y divide-line">
+                {service.faqs.map((f, i) => (
+                  <Reveal key={f.question} delay={(i % 3) as 0 | 1 | 2}>
+                    <details className="group py-6">
+                      <summary className="cursor-pointer list-none flex items-start justify-between gap-6">
+                        <h3 className="font-display font-medium text-ink text-[20px] md:text-[22px] leading-[1.3] tracking-[-0.01em]">
+                          {f.question}
+                        </h3>
+                        <span
+                          aria-hidden="true"
+                          className="flex-shrink-0 mt-1 size-8 rounded-full border border-line grid place-items-center text-ink-2 transition-transform duration-300 group-open:rotate-45"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                          </svg>
+                        </span>
+                      </summary>
+                      <p className="mt-4 text-ink-2 text-[15.5px] leading-[1.7] max-w-[68ch]">
+                        {f.answer}
+                      </p>
+                    </details>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Sibling services */}
       {sibling.length > 0 && (

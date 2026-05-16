@@ -80,6 +80,30 @@
   .gradient-text {
     @apply bg-brand-grad bg-clip-text text-transparent;
   }
+  /* Animated variant — gradient slowly drifts left↔right on a 6s loop. */
+  .gradient-text-animated {
+    background: linear-gradient(
+      120deg,
+      #F8C84A 0%,
+      #F5A623 25%,
+      #F07B20 50%,
+      #E8621A 75%,
+      #F8C84A 100%
+    );
+    background-size: 220% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-drift 6s ease-in-out infinite;
+  }
+  @keyframes gradient-drift {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gradient-text-animated { animation: none; }
+  }
   .btn {
     @apply inline-flex items-center gap-[10px] px-7 py-4 rounded-full font-medium text-[15px] transition-all duration-300 whitespace-nowrap cursor-pointer;
   }
@@ -113,13 +137,17 @@
   display: inline-block;
 }
 
-/* Hero grid backdrop — sits above WebGL mesh, provides tactile structure */
+/* Hero backdrop — subtle static brand-warm tint */
 .hero-grid-bg {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 80% 20%, rgba(248, 200, 74, 0.18), transparent 70%),
+    radial-gradient(50% 50% at 10% 90%, rgba(232, 98, 26, 0.10), transparent 70%);
 }
+/* Animated grid mesh — slides one tile width (80px) left→right on a seamless loop */
 .hero-grid-bg::after {
   content: "";
   position: absolute;
@@ -130,6 +158,15 @@
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 80%);
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 80%);
+  animation: hero-grid-slide 18s linear infinite;
+  will-change: background-position;
+}
+@keyframes hero-grid-slide {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 80px 0, 80px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-grid-bg::after { animation: none; }
 }
 
 /* Service cards — list row hover arrows */

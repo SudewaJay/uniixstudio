@@ -7,3 +7,7 @@ out
 next-env.d.ts
 .vercel
 .claude/
+
+# Environment files (contain secrets — never commit)
+.env
+.env.production

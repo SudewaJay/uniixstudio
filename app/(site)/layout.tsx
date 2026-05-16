@@ -14,7 +14,7 @@ import JsonLd from "@/components/JsonLd";
 import Nav from "@/components/Nav";
 import PromoBar from "@/components/PromoBar";
 import Footer from "@/components/Footer";
-import "./globals.css";
+import "../globals.css";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -36,7 +36,7 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — ${site.tagline} in Sri Lanka & Australia`,
+    default: `${site.name} | Creative Design & Digital Agency in Sri Lanka`,
     template: `%s · ${site.name}`,
   },
   description: site.description,

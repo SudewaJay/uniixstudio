@@ -1,0 +1,113 @@
+/* ---------- Uniix Studio admin — brand-aligned overrides ---------- */
+
+:root,
+[data-theme="light"],
+[data-theme="dark"] {
+  /* Brand palette — keeps admin visually consistent with the site */
+  --color-base-0: #ffffff;
+  --color-base-50: #fbfaf6;
+  --color-base-100: #f5f1e8;
+
+  --color-success-500: #16a34a;
+  --color-error-500: #dc2626;
+  --color-warning-500: #f59e0b;
+}
+
+[data-theme="light"] {
+  /* Primary action color → brand orange (replaces Payload's default blue) */
+  --theme-success-500: #f07b20;
+  --theme-elevation-0: #ffffff;
+  --theme-elevation-50: #fbfaf6;
+  --theme-elevation-100: #f5f1e8;
+  --color-base-1000: #1a1410;
+
+  --style-radius-s: 8px;
+  --style-radius-m: 12px;
+  --style-radius-l: 18px;
+}
+
+/* Brand-orange primary button gradient — same as the site CTAs */
+[data-theme="light"] button.btn--style-primary,
+[data-theme="light"] .btn--style-primary {
+  background: linear-gradient(135deg, #f8c84a 0%, #f5a623 35%, #f07b20 70%, #e8621a 100%) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 1px 2px rgba(26, 20, 16, 0.04), 0 8px 24px -12px rgba(232, 98, 26, 0.35) !important;
+}
+[data-theme="light"] button.btn--style-primary:hover,
+[data-theme="light"] .btn--style-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+/* Login screen — bigger headline, brand accent on the gradient */
+.login__brand {
+  margin-bottom: 28px;
+}
+.login__form h1 {
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+/* Dashboard nav — make the section labels feel premium */
+.nav__label {
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 10.5px !important;
+  font-weight: 600;
+  color: #7a6e64 !important;
+}
+
+/* Card treatment for collection cards on the dashboard */
+.card {
+  border-radius: 14px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -12px rgba(26, 20, 16, 0.18);
+}
+
+/* Field group headings — bigger, more editorial */
+.field-type.group__header {
+  border-top-width: 1px !important;
+  padding-top: 22px !important;
+}
+.group__header h2,
+.collapsible__header,
+.field-type__row__label {
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Subtle accent line under the page title in collection list/edit views */
+.list-header h1,
+.doc-header h1 {
+  position: relative;
+  padding-bottom: 6px;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+}
+.list-header h1::after,
+.doc-header h1::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 36px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f8c84a 0%, #e8621a 100%);
+}
+
+/* Save button → brand gradient */
+[data-theme="light"] .doc-controls .btn--style-primary,
+[data-theme="light"] .form-submit .btn--style-primary {
+  background: linear-gradient(135deg, #f8c84a 0%, #f07b20 70%, #e8621a 100%) !important;
+}
+
+/* Sidebar (status/version panel) — softer */
+.doc-sidebar {
+  border-left: 1px solid rgba(26, 20, 16, 0.08) !important;
+}

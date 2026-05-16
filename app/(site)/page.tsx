@@ -5,6 +5,7 @@ import ServicesSection from "@/components/ServicesSection";
 import WorkStack from "@/components/WorkStack";
 import ProcessSection from "@/components/ProcessSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import StatsBar from "@/components/StatsBar";
 import CTASection from "@/components/CTASection";
 import VerticalTicker from "@/components/VerticalTicker";
 import IndustriesSection from "@/components/IndustriesSection";
@@ -131,6 +132,7 @@ export default function HomePage() {
       </section>
 
       <TestimonialsSection />
+      <StatsBar />
       <BlogSection />
       <CTASection />
     </>
