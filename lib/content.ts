@@ -25,11 +25,36 @@ export const nav = [
 ];
 
 export const clients = [
-  { name: "Wasana", style: "font-display tracking-[-0.04em]" },
-  { name: "Coventry", style: "font-display tracking-[-0.02em]" },
-  { name: "Zerro", style: "font-display font-bold tracking-[-0.06em]" },
-  { name: "Terraflow", style: "font-display italic tracking-[-0.02em]" },
-  { name: "Sinharaja", style: "font-display tracking-[0.05em] uppercase" },
+  {
+    name: "Wasana Drivers",
+    logo: "/clients/wasana_drivers_srilanka_logo_by_uniix_studio.svg",
+    style: "font-display tracking-[-0.04em]",
+  },
+  {
+    name: "Zerro",
+    logo: "/clients/zerro_logo.svg",
+    style: "font-display font-bold tracking-[-0.06em]",
+  },
+  {
+    name: "Ecowave Energy",
+    logo: "/clients/ecowave_energy_logo.svg",
+    style: "font-display tracking-[-0.02em]",
+  },
+  {
+    name: "Himisha Tour",
+    logo: "/clients/himisha_tour_logo.svg",
+    style: "font-display italic tracking-[-0.02em]",
+  },
+  {
+    name: "Rent My Car LK",
+    logo: "/clients/rent_my_car_lk_logo.svg",
+    style: "font-display tracking-[-0.02em]",
+  },
+  {
+    name: "Jay",
+    logo: "/clients/jay_logo.svg",
+    style: "font-display tracking-[0.05em] uppercase",
+  },
 ];
 
 export const services = [

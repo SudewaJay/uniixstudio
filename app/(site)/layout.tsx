@@ -74,17 +74,8 @@ export const metadata: Metadata = {
       ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
       : undefined,
   },
-  icons: {
-    icon: [
-      {
-        url:
-          "data:image/svg+xml," +
-          encodeURIComponent(
-            `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#F8C84A'/><stop offset='.5' stop-color='#F07B20'/><stop offset='1' stop-color='#E8621A'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(#g)'/><text x='50' y='70' font-family='system-ui' font-size='62' font-weight='900' fill='white' text-anchor='middle'>U</text></svg>`
-          ),
-      },
-    ],
-  },
+  // Favicons auto-detected from app/icon.png + app/apple-icon.png by Next.js.
+  // Next generates the <link rel="icon"> + sized variants automatically.
 };
 
 // Site-wide JSON-LD bundle: Organization + LocalBusiness + WebSite
