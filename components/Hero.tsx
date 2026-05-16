@@ -39,7 +39,7 @@ export default function Hero() {
   const initial = reduce ? "show" : "hidden";
 
   return (
-    <section className="pt-32 pb-20 md:pt-36 relative overflow-hidden">
+    <section className="pt-24 pb-14 md:pt-36 md:pb-20 relative overflow-hidden">
       <div className="hero-grid-bg" />
       <div className="wrap relative z-10">
         <motion.div
@@ -82,11 +82,17 @@ export default function Hero() {
 
             <div className="flex flex-col items-center text-center">
             {/* H1 — Masterplan §2.3 verbatim. Three lines, last line italic gradient. */}
-            <h1 style={{ fontSize: "clamp(36px,5.2vw,80px)" }}>
+            <h1
+              className="px-2 md:px-0"
+              style={{ fontSize: "clamp(28px,5.2vw,80px)" }}
+            >
               <span className="word">
                 <motion.span
                   variants={wordRise}
-                  className="block font-display font-medium leading-[1.05] tracking-[-0.025em] text-ink whitespace-nowrap"
+                  /* `text-balance` evens the wrap on mobile; `md:whitespace-nowrap`
+                     keeps the single-line look on tablet+. `break-words` is
+                     the safety net for ultra-narrow viewports (<320px). */
+                  className="block font-display font-medium leading-[1.1] md:leading-[1.05] tracking-[-0.025em] text-ink text-balance break-words md:whitespace-nowrap"
                 >
                   Sri Lanka&apos;s Creative Digital Agency
                 </motion.span>
@@ -162,7 +168,7 @@ export default function Hero() {
             </motion.div>
 
             {/* Trust strip — kills empty space below CTAs, adds proof above the fold */}
-            <motion.div variants={fadeUp} className="mt-14 w-full max-w-[820px]">
+            <motion.div variants={fadeUp} className="mt-10 md:mt-14 w-full max-w-[820px]">
               <div className="flex items-center gap-4 mb-5">
                 <span className="flex-1 h-px bg-line" />
                 <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-ink-mute">
@@ -170,11 +176,11 @@ export default function Hero() {
                 </span>
                 <span className="flex-1 h-px bg-line" />
               </div>
-              <div className="flex items-center justify-center gap-x-10 gap-y-4 flex-wrap">
+              <div className="flex items-center justify-center gap-x-6 gap-y-3 md:gap-x-10 md:gap-y-4 flex-wrap">
                 {clients.map((c) => (
                   <span
                     key={c.name}
-                    className={`${c.style} text-[20px] md:text-[22px] leading-none text-ink-mute/70 hover:text-ink-2 transition-colors duration-300 select-none`}
+                    className={`${c.style} text-[17px] md:text-[22px] leading-none text-ink-mute/70 hover:text-ink-2 transition-colors duration-300 select-none`}
                   >
                     {c.name}
                   </span>
@@ -182,12 +188,12 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16 w-full max-w-[960px]">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 md:gap-4 mt-12 md:mt-16 w-full max-w-[960px]">
               <motion.div
                 variants={cardRise}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
-                className="bg-brand-grad text-white rounded-lg2 p-7 relative overflow-hidden shadow-sm2 text-left"
+                className="bg-brand-grad text-white rounded-lg2 p-6 md:p-7 relative overflow-hidden shadow-sm2 text-left"
               >
                 <div
                   className="absolute inset-0 pointer-events-none"
@@ -200,7 +206,7 @@ export default function Hero() {
                   <div className="font-mono text-[10px] tracking-[0.18em] uppercase opacity-85 mb-3.5">
                     Selected since 2022
                   </div>
-                  <div className="font-display font-medium text-[56px] leading-none tracking-[-0.03em]">
+                  <div className="font-display font-medium text-[44px] md:text-[56px] leading-none tracking-[-0.03em]">
                     50<span className="opacity-70">+</span>
                   </div>
                   <div className="mt-2.5 text-[13px] leading-[1.45] text-white/90">
@@ -213,12 +219,12 @@ export default function Hero() {
                 variants={cardRise}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
-                className="bg-bg-paper border border-line rounded-lg2 p-7 shadow-sm2 text-left"
+                className="bg-bg-paper border border-line rounded-lg2 p-6 md:p-7 shadow-sm2 text-left"
               >
                 <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-3.5">
                   Avg. growth
                 </div>
-                <div className="font-display font-medium text-[56px] leading-none tracking-[-0.03em] gradient-text">
+                <div className="font-display font-medium text-[44px] md:text-[56px] leading-none tracking-[-0.03em] gradient-text">
                   3×
                 </div>
                 <div className="mt-2.5 text-[13px] leading-[1.45] text-ink-2">
@@ -230,12 +236,12 @@ export default function Hero() {
                 variants={cardRise}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
-                className="bg-bg-paper border border-line rounded-lg2 p-7 shadow-sm2 text-left"
+                className="bg-bg-paper border border-line rounded-lg2 p-6 md:p-7 shadow-sm2 text-left"
               >
                 <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-3.5">
                   Client retention
                 </div>
-                <div className="font-display font-medium text-[56px] leading-none tracking-[-0.03em] gradient-text">
+                <div className="font-display font-medium text-[44px] md:text-[56px] leading-none tracking-[-0.03em] gradient-text">
                   92<span className="opacity-70">%</span>
                 </div>
                 <div className="mt-2.5 text-[13px] leading-[1.45] text-ink-2">
