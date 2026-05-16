@@ -34,9 +34,33 @@ function WorkCard({ p }: { p: Project }) {
         aspectRatio: p.feature ? "16/10" : "4/3",
       }}
     >
+      {/* Cover image — full-bleed background */}
+      {p.coverImage && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={p.coverImage}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
+        />
+      )}
+
+      {/* Legibility overlay */}
+      {p.coverImage && (
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(26,20,16,0.30) 0%, rgba(26,20,16,0.15) 35%, rgba(26,20,16,0.55) 75%, rgba(26,20,16,0.85) 100%)",
+          }}
+        />
+      )}
+
       <motion.span
         style={{ y: bigY, scale: bigScale }}
-        className={`absolute inset-0 grid place-items-center pointer-events-none will-change-transform ${p.bigClass}`}
+        className={`absolute inset-0 grid place-items-center pointer-events-none will-change-transform ${p.bigClass} ${p.coverImage ? "opacity-25 mix-blend-overlay" : ""}`}
         aria-hidden
       >
         <span
