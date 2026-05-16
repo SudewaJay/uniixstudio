@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion, Variants } from "framer-motion";
-import { clients } from "@/lib/content";
 import { ContainerTextFlip } from "./ui/ContainerTextFlip";
 
 const EASE_OUT = [0.21, 0.47, 0.32, 0.98] as const;
@@ -165,27 +164,6 @@ export default function Hero() {
                   View Our Work
                 </Link>
               </motion.div>
-            </motion.div>
-
-            {/* Trust strip — kills empty space below CTAs, adds proof above the fold */}
-            <motion.div variants={fadeUp} className="mt-10 md:mt-14 w-full max-w-[820px]">
-              <div className="flex items-center gap-4 mb-5">
-                <span className="flex-1 h-px bg-line" />
-                <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-ink-mute">
-                  Trusted by
-                </span>
-                <span className="flex-1 h-px bg-line" />
-              </div>
-              <div className="flex items-center justify-center gap-x-6 gap-y-3 md:gap-x-10 md:gap-y-4 flex-wrap">
-                {clients.map((c) => (
-                  <span
-                    key={c.name}
-                    className={`${c.style} text-[17px] md:text-[22px] leading-none text-ink-mute/70 hover:text-ink-2 transition-colors duration-300 select-none`}
-                  >
-                    {c.name}
-                  </span>
-                ))}
-              </div>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 md:gap-4 mt-12 md:mt-16 w-full max-w-[960px]">

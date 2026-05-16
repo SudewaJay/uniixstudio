@@ -21,23 +21,38 @@ export default function LogoCloud() {
           </h2>
         </Reveal>
 
-        <div className="mx-auto mt-12 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-12 lg:mx-0 lg:max-w-none lg:grid-cols-5 lg:gap-x-16">
+        {/*
+          6 clients → 2 cols on mobile, 3 cols on tablet, 6 cols on desktop.
+          Logos are pattern-fill SVGs; we use filter:invert+brightness to
+          force a pure white silhouette that reads cleanly on the dark bg.
+        */}
+        <div className="mx-auto mt-12 grid max-w-md grid-cols-2 items-center gap-x-8 gap-y-10 sm:max-w-3xl sm:grid-cols-3 sm:gap-x-12 lg:max-w-none lg:grid-cols-6 lg:gap-x-10">
           {clients.map((c, i) => (
-            <Reveal
-              key={c.name}
-              delay={(i % 4) as 0 | 1 | 2 | 3}
-              className={
-                i === 3
-                  ? "col-span-2 sm:col-start-2 lg:col-span-1 lg:col-start-auto"
-                  : i === 4
-                  ? "col-span-2 col-start-2 sm:col-start-auto lg:col-span-1"
-                  : "col-span-2 lg:col-span-1"
-              }
-            >
+            <Reveal key={c.name} delay={(i % 4) as 0 | 1 | 2 | 3}>
               <div
-                className={`${c.style} text-center text-white/70 text-[28px] md:text-[30px] lg:text-[32px] leading-none transition-all duration-500 hover:text-white hover:scale-[1.04] cursor-default select-none`}
+                className="group flex items-center justify-center h-12 md:h-14"
+                title={c.name}
               >
-                {c.name}
+                {c.logo ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={c.logo}
+                    alt={c.name}
+                    loading="lazy"
+                    className="max-h-full w-auto object-contain opacity-65 group-hover:opacity-100 transition-opacity duration-500 select-none"
+                    style={{
+                      // Force any logo color → pure white silhouette so it
+                      // reads on the dark background regardless of source.
+                      filter: "brightness(0) invert(1)",
+                    }}
+                  />
+                ) : (
+                  <span
+                    className={`${c.style} text-center text-white/70 text-[28px] md:text-[30px] lg:text-[32px] leading-none transition-all duration-500 group-hover:text-white group-hover:scale-[1.04] cursor-default select-none`}
+                  >
+                    {c.name}
+                  </span>
+                )}
               </div>
             </Reveal>
           ))}
