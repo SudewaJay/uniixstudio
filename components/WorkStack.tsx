@@ -1,14 +1,24 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion, MotionValue } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useReducedMotion,
+  MotionValue,
+} from "framer-motion";
 import { projects } from "@/lib/content";
 
 type Project = (typeof projects)[number];
 
-// Each card pins for ~100vh of scroll. Total section height = (N+1) × 100vh
-// (the +1 gives the last card breathing room before the next section).
+// Each card pins for ~100vh of scroll. Total section height = N × CARD_VH.
 const CARD_VH = 100;
+
+// Spring config for the smoothed scroll progress. Lower stiffness = more
+// damping = softer handoff between cards. Tuned for cinematic feel.
+const SCROLL_SPRING = { stiffness: 90, damping: 22, mass: 0.4 };
 
 function StackCard({
   p,
@@ -23,72 +33,79 @@ function StackCard({
 }) {
   const reduce = useReducedMotion();
 
-  // This card's "active" range within the parent's scrollYProgress (0..1).
-  // Card i becomes the focal one between i/(total) and (i+1)/(total).
+  // This card's scroll range within the parent (0..1).
   const start = index / total;
   const end = (index + 1) / total;
 
-  // Scale: stays full-size while card is the active one,
-  // shrinks slightly as the next card slides over it.
+  // Entry: card scales up from 0.96 → 1 as it becomes the focal one.
+  // No exit fade — the NEXT card sits on top via higher z-index and covers
+  // this one cleanly when scroll passes. Trying to fade the previous card
+  // creates visible ghost-overlap because the deck is all sticky-stacked.
+  const enterStart = Math.max(0, start - 0.5 / total);
   const scale = useTransform(
     scrollYProgress,
-    [start, end, Math.min(end + 1 / total, 1)],
-    reduce ? [1, 1, 1] : [1, 1, 0.92]
+    [enterStart, start],
+    reduce ? [1, 1] : [0.96, 1],
   );
-
-  // Opacity: fade older cards slightly as they recede in the stack.
   const opacity = useTransform(
     scrollYProgress,
-    [start, end, Math.min(end + 0.5 / total, 1)],
-    reduce ? [1, 1, 1] : [1, 1, 0.7]
-  );
-
-  // Big background letter parallax — drifts as card progresses through pin.
-  const bigY = useTransform(
-    scrollYProgress,
-    [start, end],
-    reduce ? ["0%", "0%"] : ["12%", "-12%"]
+    [enterStart, start],
+    reduce ? [1, 1] : [0.85, 1],
   );
 
   return (
     <div
-      className="sticky"
+      className="sticky w-full"
       style={{
         top: "10vh",
-        // Stacking offset — each card sits a tiny bit lower than the previous,
-        // so when scaled-down older cards peek out, you see a deck of cards.
-        marginTop: index === 0 ? 0 : "-80vh",
+        height: "80vh",
+        // Newer cards layer ABOVE older ones so each new sticky card
+        // cleanly covers the previous one. Previous version had this
+        // reversed which caused the overlap mess.
         zIndex: index + 1,
+        marginBottom: index === total - 1 ? 0 : "20vh",
       }}
     >
       <motion.div
         style={{ scale, opacity }}
-        className="origin-top will-change-transform"
+        className="origin-top will-change-transform h-full"
       >
         <div
-          className={`relative rounded-DEFAULT overflow-hidden flex items-end p-10 md:p-14 text-white bg-gradient-to-br ${p.bg} shadow-[0_30px_80px_-30px_rgba(26,20,16,0.45)]`}
-          style={{ height: "80vh" }}
+          className={`relative rounded-DEFAULT overflow-hidden flex items-end p-10 md:p-14 text-white bg-gradient-to-br ${p.bg} shadow-[0_30px_80px_-30px_rgba(26,20,16,0.45)] h-full`}
         >
+          {/* Cover image — full-bleed background */}
+          {p.coverImage && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={p.coverImage}
+              alt=""
+              aria-hidden
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
+
+          {/* Image readability — soft on top, deep at bottom so headline reads */}
+          {p.coverImage && (
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(26,20,16,0.45) 0%, rgba(26,20,16,0.20) 30%, rgba(26,20,16,0.55) 70%, rgba(26,20,16,0.85) 100%)",
+              }}
+            />
+          )}
+
           {/* Index badge — top-left */}
-          <div className="absolute top-8 left-8 md:top-10 md:left-10 font-mono text-[11px] tracking-[0.18em] uppercase text-white/60">
+          <div className="absolute top-8 left-8 md:top-10 md:left-10 z-[3] font-mono text-[11px] tracking-[0.18em] uppercase text-white/75">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </div>
 
           {/* Year + category — top-right */}
-          <div className="absolute top-8 right-8 md:top-10 md:right-10 font-mono text-[11px] tracking-[0.18em] uppercase text-white/60">
+          <div className="absolute top-8 right-8 md:top-10 md:right-10 z-[3] font-mono text-[11px] tracking-[0.18em] uppercase text-white/75">
             {p.year} · {p.overline}
           </div>
-
-          {/* Big background letterform — parallax */}
-          <motion.span
-            style={{ y: bigY }}
-            className={`absolute inset-0 grid place-items-center pointer-events-none will-change-transform ${p.bigClass}`}
-            aria-hidden
-          >
-            <span style={{ fontSize: "clamp(120px, 18vw, 280px)" }}>
-              {p.bigText}
-            </span>
-          </motion.span>
 
           {/* Foreground content — bottom */}
           <div className="relative z-[2] w-full flex justify-between items-end gap-6">
@@ -137,11 +154,16 @@ export default function WorkStack({ limit }: { limit?: number }) {
     offset: ["start start", "end end"],
   });
 
+  // Smooth the raw scroll signal via a spring before feeding it to per-card
+  // transforms. Eliminates the micro-stutter on trackpad scroll and gives
+  // the whole stack a cinematic, weighted feel.
+  const smoothProgress = useSpring(scrollYProgress, SCROLL_SPRING);
+
   return (
     <div
       ref={containerRef}
       className="wrap relative"
-      style={{ height: `${(items.length + 1) * CARD_VH}vh` }}
+      style={{ height: `${items.length * CARD_VH}vh` }}
     >
       {items.map((p, i) => (
         <StackCard
@@ -149,7 +171,7 @@ export default function WorkStack({ limit }: { limit?: number }) {
           p={p}
           index={i}
           total={items.length}
-          scrollYProgress={scrollYProgress}
+          scrollYProgress={smoothProgress}
         />
       ))}
     </div>

@@ -164,6 +164,8 @@ export const projects = [
     bigText: "ZERRO",
     bigClass:
       "font-display font-bold tracking-[-0.04em] bg-brand-grad bg-clip-text text-transparent opacity-90",
+    coverImage:
+      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1600&q=80&auto=format&fit=crop",
   },
   {
     slug: "wasana",
@@ -178,6 +180,8 @@ export const projects = [
     bigText: "WD",
     bigClass:
       "font-display font-bold tracking-[-0.05em] text-white/10",
+    coverImage:
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80&auto=format&fit=crop",
   },
   {
     slug: "coventry",
@@ -192,6 +196,8 @@ export const projects = [
     bigText: "CBC",
     bigClass:
       "font-display font-bold tracking-[-0.04em] text-white/10",
+    coverImage:
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=80&auto=format&fit=crop",
   },
   {
     slug: "terraflow",
@@ -206,6 +212,8 @@ export const projects = [
     bigText: "TERRAFLOW",
     bigClass:
       "font-display font-bold tracking-[-0.04em] text-[#F8C84A]/25",
+    coverImage:
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1600&q=80&auto=format&fit=crop",
   },
 ];
 
