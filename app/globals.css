@@ -137,6 +137,32 @@
   display: inline-block;
 }
 
+/* Hero silk shader backdrop — WebGL fluid orange palette */
+.hero-silk-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-silk-bg canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* Frosted glass overlay — keeps the existing hero copy legible over the silk */
+.hero-silk-glass {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(40px) saturate(130%) brightness(1.05);
+  -webkit-backdrop-filter: blur(40px) saturate(130%) brightness(1.05);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 96%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 96%);
+}
+
 /* Hero backdrop — subtle static brand-warm tint */
 .hero-grid-bg {
   position: absolute;
