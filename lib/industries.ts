@@ -14,7 +14,7 @@ export const industries: Industry[] = [
     description:
       "Empowering institutions with scalable digital platforms and seamless learning experiences.",
     image:
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=80&auto=format&fit=crop",
     accent: "#60A5FA",
     bg: "from-[#0f172a] to-[#1e3a8a]",
   },

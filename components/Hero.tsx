@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion, useReducedMotion, Variants } from "framer-motion";
 import { ContainerTextFlip } from "./ui/ContainerTextFlip";
+import HeroSilkBackground from "./HeroSilkBackground";
 
 const EASE_OUT = [0.21, 0.47, 0.32, 0.98] as const;
 
@@ -39,7 +40,7 @@ export default function Hero() {
 
   return (
     <section className="pt-24 pb-14 md:pt-36 md:pb-20 relative overflow-hidden">
-      <div className="hero-grid-bg" />
+      <HeroSilkBackground />
       <div className="wrap relative z-10">
         <motion.div
           variants={containerVariants}
@@ -51,7 +52,7 @@ export default function Hero() {
             variants={fadeUp}
             className="flex items-center justify-center mb-10"
           >
-            <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-2 border border-line rounded-full px-3.5 py-1.5 bg-bg-paper/60 backdrop-blur-sm">
+            <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-2 border border-line rounded-full px-3.5 py-1.5 bg-white backdrop-blur-sm">
               <span className="status-dot" />
               Available for Q3 2026 — 2 slots left
             </span>
@@ -62,21 +63,21 @@ export default function Hero() {
             <motion.div
               variants={fadeUp}
               aria-hidden="true"
-              className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 items-center gap-3 font-mono text-[10px] tracking-[0.22em] uppercase text-ink-mute"
+              className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 items-center gap-3 font-mono text-[10px] tracking-[0.22em] uppercase text-white/80"
               style={{ writingMode: "vertical-rl", transform: "translateY(-50%) rotate(180deg)" }}
             >
-              <span className="w-8 h-px bg-ink-mute/40" />
+              <span className="w-8 h-px bg-white/50" />
               Est. 2022 — Colombo
             </motion.div>
 
             <motion.div
               variants={fadeUp}
               aria-hidden="true"
-              className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 items-center gap-3 font-mono text-[10px] tracking-[0.22em] uppercase text-ink-mute"
+              className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 items-center gap-3 font-mono text-[10px] tracking-[0.22em] uppercase text-white/80"
               style={{ writingMode: "vertical-rl" }}
             >
               Scroll to explore
-              <span className="w-8 h-px bg-ink-mute/40" />
+              <span className="w-8 h-px bg-white/50" />
             </motion.div>
 
             <div className="flex flex-col items-center text-center">
@@ -91,7 +92,7 @@ export default function Hero() {
                   /* `text-balance` evens the wrap on mobile; `md:whitespace-nowrap`
                      keeps the single-line look on tablet+. `break-words` is
                      the safety net for ultra-narrow viewports (<320px). */
-                  className="block font-display font-medium leading-[1.1] md:leading-[1.05] tracking-[-0.025em] text-ink text-balance break-words md:whitespace-nowrap"
+                  className="block font-display font-medium leading-[1.1] md:leading-[1.05] tracking-[-0.025em] text-white text-balance break-words md:whitespace-nowrap [text-shadow:0_2px_30px_rgba(120,50,0,0.25)]"
                 >
                   Sri Lanka&apos;s Creative Digital Agency
                 </motion.span>
@@ -138,7 +139,7 @@ export default function Hero() {
                       <ContainerTextFlip
                         words={p.words}
                         interval={2400 + i * 350}
-                        wordClassName="gradient-text-animated"
+                        wordClassName="text-white [text-shadow:0_2px_30px_rgba(120,50,0,0.25)]"
                       />
                     </motion.span>
                   ))}
@@ -251,7 +252,7 @@ export default function Hero() {
                   key={`${k}-${i}`}
                   className="font-display text-[32px] tracking-[-0.02em] text-ink-2 flex items-center gap-16 whitespace-nowrap"
                 >
-                  <span className={i % 2 === 1 ? "italic-display text-brand-4" : ""}>
+                  <span className={i % 2 === 1 ? "italic-display text-white" : ""}>
                     {label}
                   </span>
                   <span className="w-2 h-2 rounded-full bg-brand-grad flex-shrink-0" />
