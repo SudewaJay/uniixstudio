@@ -153,6 +153,33 @@
   display: block;
 }
 /* Frosted glass overlay — keeps the existing hero copy legible over the silk */
+/* Shimmer pass — light highlight sweeps across italic accent on a slow loop */
+.shimmer-text {
+  background: linear-gradient(
+    100deg,
+    #1A0F08 0%,
+    #1A0F08 40%,
+    rgba(255, 255, 255, 0.95) 50%,
+    #1A0F08 60%,
+    #1A0F08 100%
+  );
+  background-size: 220% 100%;
+  background-position: 200% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-pass 4s ease-in-out infinite;
+}
+@keyframes shimmer-pass {
+  0%   { background-position: 200% 0; }
+  55%  { background-position: -60% 0; }
+  100% { background-position: -60% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-text { animation: none; background: #1A0F08; -webkit-background-clip: text; background-clip: text; }
+}
+
 .hero-silk-glass {
   position: absolute;
   inset: 0;
