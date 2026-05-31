@@ -49,7 +49,7 @@ export default function Hero() {
           {/* Scarcity status — replaces the redundant location eyebrow */}
           <motion.div
             variants={fadeUp}
-            className="flex items-center justify-center mb-12"
+            className="hidden md:flex items-center justify-center mb-12"
           >
             <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-2 border border-line rounded-full px-3.5 py-1.5 bg-white backdrop-blur-sm">
               <span className="status-dot" />
@@ -82,8 +82,8 @@ export default function Hero() {
             <div className="flex flex-col items-center text-center">
             {/* H1 — concise SEO title, two lines, 112px on desktop */}
             <h1
-              className="px-2 md:px-0"
-              style={{ fontSize: "clamp(48px,9vw,112px)" }}
+              className="px-2 md:px-0 text-balance"
+              style={{ fontSize: "clamp(40px,8.5vw,112px)" }}
             >
               <span className="word">
                 <motion.span
