@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion, Variants } from "framer-motion";
-import { ContainerTextFlip } from "./ui/ContainerTextFlip";
 import HeroSilkBackground from "./HeroSilkBackground";
 
 const EASE_OUT = [0.21, 0.47, 0.32, 0.98] as const;
@@ -39,7 +38,7 @@ export default function Hero() {
   const initial = reduce ? "show" : "hidden";
 
   return (
-    <section className="pt-24 pb-14 md:pt-36 md:pb-20 relative overflow-hidden">
+    <section className="pt-24 pb-20 md:pt-36 md:pb-28 relative overflow-hidden">
       <HeroSilkBackground />
       <div className="wrap relative z-10">
         <motion.div
@@ -50,7 +49,7 @@ export default function Hero() {
           {/* Scarcity status — replaces the redundant location eyebrow */}
           <motion.div
             variants={fadeUp}
-            className="flex items-center justify-center mb-10"
+            className="flex items-center justify-center mb-12"
           >
             <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-2 border border-line rounded-full px-3.5 py-1.5 bg-white backdrop-blur-sm">
               <span className="status-dot" />
@@ -81,98 +80,55 @@ export default function Hero() {
             </motion.div>
 
             <div className="flex flex-col items-center text-center">
-            {/* H1 — Masterplan §2.3 verbatim. Three lines, last line italic gradient. */}
+            {/* H1 — concise SEO title, two lines, 112px on desktop */}
             <h1
               className="px-2 md:px-0"
-              style={{ fontSize: "clamp(28px,5.2vw,80px)" }}
+              style={{ fontSize: "clamp(48px,9vw,112px)" }}
             >
               <span className="word">
                 <motion.span
                   variants={wordRise}
-                  /* `text-balance` evens the wrap on mobile; `md:whitespace-nowrap`
-                     keeps the single-line look on tablet+. `break-words` is
-                     the safety net for ultra-narrow viewports (<320px). */
-                  className="block font-display font-medium leading-[1.1] md:leading-[1.05] tracking-[-0.025em] text-white text-balance break-words md:whitespace-nowrap [text-shadow:0_2px_30px_rgba(120,50,0,0.25)]"
+                  className="block font-display font-medium leading-[0.8] tracking-[-0.03em] text-white"
                 >
-                  Sri Lanka&apos;s Creative Digital Agency
+                  Creative Digital Agency
                 </motion.span>
               </span>
-              <br />
-              <span className="word">
+              <span className="word" style={{ display: "block", marginTop: "-0.35em" }}>
                 <motion.span
                   variants={wordRise}
-                  className="block italic-display font-display font-medium tracking-[-0.03em] leading-[1.0] mt-2"
+                  className="block italic-display font-display font-medium tracking-[-0.03em] leading-[0.8] shimmer-text"
                 >
-                  {/*
-                    Each pillar word flips through brand-aligned alternates.
-                    First word in each array stays SEO-anchored (renders SSR).
-                    gradient-text-animated is applied INSIDE each flip so the
-                    background-clip:text doesn't get broken by the nested 3D
-                    transform contexts the flipper introduces.
-                  */}
-                  {[
-                    {
-                      base: "Design.",
-                      words: ["Design.", "Branding.", "Identity."],
-                    },
-                    {
-                      base: "Technology.",
-                      words: ["Technology.", "Engineering.", "Code."],
-                    },
-                    {
-                      base: "Growth.",
-                      words: ["Growth.", "Marketing.", "Performance."],
-                    },
-                  ].map((p, i) => (
-                    <motion.span
-                      key={p.base}
-                      initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.7,
-                        ease: [0.21, 0.47, 0.32, 0.98],
-                        delay: reduce ? 0 : 0.4 + i * 0.18,
-                      }}
-                      style={{ display: "inline-block", whiteSpace: "pre" }}
-                    >
-                      {i > 0 && " "}
-                      <ContainerTextFlip
-                        words={p.words}
-                        interval={2400 + i * 350}
-                        wordClassName="text-white [text-shadow:0_2px_30px_rgba(120,50,0,0.25)]"
-                      />
-                    </motion.span>
-                  ))}
+                  for Bold Brands.
                 </motion.span>
               </span>
             </h1>
             <motion.p
               variants={fadeUp}
-              className="text-[clamp(17px,1.4vw,20px)] text-ink-2 max-w-[60ch] leading-[1.55] mt-7 mx-auto"
+              className="text-[clamp(17px,1.4vw,20px)] text-ink-2 max-w-[68ch] leading-[1.55] mx-auto"
+              style={{ marginTop: "-0.4em" }}
             >
-              Uniix Studio is a creative digital agency building bold brand
-              identities, conversion-focused websites, and growth systems for
-              ambitious companies in Sri Lanka, Australia and beyond.
+              Bold brand identities, conversion-focused websites, and growth
+              systems for ambitious companies in Sri Lanka and beyond.
             </motion.p>
-            <motion.div variants={fadeUp} className="flex gap-3.5 flex-wrap justify-center mt-8">
+            <motion.div variants={fadeUp} className="flex gap-4 flex-wrap justify-center mt-8">
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
                 <Link href="/contact" className="btn btn-primary">
                   Get a Quote ↗
                 </Link>
               </motion.div>
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Link href="/portfolio" className="btn btn-ghost">
+                <Link href="/portfolio" className="btn bg-white text-ink hover:bg-white/90">
                   View Our Work
                 </Link>
               </motion.div>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 md:gap-4 mt-12 md:mt-16 w-full max-w-[960px]">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mt-16 md:mt-20 w-full max-w-[960px]">
               <motion.div
                 variants={cardRise}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
-                className="bg-brand-grad text-white rounded-lg2 p-6 md:p-7 relative overflow-hidden shadow-sm2 text-left"
+                className="bg-brand-grad text-white rounded-lg2 p-7 md:p-8 relative overflow-hidden shadow-sm2 text-left"
               >
                 <div
                   className="absolute inset-0 pointer-events-none"
@@ -182,13 +138,13 @@ export default function Hero() {
                   }}
                 />
                 <div className="relative">
-                  <div className="font-mono text-[10px] tracking-[0.18em] uppercase opacity-85 mb-3.5">
+                  <div className="font-mono text-[10px] tracking-[0.18em] uppercase opacity-85 mb-4">
                     Selected since 2022
                   </div>
                   <div className="font-display font-medium text-[44px] md:text-[56px] leading-none tracking-[-0.03em]">
                     50<span className="opacity-70">+</span>
                   </div>
-                  <div className="mt-2.5 text-[13px] leading-[1.45] text-white/90">
+                  <div className="mt-3 text-[13px] leading-[1.5] text-white/90">
                     Projects shipped across branding, web and growth.
                   </div>
                 </div>
@@ -198,15 +154,15 @@ export default function Hero() {
                 variants={cardRise}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
-                className="bg-bg-paper border border-line rounded-lg2 p-6 md:p-7 shadow-sm2 text-left"
+                className="bg-bg-paper border border-line rounded-lg2 p-7 md:p-8 shadow-sm2 text-left"
               >
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-3.5">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-4">
                   Avg. growth
                 </div>
                 <div className="font-display font-medium text-[44px] md:text-[56px] leading-none tracking-[-0.03em] gradient-text">
                   3×
                 </div>
-                <div className="mt-2.5 text-[13px] leading-[1.45] text-ink-2">
+                <div className="mt-3 text-[13px] leading-[1.5] text-ink-2">
                   Average traffic lift in 90 days post-launch.
                 </div>
               </motion.div>
@@ -215,15 +171,15 @@ export default function Hero() {
                 variants={cardRise}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
-                className="bg-bg-paper border border-line rounded-lg2 p-6 md:p-7 shadow-sm2 text-left"
+                className="bg-bg-paper border border-line rounded-lg2 p-7 md:p-8 shadow-sm2 text-left"
               >
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-3.5">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-2 mb-4">
                   Client retention
                 </div>
                 <div className="font-display font-medium text-[44px] md:text-[56px] leading-none tracking-[-0.03em] gradient-text">
                   92<span className="opacity-70">%</span>
                 </div>
-                <div className="mt-2.5 text-[13px] leading-[1.45] text-ink-2">
+                <div className="mt-3 text-[13px] leading-[1.5] text-ink-2">
                   Of clients return for a second engagement.
                 </div>
               </motion.div>
