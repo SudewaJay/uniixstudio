@@ -38,7 +38,7 @@ export default function Hero() {
   const initial = reduce ? "show" : "hidden";
 
   return (
-    <section className="pt-24 pb-20 md:pt-36 md:pb-28 relative overflow-hidden">
+    <section className="pt-32 pb-20 md:pt-36 md:pb-28 relative overflow-hidden">
       <HeroSilkBackground />
       <div className="wrap relative z-10">
         <motion.div
@@ -49,7 +49,7 @@ export default function Hero() {
           {/* Scarcity status — replaces the redundant location eyebrow */}
           <motion.div
             variants={fadeUp}
-            className="hidden md:flex items-center justify-center mb-12"
+            className="flex items-center justify-center mb-8 md:mb-12"
           >
             <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-2 border border-line rounded-full px-3.5 py-1.5 bg-white backdrop-blur-sm">
               <span className="status-dot" />
