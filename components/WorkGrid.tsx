@@ -1,29 +1,23 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { projects } from "@/lib/content";
+import { projects as legacyProjects } from "@/lib/content";
+import type { Project } from "@/lib/projects";
 import Reveal from "./Reveal";
-
-type Project = (typeof projects)[number];
 
 function WorkCard({ p }: { p: Project }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
 
-  // Track scroll progress as the card moves through the viewport.
-  // start: card top hits viewport bottom (0)
-  // end:   card bottom hits viewport top   (1)
   const { scrollYProgress } = useScroll({
     target: cardRef,
     offset: ["start end", "end start"],
   });
 
-  // Big background letter drifts UP as you scroll down — parallax depth.
   const bigY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [80, -80]);
-  // Foreground content drifts down very slightly — counter-parallax for separation.
   const fgY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-12, 12]);
-  // Subtle scale on the big letter for depth.
   const bigScale = useTransform(scrollYProgress, [0, 0.5, 1], reduce ? [1, 1, 1] : [1.05, 1.0, 1.05]);
 
   return (
@@ -34,7 +28,6 @@ function WorkCard({ p }: { p: Project }) {
         aspectRatio: p.feature ? "16/10" : "4/3",
       }}
     >
-      {/* Cover image — full-bleed background */}
       {p.coverImage && (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
@@ -46,7 +39,6 @@ function WorkCard({ p }: { p: Project }) {
         />
       )}
 
-      {/* Legibility overlay */}
       {p.coverImage && (
         <div
           aria-hidden
@@ -109,43 +101,75 @@ function WorkCard({ p }: { p: Project }) {
   );
 }
 
-export default function WorkGrid({ limit }: { limit?: number }) {
-  const items = limit ? projects.slice(0, limit) : projects;
+export default function WorkGrid({
+  items,
+  limit,
+}: {
+  items?: Project[];
+  limit?: number;
+}) {
+  // Fallback to legacy projects (with hasDetail:false) when no items prop
+  // is provided — keeps server-less consumers (e.g. marketing pages) working.
+  const source: Project[] =
+    items ??
+    (legacyProjects.map((p) => ({ ...p, hasDetail: false })) as Project[]);
+  const list = limit ? source.slice(0, limit) : source;
 
   return (
     <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-      {items.map((p, i) => (
-        <Reveal
-          key={p.slug}
-          delay={(i % 3) as 0 | 1 | 2}
-          className={`work-card group cursor-pointer ${
-            p.feature ? "md:col-span-2" : ""
-          }`}
-        >
-          <WorkCard p={p} />
+      {list.map((p, i) => {
+        const card = (
+          <>
+            <WorkCard p={p} />
+            <div className="mt-5 flex justify-between gap-6 items-start">
+              <div>
+                <div
+                  className="font-display font-medium"
+                  style={{
+                    fontSize: "22px",
+                    letterSpacing: "-0.015em",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {p.title}
+                </div>
+                <div className="text-sm text-ink-mute leading-[1.55] max-w-[60ch]">
+                  {p.summary}
+                </div>
+                {p.hasDetail && (
+                  <div className="font-mono text-[11px] tracking-[0.12em] uppercase text-brand-4 mt-3 inline-flex items-center gap-1.5">
+                    Read case study
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                  </div>
+                )}
+              </div>
+              <div className="font-mono text-[11px] tracking-[0.12em] uppercase text-brand-4 whitespace-nowrap pt-1.5">
+                {p.year} · {p.overline.split(" ")[0]}
+              </div>
+            </div>
+          </>
+        );
 
-          <div className="mt-5 flex justify-between gap-6 items-start">
-            <div>
-              <div
-                className="font-display font-medium"
-                style={{
-                  fontSize: "22px",
-                  letterSpacing: "-0.015em",
-                  marginBottom: "6px",
-                }}
-              >
-                {p.title}
-              </div>
-              <div className="text-sm text-ink-mute leading-[1.55] max-w-[60ch]">
-                {p.summary}
-              </div>
-            </div>
-            <div className="font-mono text-[11px] tracking-[0.12em] uppercase text-brand-4 whitespace-nowrap pt-1.5">
-              {p.year} · {p.overline.split(" ")[0]}
-            </div>
-          </div>
-        </Reveal>
-      ))}
+        const wrapperClass = `work-card group cursor-pointer ${
+          p.feature ? "md:col-span-2" : ""
+        }`;
+
+        return (
+          <Reveal
+            key={p.slug}
+            delay={(i % 3) as 0 | 1 | 2}
+            className={wrapperClass}
+          >
+            {p.hasDetail ? (
+              <Link href={`/portfolio/${p.slug}`} className="block">
+                {card}
+              </Link>
+            ) : (
+              card
+            )}
+          </Reveal>
+        );
+      })}
     </div>
   );
 }
