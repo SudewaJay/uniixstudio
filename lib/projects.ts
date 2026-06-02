@@ -15,6 +15,25 @@ export type ProjectTestimonial = {
   role: string;
 };
 
+export type ColorSwatch = {
+  name: string;
+  hex: string;
+  role: string;
+};
+
+export type TypeFace = {
+  family: string;
+  role: "display" | "body" | "mono";
+  weights?: string;
+  sample?: string;
+  rationale?: string;
+};
+
+export type DesignPrinciple = {
+  title: string;
+  detail: string;
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -40,6 +59,12 @@ export type Project = {
   stats?: ProjectStat[];
   gallery?: string[];
   testimonial?: ProjectTestimonial;
+  /* Design rationale block (optional, rendered when present) */
+  designRationale?: string;
+  colorPalette?: ColorSwatch[];
+  typography?: TypeFace[];
+  uiPrinciples?: DesignPrinciple[];
+  motionPrinciples?: DesignPrinciple[];
   /** Long-form Markdown body from MDX. Only set for projects with a content/projects/*.mdx file. */
   body?: string;
   /** True when an MDX file exists and the detail page should be reachable. */
