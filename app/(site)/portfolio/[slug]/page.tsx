@@ -7,6 +7,7 @@ import Reveal from "@/components/Reveal";
 import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
 import { getProject, getDetailedProjects } from "@/lib/projects-fs";
+import DesignRationaleSection from "@/components/DesignRationaleSection";
 import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import { site } from "@/lib/content";
 
@@ -222,6 +223,15 @@ export default async function ProjectDetailPage({
           </div>
         </section>
       )}
+
+      {/* Design rationale: palette, type, principles */}
+      <DesignRationaleSection
+        rationale={project.designRationale}
+        palette={project.colorPalette}
+        typography={project.typography}
+        uiPrinciples={project.uiPrinciples}
+        motionPrinciples={project.motionPrinciples}
+      />
 
       {/* Long-form body (MDX) */}
       {project.body && (
