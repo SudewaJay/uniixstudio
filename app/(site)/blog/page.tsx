@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { posts } from "@/lib/blog";
+import { allPosts as posts } from "@/lib/blog-fs";
 import BlogIndexClient from "@/components/BlogIndexClient";
 
 export const metadata: Metadata = {

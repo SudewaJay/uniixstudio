@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/content";
 import { pillars, services } from "@/lib/services";
-import { posts } from "@/lib/blog";
+import { allPosts as posts } from "@/lib/blog-fs";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

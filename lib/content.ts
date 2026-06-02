@@ -4,9 +4,10 @@ export const site = {
   url: "https://uniixstudio.com",
   description:
     "Uniix Studio is a creative digital agency in Sri Lanka offering brand identity, web development, and digital marketing. We design brands that perform.",
-  email: "hello@uniixstudio.com",
-  whatsapp: "+94000000000",
-  whatsappLink: "https://wa.me/94000000000",
+  email: "hey@uniixstudio.com",
+  phone: "+94 74 0555 898",
+  whatsapp: "+94740555898",
+  whatsappLink: "https://wa.me/94740555898",
   location: "Colombo, Sri Lanka",
   socials: {
     instagram: "https://instagram.com/uniix.studio",
