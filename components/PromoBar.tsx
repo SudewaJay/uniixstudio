@@ -30,7 +30,7 @@ export default function PromoBar() {
 
   return (
     <div
-      className="fixed top-0 inset-x-0 z-[110] bg-ink text-white text-[12px]"
+      className="fixed top-0 inset-x-0 z-[110] bg-ink text-white text-[10px] sm:text-[12px]"
       style={{ height: PROMO_BAR_HEIGHT }}
     >
       <div className="wrap h-full flex items-center justify-between gap-4">
@@ -43,7 +43,7 @@ export default function PromoBar() {
               animate={{ opacity: 1, y: 0 }}
               exit={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: -14 }}
               transition={{ duration: 0.45, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="absolute inset-0 flex items-center font-mono tracking-[0.12em] uppercase text-white/85 whitespace-nowrap"
+              className="absolute inset-0 flex items-center font-mono tracking-[0.06em] sm:tracking-[0.12em] uppercase text-white/85 whitespace-nowrap"
             >
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-brand-4 mr-2.5 flex-shrink-0" />
               <span className="truncate">{TAGLINES[i]}</span>
@@ -51,7 +51,7 @@ export default function PromoBar() {
           </AnimatePresence>
         </div>
 
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
           <Link
             href={site.socials.instagram}
             target="_blank"

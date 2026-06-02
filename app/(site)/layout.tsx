@@ -59,11 +59,20 @@ export const metadata: Metadata = {
     description: site.description,
     siteName: site.name,
     locale: "en_US",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 1200,
+        alt: `${site.name} — ${site.tagline}`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.name} — ${site.tagline}`,
     description: site.description,
+    images: ["/og-image.jpg"],
   },
   robots: { index: true, follow: true },
   // Search Console verification — set env vars in Vercel to activate.

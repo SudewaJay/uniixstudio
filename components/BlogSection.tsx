@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getFeaturedPosts, formatDate } from "@/lib/blog";
+import { getFeaturedPosts, formatDate } from "@/lib/blog-fs";
 import Reveal from "./Reveal";
 
 export default function BlogSection() {

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Reveal from "@/components/Reveal";
-import { getPost, posts, formatDate } from "@/lib/blog";
+import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
 import { articleSchema, breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
