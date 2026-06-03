@@ -23,14 +23,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return { title: "Project" };
+  const canonical = `https://uniixstudio.com/portfolio/${slug}/`;
   return {
-    title: `${project.title} — Case Study`,
+    title: `${project.title} — Case Study | Uniix Studio`,
     description: project.summary,
+    alternates: { canonical },
     openGraph: {
       title: `${project.title} · ${site.name}`,
       description: project.summary,
+      url: canonical,
       images: [{ url: project.coverImage }],
       type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.title} — Case Study`,
+      description: project.summary,
+      images: [project.coverImage],
     },
   };
 }

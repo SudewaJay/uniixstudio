@@ -23,9 +23,16 @@ export async function generateMetadata({
   const { pillar: pillarSlug } = await params;
   const pillar = getPillar(pillarSlug);
   if (!pillar) return { title: "Services" };
+  const canonical = `https://uniixstudio.com/services/${pillarSlug}/`;
   return {
-    title: `${pillar.label} Services in Sri Lanka`,
+    title: `${pillar.label} Services in Sri Lanka | Uniix Studio`,
     description: pillar.description,
+    alternates: { canonical },
+    openGraph: {
+      title: `${pillar.label} Services in Sri Lanka | Uniix Studio`,
+      description: pillar.description,
+      url: canonical,
+    },
   };
 }
 

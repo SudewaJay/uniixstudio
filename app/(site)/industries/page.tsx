@@ -3,11 +3,13 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import { industries } from "@/lib/industries";
+import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Industries",
+  title: "Industries We Serve | Uniix Studio — Sri Lanka Digital Agency",
   description:
     "Tailored digital solutions across education, healthcare, e-commerce, finance, real estate, travel, corporate and SaaS — delivered globally by Uniix Studio.",
+  alternates: { canonical: site.canonical("/industries/") },
 };
 
 export default function IndustriesIndexPage() {

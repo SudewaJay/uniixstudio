@@ -19,15 +19,24 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return { title: "Article" };
+  const canonical = `https://uniixstudio.com/blog/${slug}/`;
   return {
     title: post.title,
     description: post.metaDescription,
+    alternates: { canonical },
     openGraph: {
       title: post.title,
       description: post.metaDescription,
+      url: canonical,
       images: [{ url: post.coverImage }],
       type: "article",
       publishedTime: post.publishDate,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.metaDescription,
+      images: [post.coverImage],
     },
   };
 }

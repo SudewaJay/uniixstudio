@@ -17,9 +17,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const ind = industries.find((i) => i.slug === slug);
   if (!ind) return { title: "Industry" };
+  const canonical = `https://uniixstudio.com/industries/${slug}/`;
   return {
-    title: ind.name,
+    title: `${ind.name} — Digital Agency for ${ind.name} | Uniix Studio`,
     description: ind.description,
+    alternates: { canonical },
+    openGraph: {
+      title: `${ind.name} | Uniix Studio`,
+      description: ind.description,
+      url: canonical,
+    },
   };
 }
 

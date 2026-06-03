@@ -5,9 +5,10 @@ import Reveal from "@/components/Reveal";
 import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact Uniix Studio | Hire a Creative Digital Agency in Sri Lanka",
   description:
-    "Start a project with Uniix Studio. Tell us about your goals and we'll be in touch within 24 hours. Based in Colombo, working globally.",
+    "Start a project with Uniix Studio. Tell us about your goals and we'll be in touch within 24 hours. Based in Colombo, working with brands across Sri Lanka, Australia and the UK.",
+  alternates: { canonical: site.canonical("/contact/") },
 };
 
 export default function ContactPage() {

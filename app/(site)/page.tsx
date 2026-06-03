@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Hero from "@/components/Hero";
 import LogoCloud from "@/components/LogoCloud";
@@ -11,7 +12,11 @@ import VerticalTicker from "@/components/VerticalTicker";
 import IndustriesSection from "@/components/IndustriesSection";
 import BlogSection from "@/components/BlogSection";
 import Reveal from "@/components/Reveal";
-import { whyPoints } from "@/lib/content";
+import { whyPoints, site } from "@/lib/content";
+
+export const metadata: Metadata = {
+  alternates: { canonical: site.canonical("/") },
+};
 
 export default function HomePage() {
   return (

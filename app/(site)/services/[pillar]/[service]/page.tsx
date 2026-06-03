@@ -31,12 +31,15 @@ export async function generateMetadata({
   const { pillar, service: serviceSlug } = await params;
   const service = getService(pillar, serviceSlug);
   if (!service) return { title: "Service" };
+  const canonical = `https://uniixstudio.com/services/${pillar}/${serviceSlug}/`;
   return {
     title: service.pageTitle,
     description: service.metaDescription,
+    alternates: { canonical },
     openGraph: {
       title: service.pageTitle,
       description: service.metaDescription,
+      url: canonical,
     },
   };
 }

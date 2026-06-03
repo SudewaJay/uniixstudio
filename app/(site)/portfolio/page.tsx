@@ -5,11 +5,13 @@ import WorkGrid from "@/components/WorkGrid";
 import CTASection from "@/components/CTASection";
 import Reveal from "@/components/Reveal";
 import { allProjects, getDetailedProjects } from "@/lib/projects-fs";
+import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Portfolio",
+  title: "Portfolio · Web Design, Branding & SEO Case Studies | Uniix Studio",
   description:
-    "A selection of recent brand identity, web design and digital projects from Uniix Studio — including St Luke's Medical Laboratory, Zerro, Wasana Drivers, Coventry Business Club and Terraflow.",
+    "Selected case studies from Uniix Studio — St Luke's Medical Laboratory, Zerro, Wasana Drivers, Coventry Business Club, Terraflow. Brand identity, web design and digital strategy work for ambitious brands.",
+  alternates: { canonical: site.canonical("/portfolio/") },
 };
 
 export default function PortfolioPage() {
