@@ -5,11 +5,13 @@ import ProcessSection from "@/components/ProcessSection";
 import CTASection from "@/components/CTASection";
 import Reveal from "@/components/Reveal";
 import { pillars, getServicesForPillar } from "@/lib/services";
+import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: "Services — Brand, Web, SEO & Digital Marketing | Uniix Studio Sri Lanka",
   description:
     "Brand identity, web design and development, performance marketing, SEO and digital strategy — all under one roof. Explore Uniix Studio's three service pillars: Design, Technology, Growth.",
+  alternates: { canonical: site.canonical("/services/") },
 };
 
 const pillarHeadlines: Record<string, { headline: string; accentText: string }> =

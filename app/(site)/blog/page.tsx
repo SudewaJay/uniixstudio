@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { allPosts as posts } from "@/lib/blog-fs";
 import BlogIndexClient from "@/components/BlogIndexClient";
+import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Insights",
+  title: "Digital Marketing & Design Blog Sri Lanka | Uniix Studio Insights",
   description:
-    "Field notes on design, growth, and what we've learned shipping work for global brands. The Uniix Studio blog.",
+    "Field notes on design, growth, and digital marketing — learnings from shipping work for brands across Sri Lanka, Australia and the UK. The Uniix Studio blog.",
+  alternates: { canonical: site.canonical("/blog/") },
 };
 
 export default function BlogIndexPage() {

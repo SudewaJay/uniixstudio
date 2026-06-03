@@ -3,12 +3,13 @@ import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import CTASection from "@/components/CTASection";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import { whyPoints } from "@/lib/content";
+import { whyPoints, site } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About Uniix Studio | Creative Digital Agency Team in Sri Lanka",
   description:
-    "Uniix Studio is a Colombo-based creative agency working with ambitious companies across Sri Lanka, Australia and the UK. Meet the team and our approach.",
+    "Meet the team behind Uniix Studio — a Colombo-based creative agency working with ambitious companies across Sri Lanka, Australia and the UK. Senior people, no middlemen, real results.",
+  alternates: { canonical: site.canonical("/about/") },
 };
 
 export default function AboutPage() {

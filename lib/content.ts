@@ -9,6 +9,12 @@ export const site = {
   whatsapp: "+94740555898",
   whatsappLink: "https://wa.me/94740555898",
   location: "Colombo, Sri Lanka",
+  /** Build an absolute canonical URL for a page path. */
+  canonical: (path: string = "/") => {
+    const clean = path.startsWith("/") ? path : `/${path}`;
+    const withTrail = clean.endsWith("/") ? clean : `${clean}/`;
+    return `https://uniixstudio.com${withTrail === "/" ? "/" : withTrail}`;
+  },
   socials: {
     instagram: "https://instagram.com/uniix.studio",
     facebook: "https://facebook.com/uniixstudiolk",

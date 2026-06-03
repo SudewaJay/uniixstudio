@@ -35,23 +35,22 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
+  // Default title for the homepage. Pages MUST set their own absolute
+  // title (no template-based suffix) to avoid "X · Uniix Studio · Uniix Studio"
+  // duplication that hurts CTR and SEO.
   title: {
     default: `${site.name} | Creative Design & Digital Agency in Sri Lanka`,
-    template: `%s · ${site.name}`,
+    template: `%s`,
   },
   description: site.description,
-  keywords: [
-    "creative agency sri lanka",
-    "web design colombo",
-    "branding agency sri lanka",
-    "digital marketing colombo",
-    "ui ux design sri lanka",
-    "seo agency sri lanka",
-    "next.js development sri lanka",
-  ],
+  // NOTE: meta keywords removed sitewide — Google has ignored this tag since
+  // 2009 and identical sitewide keywords are a templated-metadata smell.
   authors: [{ name: site.name }],
   creator: site.name,
-  alternates: { canonical: "/" },
+  // NOTE: Canonical is intentionally NOT set at the layout level — if it
+  // were, every child page would inherit it and Google would treat them
+  // all as duplicates of "/". Each page sets its own canonical via its
+  // metadata export or generateMetadata().
   openGraph: {
     type: "website",
     url: site.url,
