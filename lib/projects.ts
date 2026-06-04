@@ -34,6 +34,70 @@ export type DesignPrinciple = {
   detail: string;
 };
 
+export type TechItem = {
+  name: string;
+  category?: string;
+  url?: string;
+};
+
+export type Wireframe = {
+  src: string;
+  caption?: string;
+  alt?: string;
+};
+
+export type NarrativeBlock =
+  | {
+      kind: "brief";
+      eyebrow?: string;
+      headline: string;
+      lead?: string;
+      problems: Array<{ title: string; body: string }>;
+      footnote?: string;
+    }
+  | {
+      kind: "approach";
+      eyebrow?: string;
+      headline: string;
+      pullQuote: string;
+      proofs: Array<{ claim: string; evidence: string }>;
+    }
+  | {
+      kind: "ia";
+      eyebrow?: string;
+      headline: string;
+      lead?: string;
+      quadrants: Array<{
+        label: string;
+        title: string;
+        description: string;
+        query: string;
+      }>;
+    }
+  | {
+      kind: "pillars";
+      eyebrow?: string;
+      headline: string;
+      lead?: string;
+      items: Array<{ title: string; body: string }>;
+    }
+  | {
+      kind: "outcome";
+      eyebrow?: string;
+      headline: string;
+      stats: Array<{ value: string; label: string; body?: string }>;
+      closing?: string;
+    };
+
+export type ContentBlock = {
+  heading: string;
+  body: string;
+  image?: string;
+  imageAlt?: string;
+  /** When "right", image renders on the right side at md+ breakpoints. Default "left". */
+  imagePosition?: "left" | "right";
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -65,6 +129,14 @@ export type Project = {
   typography?: TypeFace[];
   uiPrinciples?: DesignPrinciple[];
   motionPrinciples?: DesignPrinciple[];
+  /* Tech stack, wireframes, and narrative blocks (Eight25-style additions) */
+  techStack?: TechItem[];
+  wireframes?: Wireframe[];
+  contentBlocks?: ContentBlock[];
+  /** Structured, interactive narrative — replaces the MDX body when present. */
+  narrative?: NarrativeBlock[];
+  /** Opt-in: overlay the hero title on the cover image instead of stacking them. */
+  heroOverlay?: boolean;
   /** Long-form Markdown body from MDX. Only set for projects with a content/projects/*.mdx file. */
   body?: string;
   /** True when an MDX file exists and the detail page should be reachable. */

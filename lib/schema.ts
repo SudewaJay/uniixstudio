@@ -11,6 +11,7 @@
 import { site } from "@/lib/content";
 import type { BlogPost } from "@/lib/blog";
 import type { Service, Pillar } from "@/lib/services";
+import type { Project } from "@/lib/projects";
 
 const SITE_URL = site.url.replace(/\/$/, "");
 const LOGO_URL = `${SITE_URL}/uniix-logo.svg`;
@@ -140,6 +141,39 @@ export function faqPageSchema(faqs: Array<{ question: string; answer: string }>)
         text: f.answer,
       },
     })),
+  };
+}
+
+/** Portfolio case study — CreativeWork covers process, tech, and images. */
+export function creativeWorkSchema(project: Project) {
+  const pageUrl = `${SITE_URL}/portfolio/${project.slug}/`;
+  const images = [
+    project.coverImage,
+    ...(project.gallery ?? []),
+    ...((project.wireframes ?? []).map((w) => w.src)),
+  ].filter(Boolean);
+  const keywords = [
+    ...(project.services ?? []),
+    ...((project.techStack ?? []).map((t) => t.name)),
+    project.industry,
+  ]
+    .filter(Boolean)
+    .join(", ");
+  return {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    headline: project.headline,
+    description: project.summary,
+    url: pageUrl,
+    image: images,
+    dateCreated: project.year,
+    inLanguage: "en",
+    creator: { "@id": `${SITE_URL}/#organization` },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    about: project.industry,
+    keywords: keywords || undefined,
+    mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
   };
 }
 
