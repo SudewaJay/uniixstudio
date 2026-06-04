@@ -15,7 +15,8 @@ import {
   WireframeGridMotion,
   HeroOverlayMotion,
 } from "@/components/PortfolioMotion";
-import { breadcrumbSchema, creativeWorkSchema, schemaGraph } from "@/lib/schema";
+import { breadcrumbSchema, creativeWorkSchema, faqPageSchema, schemaGraph } from "@/lib/schema";
+import { resolveServiceLinks, getServiceUrl } from "@/lib/service-links";
 import { site } from "@/lib/content";
 
 export function generateStaticParams() {
@@ -64,6 +65,8 @@ export default async function ProjectDetailPage({
     .filter((p) => p.slug !== slug)
     .slice(0, 3);
 
+  const relatedServices = resolveServiceLinks(project.services);
+
   const pageSchema = schemaGraph(
     breadcrumbSchema([
       { name: "Home", url: site.url },
@@ -71,6 +74,9 @@ export default async function ProjectDetailPage({
       { name: project.title, url: `${site.url}/portfolio/${project.slug}` },
     ]),
     creativeWorkSchema(project),
+    ...(project.faqs && project.faqs.length > 0
+      ? [faqPageSchema(project.faqs)]
+      : []),
   );
 
   return (
@@ -175,9 +181,23 @@ export default async function ProjectDetailPage({
                 Services
               </div>
               <ul className="flex flex-col gap-1.5 text-[15px] text-ink leading-[1.4]">
-                {project.services.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
+                {project.services.map((s) => {
+                  const href = getServiceUrl(s);
+                  return (
+                    <li key={s}>
+                      {href ? (
+                        <Link
+                          href={href}
+                          className="hover:text-brand-4 transition-colors underline decoration-line decoration-1 underline-offset-[3px] hover:decoration-brand-4"
+                        >
+                          {s}
+                        </Link>
+                      ) : (
+                        s
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </Reveal>
           )}
@@ -384,6 +404,80 @@ export default async function ProjectDetailPage({
                 {project.testimonial.name} · {project.testimonial.role}
               </div>
             </Reveal>
+          </div>
+        </section>
+      )}
+
+      {/* FAQ — visible Q/A pairs + FAQPage JSON-LD attached above */}
+      {project.faqs && project.faqs.length > 0 && (
+        <section className="py-20 md:py-28 bg-bg-warm" aria-labelledby="faq-heading">
+          <div className="wrap max-w-[860px] mx-auto">
+            <Reveal>
+              <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-brand-4 mb-3">
+                Frequently asked
+              </div>
+              <h2
+                id="faq-heading"
+                className="font-display font-medium mb-10 md:mb-14"
+                style={{ fontSize: "clamp(28px,3.5vw,48px)", letterSpacing: "-0.02em" }}
+              >
+                Questions about this project
+              </h2>
+            </Reveal>
+            <dl className="flex flex-col divide-y divide-line border-y border-line">
+              {project.faqs.map((f, i) => (
+                <Reveal key={f.question} delay={(i % 4) as 0 | 1 | 2 | 3}>
+                  <div className="py-6 md:py-7">
+                    <dt
+                      className="font-display font-medium leading-[1.3]"
+                      style={{ fontSize: "clamp(18px,1.6vw,22px)", letterSpacing: "-0.01em" }}
+                    >
+                      {f.question}
+                    </dt>
+                    <dd className="text-[15px] md:text-[16px] text-ink-2 leading-[1.65] mt-3">
+                      {f.answer}
+                    </dd>
+                  </div>
+                </Reveal>
+              ))}
+            </dl>
+          </div>
+        </section>
+      )}
+
+      {/* Related services — internal-link funnel into service tree */}
+      {relatedServices.length > 0 && (
+        <section className="py-16 md:py-20 border-t border-line">
+          <div className="wrap">
+            <Reveal>
+              <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-brand-4 mb-3">
+                Related services
+              </div>
+              <h2
+                className="font-display font-medium mb-8 md:mb-10"
+                style={{ fontSize: "clamp(22px,2.4vw,32px)", letterSpacing: "-0.02em" }}
+              >
+                Want this for your brand?
+              </h2>
+            </Reveal>
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+              {relatedServices.map((s) => (
+                <li key={s.href}>
+                  <Link
+                    href={s.href}
+                    className="group flex items-center justify-between gap-4 bg-bg-paper border border-line rounded-lg2 px-5 py-4 hover:-translate-y-0.5 hover:shadow-sm2 transition-all"
+                  >
+                    <span className="font-display text-[16px] md:text-[17px]">{s.name}</span>
+                    <span
+                      aria-hidden
+                      className="font-mono text-[12px] text-brand-4 transition-transform group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       )}
