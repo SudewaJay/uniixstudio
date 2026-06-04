@@ -6,6 +6,7 @@ import Reveal from "@/components/Reveal";
 import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
 import { articleSchema, breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
+import { site } from "@/lib/content";
 
 export function generateStaticParams() {
   return posts.filter((p) => !p.isStub).map((p) => ({ slug: p.slug }));
@@ -19,7 +20,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return { title: "Article" };
-  const canonical = `https://uniixstudio.com/blog/${slug}/`;
+  const canonical = site.canonical(`/blog/${slug}/`);
   return {
     title: post.title,
     description: post.metaDescription,

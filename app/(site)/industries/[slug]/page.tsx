@@ -4,6 +4,7 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import { industries } from "@/lib/industries";
+import { site } from "@/lib/content";
 
 export function generateStaticParams() {
   return industries.map((ind) => ({ slug: ind.slug }));
@@ -17,7 +18,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const ind = industries.find((i) => i.slug === slug);
   if (!ind) return { title: "Industry" };
-  const canonical = `https://uniixstudio.com/industries/${slug}/`;
+  const canonical = site.canonical(`/industries/${slug}/`);
   return {
     title: `${ind.name} — Digital Agency for ${ind.name} | Uniix Studio`,
     description: ind.description,
