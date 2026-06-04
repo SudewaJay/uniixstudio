@@ -8,7 +8,14 @@ import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
 import { getProject, getDetailedProjects } from "@/lib/projects-fs";
 import DesignRationaleSection from "@/components/DesignRationaleSection";
-import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
+import CaseStudyNarrative from "@/components/CaseStudyNarrative";
+import {
+  TechStackMotion,
+  ContentBlockMotion,
+  WireframeGridMotion,
+  HeroOverlayMotion,
+} from "@/components/PortfolioMotion";
+import { breadcrumbSchema, creativeWorkSchema, schemaGraph } from "@/lib/schema";
 import { site } from "@/lib/content";
 
 export function generateStaticParams() {
@@ -63,56 +70,81 @@ export default async function ProjectDetailPage({
       { name: "Portfolio", url: `${site.url}/portfolio` },
       { name: project.title, url: `${site.url}/portfolio/${project.slug}` },
     ]),
+    creativeWorkSchema(project),
   );
 
   return (
     <>
       <JsonLd data={pageSchema} />
 
-      {/* Hero */}
-      <section className="pt-32 md:pt-40 pb-12 md:pb-16">
-        <div className="wrap">
-          <Reveal>
-            <Link
-              href="/portfolio"
-              className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-2 hover:text-ink transition-colors"
-            >
-              ← Portfolio
-            </Link>
-            <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-brand-4 mt-8">
-              {project.overline} · {project.year}
-            </div>
-            <h1
-              className="font-display font-medium mt-4 tracking-[-0.02em] leading-[1.05]"
-              style={{ fontSize: "clamp(40px,6vw,88px)" }}
-            >
-              {project.title}
-            </h1>
-            <p className="text-[clamp(18px,1.5vw,22px)] text-ink-2 max-w-[60ch] leading-[1.5] mt-6">
-              {project.headline}
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Cover image */}
-      {project.coverImage && (
-        <section className="pb-16 md:pb-24">
+      {/* Hero — overlay variant when heroOverlay + coverImage, else stacked */}
+      {project.heroOverlay && project.coverImage ? (
+        <section className="pt-24 md:pt-28 pb-16 md:pb-24">
           <div className="wrap">
             <Reveal>
-              <div className="relative w-full aspect-[16/9] rounded-lg2 overflow-hidden bg-bg-warm">
-                <Image
-                  src={project.coverImage}
-                  alt={`${project.title} cover`}
-                  fill
-                  priority
-                  sizes="(min-width:1024px) 1100px, 100vw"
-                  className="object-cover"
-                />
-              </div>
+              <Link
+                href="/portfolio"
+                className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-2 hover:text-ink transition-colors inline-block mb-8"
+              >
+                ← Portfolio
+              </Link>
+              <HeroOverlayMotion
+                coverImage={project.coverImage}
+                title={project.title}
+                overline={project.overline}
+                year={project.year}
+                headline={project.headline}
+                industry={project.industry}
+              />
             </Reveal>
           </div>
         </section>
+      ) : (
+        <>
+          <section className="pt-32 md:pt-40 pb-12 md:pb-16">
+            <div className="wrap">
+              <Reveal>
+                <Link
+                  href="/portfolio"
+                  className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-2 hover:text-ink transition-colors"
+                >
+                  ← Portfolio
+                </Link>
+                <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-brand-4 mt-8">
+                  {project.overline} · {project.year}
+                </div>
+                <h1
+                  className="font-display font-medium mt-4 tracking-[-0.02em] leading-[1.05]"
+                  style={{ fontSize: "clamp(40px,6vw,88px)" }}
+                >
+                  {project.title}
+                </h1>
+                <p className="text-[clamp(18px,1.5vw,22px)] text-ink-2 max-w-[60ch] leading-[1.5] mt-6">
+                  {project.headline}
+                </p>
+              </Reveal>
+            </div>
+          </section>
+
+          {project.coverImage && (
+            <section className="pb-16 md:pb-24">
+              <div className="wrap">
+                <Reveal>
+                  <div className="relative w-full aspect-[16/9] rounded-lg2 overflow-hidden bg-bg-warm">
+                    <Image
+                      src={project.coverImage}
+                      alt={`${project.title} — ${project.industry ?? "case study"} cover`}
+                      fill
+                      priority
+                      sizes="(min-width:1024px) 1100px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                </Reveal>
+              </div>
+            </section>
+          )}
+        </>
       )}
 
       {/* Meta strip — client, services, deliverables */}
@@ -166,6 +198,20 @@ export default async function ProjectDetailPage({
           )}
         </div>
       </section>
+
+      {/* Tech stack strip */}
+      {project.techStack && project.techStack.length > 0 && (
+        <section className="py-12 md:py-16 border-b border-line" aria-label="Technology stack">
+          <div className="wrap">
+            <Reveal>
+              <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-2 mb-6">
+                Built with
+              </div>
+              <TechStackMotion items={project.techStack} />
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {/* Stats */}
       {project.stats && project.stats.length > 0 && (
@@ -242,13 +288,52 @@ export default async function ProjectDetailPage({
         motionPrinciples={project.motionPrinciples}
       />
 
-      {/* Long-form body (MDX) */}
-      {project.body && (
+      {/* Side-by-side narrative blocks */}
+      {project.contentBlocks && project.contentBlocks.length > 0 && (
         <section className="py-20 md:py-28">
-          <div className="wrap max-w-[760px] mx-auto prose-blog">
+          <div className="wrap flex flex-col gap-20 md:gap-28">
+            {project.contentBlocks.map((block, i) => (
+              <ContentBlockMotion
+                key={`${block.heading}-${i}`}
+                block={block}
+                projectTitle={project.title}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Narrative (structured, interactive) — replaces MDX body when present */}
+      {project.narrative && project.narrative.length > 0 ? (
+        <CaseStudyNarrative blocks={project.narrative} />
+      ) : (
+        project.body && (
+          <section className="py-20 md:py-28">
+            <div className="wrap max-w-[760px] mx-auto prose-blog">
+              <Reveal>
+                <ReactMarkdown>{project.body}</ReactMarkdown>
+              </Reveal>
+            </div>
+          </section>
+        )
+      )}
+
+      {/* Wireframes — process gallery with captions for SEO */}
+      {project.wireframes && project.wireframes.length > 0 && (
+        <section className="py-16 md:py-24 border-y border-line" aria-label="Wireframes and process">
+          <div className="wrap">
             <Reveal>
-              <ReactMarkdown>{project.body}</ReactMarkdown>
+              <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-brand-4 mb-3">
+                Process
+              </div>
+              <h2
+                className="font-display font-medium mb-10 md:mb-14"
+                style={{ fontSize: "clamp(28px,3.5vw,48px)", letterSpacing: "-0.02em" }}
+              >
+                Wireframes
+              </h2>
             </Reveal>
+            <WireframeGridMotion items={project.wireframes} projectTitle={project.title} />
           </div>
         </section>
       )}
@@ -271,7 +356,7 @@ export default async function ProjectDetailPage({
                   <div className="relative w-full aspect-[4/3] rounded-lg2 overflow-hidden bg-bg-paper">
                     <Image
                       src={src}
-                      alt={`${project.title} — image ${i + 1}`}
+                      alt={`${project.title} ${project.industry ? `(${project.industry}) ` : ""}— selected view ${i + 1}`}
                       fill
                       sizes="(min-width:640px) 540px, 100vw"
                       className="object-cover"
