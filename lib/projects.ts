@@ -135,6 +135,8 @@ export type Project = {
   contentBlocks?: ContentBlock[];
   /** Structured, interactive narrative — replaces the MDX body when present. */
   narrative?: NarrativeBlock[];
+  /** Visible FAQ block + FAQPage JSON-LD (AEO / People-Also-Ask). */
+  faqs?: Array<{ question: string; answer: string }>;
   /** Opt-in: overlay the hero title on the cover image instead of stacking them. */
   heroOverlay?: boolean;
   /** Long-form Markdown body from MDX. Only set for projects with a content/projects/*.mdx file. */

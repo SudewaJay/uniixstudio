@@ -1,7 +1,7 @@
 export const site = {
   name: "Uniix Studio",
   tagline: "Creative Digital Agency",
-  url: "https://uniixstudio.com",
+  url: "https://www.uniixstudio.com",
   description:
     "Uniix Studio is a creative digital agency in Sri Lanka offering brand identity, web development, and digital marketing. We design brands that perform.",
   email: "hey@uniixstudio.com",
@@ -13,7 +13,7 @@ export const site = {
   canonical: (path: string = "/") => {
     const clean = path.startsWith("/") ? path : `/${path}`;
     const withTrail = clean.endsWith("/") ? clean : `${clean}/`;
-    return `https://uniixstudio.com${withTrail === "/" ? "/" : withTrail}`;
+    return `https://www.uniixstudio.com${withTrail === "/" ? "/" : withTrail}`;
   },
   socials: {
     instagram: "https://instagram.com/uniix.studio",

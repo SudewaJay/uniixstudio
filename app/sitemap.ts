@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { site } from "@/lib/content";
 import { pillars, services } from "@/lib/services";
 import { allPosts as posts } from "@/lib/blog-fs";
+import { getDetailedProjects } from "@/lib/projects-fs";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -38,10 +39,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(p.publishDate),
     }));
 
+  const portfolioRoutes = getDetailedProjects().map((p) => ({
+    path: `/portfolio/${p.slug}`,
+    priority: 0.85,
+    freq: "monthly" as const,
+  }));
+
   const all = [
     ...staticRoutes.map((r) => ({ ...r, lastModified: now })),
     ...pillarRoutes.map((r) => ({ ...r, lastModified: now })),
     ...serviceRoutes.map((r) => ({ ...r, lastModified: now })),
+    ...portfolioRoutes.map((r) => ({ ...r, lastModified: now })),
     ...blogRoutes,
   ];
 

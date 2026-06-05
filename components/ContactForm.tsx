@@ -28,38 +28,46 @@ export default function ContactForm() {
     service: "",
     budget: "",
     message: "",
+    /** Honeypot — bots fill every field, humans never see this. */
+    website: "",
   });
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const update = <K extends keyof typeof form>(key: K, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setSubmitting(true);
-    // For production, replace this with a fetch() to /api/contact (a Next.js
-    // route handler that sends via Resend, Postmark, etc.). For now we open
-    // the user's mail client with all fields pre-filled.
-    const subject = `New project enquiry — ${form.name || "Uniix Studio website"}`;
-    const body = [
-      `Name: ${form.name}`,
-      `Email: ${form.email}`,
-      `Company: ${form.company || "—"}`,
-      `Service: ${form.service || "—"}`,
-      `Budget: ${form.budget || "—"}`,
-      "",
-      "Message:",
-      form.message,
-    ].join("\n");
-    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
-    // Brief delay so the button disabled state is visible before success screen
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+      if (!res.ok || !data.ok) {
+        setError(
+          data.error ??
+            "Could not send right now. Please email us at hey@uniixstudio.com.",
+        );
+        setSubmitting(false);
+        return;
+      }
       setSent(true);
-    }, 400);
+    } catch {
+      setError(
+        "Network error — please try again, or email us directly at hey@uniixstudio.com.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (sent) {
@@ -102,6 +110,37 @@ export default function ContactForm() {
       onSubmit={onSubmit}
       className="bg-bg-paper border border-line rounded-lg2 p-8 md:p-12 flex flex-col gap-6"
     >
+      {/* Honeypot — hidden from humans, catches naive bots */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          left: "-10000px",
+          width: 1,
+          height: 1,
+          overflow: "hidden",
+        }}
+      >
+        <label htmlFor="contact-website">Website (leave blank)</label>
+        <input
+          id="contact-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={form.website}
+          onChange={(e) => update("website", e.target.value)}
+        />
+      </div>
+
+      {error && (
+        <div
+          role="alert"
+          className="bg-red-50 border border-red-200 text-red-800 rounded-lg2 px-4 py-3 text-[14px]"
+        >
+          {error}
+        </div>
+      )}
+
       <div className="grid md:grid-cols-2 gap-6">
         <Field
           label="Your name"

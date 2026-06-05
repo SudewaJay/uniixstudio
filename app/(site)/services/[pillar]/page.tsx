@@ -10,6 +10,7 @@ import {
 } from "@/lib/services";
 import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
+import { site } from "@/lib/content";
 
 export function generateStaticParams() {
   return pillars.map((p) => ({ pillar: p.slug }));
@@ -23,7 +24,7 @@ export async function generateMetadata({
   const { pillar: pillarSlug } = await params;
   const pillar = getPillar(pillarSlug);
   if (!pillar) return { title: "Services" };
-  const canonical = `https://uniixstudio.com/services/${pillarSlug}/`;
+  const canonical = site.canonical(`/services/${pillarSlug}/`);
   return {
     title: `${pillar.label} Services in Sri Lanka | Uniix Studio`,
     description: pillar.description,

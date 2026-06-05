@@ -18,6 +18,7 @@ import {
   schemaGraph,
 } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
+import { site } from "@/lib/content";
 
 export function generateStaticParams() {
   return services.map((s) => ({ pillar: s.pillar, service: s.slug }));
@@ -31,7 +32,7 @@ export async function generateMetadata({
   const { pillar, service: serviceSlug } = await params;
   const service = getService(pillar, serviceSlug);
   if (!service) return { title: "Service" };
-  const canonical = `https://uniixstudio.com/services/${pillar}/${serviceSlug}/`;
+  const canonical = site.canonical(`/services/${pillar}/${serviceSlug}/`);
   return {
     title: service.pageTitle,
     description: service.metaDescription,

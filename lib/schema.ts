@@ -171,7 +171,22 @@ export function creativeWorkSchema(project: Project) {
     inLanguage: "en",
     creator: { "@id": `${SITE_URL}/#organization` },
     publisher: { "@id": `${SITE_URL}/#organization` },
-    about: project.industry,
+    about: project.client
+      ? {
+          "@type": "Organization",
+          name: project.client,
+          ...(project.url ? { url: project.url } : {}),
+          ...(project.industry ? { industry: project.industry } : {}),
+          ...(project.location
+            ? {
+                address: {
+                  "@type": "PostalAddress",
+                  addressLocality: project.location,
+                },
+              }
+            : {}),
+        }
+      : project.industry,
     keywords: keywords || undefined,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
   };
