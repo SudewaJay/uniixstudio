@@ -25,6 +25,8 @@ export type BlogPost = {
   ctaBlock: string;
   /** Flag for posts under 200 words that need regeneration */
   isStub: boolean;
+  /** Optional FAQ block — rendered visibly + emitted as FAQPage JSON-LD for AEO */
+  faqs?: { question: string; answer: string }[];
 };
 
 export const posts: BlogPost[] = [

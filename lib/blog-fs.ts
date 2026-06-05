@@ -17,6 +17,7 @@ type Frontmatter = {
   coverImage?: string;
   author?: { name?: string; role?: string; initial?: string };
   ctaBlock?: string;
+  faqs?: { question: string; answer: string }[];
 };
 
 function readMdxPosts(): BlogPost[] {
@@ -58,16 +59,23 @@ function readMdxPosts(): BlogPost[] {
       body: content,
       ctaBlock: fm.ctaBlock ?? "",
       isStub: words < 200,
+      faqs: fm.faqs,
     } satisfies BlogPost;
   });
 }
 
 const mdxPosts = readMdxPosts();
 
-/** All posts: filesystem MDX (newest first) + Python-generated posts. */
-export const allPosts: BlogPost[] = [...mdxPosts, ...generatedPosts].sort(
-  (a, b) => +new Date(b.publishDate) - +new Date(a.publishDate),
-);
+/**
+ * All posts: MDX files override generated posts by slug (so a hand-written
+ * MDX with the same slug as a stub replaces the stub entirely), then sorted
+ * newest-first.
+ */
+const mdxSlugs = new Set(mdxPosts.map((p) => p.slug));
+export const allPosts: BlogPost[] = [
+  ...mdxPosts,
+  ...generatedPosts.filter((p) => !mdxSlugs.has(p.slug)),
+].sort((a, b) => +new Date(b.publishDate) - +new Date(a.publishDate));
 
 export function getPost(slug: string): BlogPost | undefined {
   return allPosts.find((p) => p.slug === slug);

@@ -4,7 +4,12 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Reveal from "@/components/Reveal";
 import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
-import { articleSchema, breadcrumbSchema, schemaGraph } from "@/lib/schema";
+import {
+  articleSchema,
+  breadcrumbSchema,
+  faqPageSchema,
+  schemaGraph,
+} from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import { site } from "@/lib/content";
 import { ogImageUrl, ogImageMeta } from "@/lib/og-image";
@@ -61,14 +66,18 @@ export default async function BlogPostPage({
     .filter((p) => !p.isStub && p.slug !== slug)
     .slice(0, 3);
 
-  const pageSchema = schemaGraph(
+  const schemas: object[] = [
     articleSchema(post),
     breadcrumbSchema([
       { name: "Home", url: "/" },
       { name: "Insights", url: "/blog/" },
       { name: post.title, url: `/blog/${post.slug}/` },
     ]),
-  );
+  ];
+  if (post.faqs && post.faqs.length > 0) {
+    schemas.push(faqPageSchema(post.faqs));
+  }
+  const pageSchema = schemaGraph(...schemas);
 
   return (
     <article>
@@ -199,6 +208,38 @@ export default async function BlogPostPage({
           </div>
         </div>
       </section>
+
+      {/* FAQ */}
+      {post.faqs && post.faqs.length > 0 && (
+        <section className="pb-20 md:pb-28">
+          <div className="wrap">
+            <div className="max-w-[68ch] mx-auto">
+              <Reveal>
+                <h2
+                  className="font-display font-medium text-ink mb-8 leading-[1.15] tracking-[-0.02em]"
+                  style={{ fontSize: "clamp(28px,3.2vw,40px)" }}
+                >
+                  Frequently asked questions
+                </h2>
+              </Reveal>
+              <dl className="flex flex-col gap-6">
+                {post.faqs.map((f, i) => (
+                  <Reveal key={f.question} delay={(i % 3) as 0 | 1 | 2}>
+                    <div className="border-t border-line pt-6">
+                      <dt className="font-display font-medium text-ink text-[20px] leading-[1.3] tracking-[-0.01em] mb-3">
+                        {f.question}
+                      </dt>
+                      <dd className="text-[17px] leading-[1.7] text-ink-2">
+                        {f.answer}
+                      </dd>
+                    </div>
+                  </Reveal>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA block */}
       {post.ctaBlock && (
