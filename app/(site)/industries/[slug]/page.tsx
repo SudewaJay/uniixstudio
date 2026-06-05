@@ -10,6 +10,9 @@ export function generateStaticParams() {
   return industries.map((ind) => ({ slug: ind.slug }));
 }
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 export async function generateMetadata({
   params,
 }: {

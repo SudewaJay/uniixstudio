@@ -1,0 +1,116 @@
+---
+title: "Mobile App vs Web App in 2026: Which Does Your Sri Lankan Business Need?"
+slug: "mobile-app-vs-web-app-which-does-your-business-need"
+excerpt: "A native mobile app costs 5-10× more to build and maintain than a web app — and most Sri Lankan businesses don't need one. Here's the decision framework we use at Uniix Studio."
+metaDescription: "Mobile app vs web app for Sri Lankan businesses in 2026: real costs, build timelines, and a clear decision framework. PWA, native, or web — what your business actually needs."
+primaryKeyword: "mobile app vs web app"
+category: "Technology"
+publishDate: "2026-05-07"
+coverImage: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1600&q=80&auto=format&fit=crop"
+author:
+  name: "Sudewa Jayanath"
+  role: "Founder · Uniix Studio"
+  initial: "S"
+ctaBlock: "Stuck between a mobile app and a web app? Uniix Studio's tech team will scope the right build for your goal, not the most expensive one."
+faqs:
+  - question: "What's the difference between a mobile app and a web app?"
+    answer: "A mobile app is installed from the App Store or Play Store and lives on the device — it can use the camera, GPS, push notifications, and offline storage natively. A web app runs in a browser at a URL — no install, instant access, indexable by Google, and works on any device. A Progressive Web App (PWA) is a web app that behaves like a mobile app for most practical purposes."
+  - question: "How much does a mobile app cost in Sri Lanka in 2026?"
+    answer: "A simple native mobile app (iOS + Android) built in Sri Lanka in 2026 costs LKR 800,000–2,500,000 for an MVP. A complex marketplace or finance app with backend, payments, admin and analytics ranges LKR 3,500,000–12,000,000+. Add LKR 80,000–300,000/month for maintenance, store fees, and post-launch updates."
+  - question: "How much does a web app cost in Sri Lanka in 2026?"
+    answer: "A simple web app or SaaS MVP built in Sri Lanka in 2026 costs LKR 400,000–1,500,000. A complex multi-tenant platform with auth, billing, dashboards and integrations ranges LKR 2,000,000–8,000,000. Hosting and infrastructure typically run LKR 20,000–150,000/month."
+  - question: "Should I build a Progressive Web App (PWA) instead?"
+    answer: "For most Sri Lankan businesses that don't need camera, biometric login, or offline-first features, a PWA delivers 80% of the mobile-app experience at 30% of the cost. It installs to the home screen, runs full-screen, supports push notifications on Android, and indexes on Google. Start here unless you have a specific reason not to."
+  - question: "If I only have budget for one, which should I build first?"
+    answer: "Build the web app first. It's cheaper, faster to ship, indexable by Google for SEO, and gives you a working product that you can validate before committing to a native app. The web app teaches you what users actually do; that data then makes the eventual native app dramatically better."
+---
+
+Every other founder we meet in Colombo asks the same question within the first 20 minutes: *"Should we build an app?"* It's a sensible question — phones outnumber laptops in Sri Lanka by a wide margin, and "app" has become shorthand for "real digital business." But the **mobile app vs web app** decision is rarely as obvious as it sounds. The wrong choice can cost a business LKR 2-5 million it didn't need to spend, or leave 30% of the customer base unable to use the product. This guide is the framework we use at Uniix Studio when a client asks the question — built from real builds we've shipped, not theory.
+
+> **Quick answer:** For most Sri Lankan businesses in 2026, a **web app (or PWA)** is the right answer for v1. Build a native mobile app only when the product genuinely needs camera, biometric login, offline-first, or push-notification-driven engagement loops — not just because "everyone has apps."
+
+## What is a mobile app vs a web app, in plain terms
+
+**Native mobile app** — built specifically for iOS (Swift) and/or Android (Kotlin). Installed from the App Store or Play Store. Lives on the device with its own icon. Can access the camera, GPS, Bluetooth, biometric sensors, push notifications, and store data offline. Two separate codebases (iOS + Android) unless you use cross-platform tools like Flutter or React Native.
+
+**Web app** — runs in a browser at a URL. No download. Works on every phone and desktop with a modern browser. Built once with one codebase (Next.js, React, Vue, etc.). Google can index it. Updates ship instantly without an app-store review.
+
+**Progressive Web App (PWA)** — a web app with extra capabilities. Can be "installed" to the home screen with an icon. Runs full-screen without browser chrome. Supports push notifications (Android, partially iOS). Works offline if designed for it. Costs roughly the same as a web app, captures most of the mobile-app feel.
+
+| | Native app | Web app | PWA |
+|---|---|---|---|
+| Install required | Yes | No | Optional |
+| Indexable by Google | No | Yes | Yes |
+| App Store / Play Store visibility | Yes | No | No |
+| Camera, GPS, Bluetooth | Full | Limited | Limited |
+| Push notifications | Yes | No | Android: yes / iOS: limited |
+| Offline-first | Yes | No | Yes (if designed for it) |
+| Build cost (Sri Lanka MVP) | LKR 800k–2.5M | LKR 400k–1.5M | LKR 400k–1.5M |
+| Time to ship | 4-6 months | 2-4 months | 2-4 months |
+| Update cycle | App Store review (1-7 days) | Instant | Instant |
+
+## When you actually need a native mobile app
+
+A native mobile app is the right call when **any one** of these is true:
+
+- **You need camera-driven workflows.** Document scanning, QR check-in, AR overlays, computer vision. Web access to the camera exists but it's clunky and inconsistent across browsers.
+- **You need biometric login.** Face ID, Touch ID, fingerprint unlock. Critical for finance, healthcare, and any high-trust account access.
+- **You need real offline functionality.** Field service apps, logistics, rural-area apps where connectivity is unreliable.
+- **Push-notification-driven engagement is core to the product.** Ride-hailing, on-demand delivery, real-time alerts. iOS PWA push is still limited in 2026.
+- **You need to ship in the App Store / Play Store.** Some businesses (delivery, fintech, regulated industries) lose credibility without a store presence — even if the app does little a website couldn't.
+
+If none of those apply, you almost certainly don't need a native app yet.
+
+## When a web app (or PWA) is the smarter call
+
+Five concrete signals that point to web app first:
+
+1. **Your business is discovery-led.** A new customer should find you on Google, not in the App Store. SEO is exclusive to web. Sri Lankan e-commerce, services, agencies, marketplaces, content businesses — all web-first.
+2. **You're testing a hypothesis.** Validating product-market fit on the cheap. Web ships in weeks, not months. Iteration cost is near-zero compared to app store cycles.
+3. **Your users include desktop.** B2B SaaS, internal tools, admin dashboards, school management, accounting — desktop matters. Web wins by default.
+4. **Updates need to ship daily.** Pricing changes, content updates, A/B tests, bug fixes. Web ships in minutes; app store review takes 1-7 days.
+5. **Your budget is under LKR 3M.** A native app at MVP quality below this number is rare in Sri Lanka. A web app at the same quality is routine.
+
+## Real Sri Lankan examples
+
+We've shipped both. Where each made sense:
+
+- **St Luke's Medical Laboratory** — web app / website. Patients find the lab via Google search ("blood test Ja-Ela"). A native app would have zero discovery and added friction; the web build with strong SEO is exactly the right shape.
+- **RentMyCar.lk** — web app / marketplace. Tourist demand is discovery-driven; supply needs an indexable surface. A native app comes later, once supply is large enough to make push-notification engagement worth the build.
+- **A hypothetical food-delivery startup** — native app, after a web app phase. Push notifications, real-time order tracking, store presence (parity with PickMe Foods, UberEats) all matter. But start with a web MVP to test the unit economics before committing LKR 4M+ to a native build.
+
+## What about cross-platform: Flutter and React Native?
+
+If you've decided you need a native app, the next question is whether to build one codebase that ships to both iOS and Android (cross-platform) or two separate apps (true native).
+
+**Cross-platform (Flutter, React Native) — choose when:**
+- Your app's logic is mostly business-rules + standard UI components
+- You don't need bleeding-edge platform features the day they launch
+- You want one team maintaining one codebase
+
+**True native (Swift + Kotlin) — choose when:**
+- You need 60fps animations, AR, complex camera or video processing
+- Your app integrates deeply with platform-specific APIs (HealthKit, etc.)
+- You can afford two engineering tracks
+
+For most Sri Lankan businesses considering their first app, **Flutter or React Native** is the right answer. The cost savings vs true-native are 30-40%, and the user-experience gap has nearly closed in 2026.
+
+## The decision framework we use
+
+When a Uniix Studio client asks "mobile app or web app", we walk through five questions in order. The first "yes" answer decides:
+
+1. **Do you genuinely need camera / biometric / offline / real-time push?** → Yes → Native (or cross-platform). No → continue.
+2. **Is your primary customer-acquisition channel SEO or paid search?** → Yes → Web app. No → continue.
+3. **Are you validating a new business idea?** → Yes → Web app or PWA. No → continue.
+4. **Do you need to ship daily and iterate fast?** → Yes → Web app. No → continue.
+5. **Is your budget below LKR 3M for v1?** → Yes → Web app. No → consider native if the business case is clear.
+
+If none of the first four return yes, **the question is "when" not "whether" — and the answer is almost always "after the web app has validated the model."**
+
+## The honest version
+
+The mobile app industry in Sri Lanka is full of agencies pitching native apps as a default because the build is more expensive — which means a bigger invoice. Most clients we talk to who *think* they need a native app don't, at least not for v1. A well-built web app with a PWA wrapper covers 80% of the mobile-app value at 30% of the cost.
+
+Spend the saved budget on what actually drives revenue: a better landing page, a tighter onboarding, a real marketing engine. Build the native app later, with the data the web app gave you, when you can prove it'll pay for itself.
+
+That's the **mobile app vs web app** answer for most Sri Lankan businesses in 2026.
