@@ -18,6 +18,7 @@ import {
 import { breadcrumbSchema, creativeWorkSchema, faqPageSchema, schemaGraph } from "@/lib/schema";
 import { resolveServiceLinks, getServiceUrl } from "@/lib/service-links";
 import { site } from "@/lib/content";
+import { ogImageUrl, ogImageMeta } from "@/lib/og-image";
 
 export function generateStaticParams() {
   return getDetailedProjects().map((p) => ({ slug: p.slug }));
@@ -32,6 +33,8 @@ export async function generateMetadata({
   const project = getProject(slug);
   if (!project) return { title: "Project" };
   const canonical = site.canonical(`/portfolio/${slug}/`);
+  const ogImages = ogImageMeta(project.coverImage);
+  const twitterImage = ogImageUrl(project.coverImage);
   return {
     title: `${project.title} — Case Study | Uniix Studio`,
     description: project.summary,
@@ -40,14 +43,14 @@ export async function generateMetadata({
       title: `${project.title} · ${site.name}`,
       description: project.summary,
       url: canonical,
-      images: [{ url: project.coverImage }],
+      images: ogImages,
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
       title: `${project.title} — Case Study`,
       description: project.summary,
-      images: [project.coverImage],
+      images: twitterImage ? [twitterImage] : undefined,
     },
   };
 }

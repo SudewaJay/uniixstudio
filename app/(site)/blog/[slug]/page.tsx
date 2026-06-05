@@ -7,6 +7,7 @@ import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
 import { articleSchema, breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import { site } from "@/lib/content";
+import { ogImageUrl, ogImageMeta } from "@/lib/og-image";
 
 export function generateStaticParams() {
   return posts.filter((p) => !p.isStub).map((p) => ({ slug: p.slug }));
@@ -21,6 +22,8 @@ export async function generateMetadata({
   const post = getPost(slug);
   if (!post) return { title: "Article" };
   const canonical = site.canonical(`/blog/${slug}/`);
+  const ogImages = ogImageMeta(post.coverImage);
+  const twitterImage = ogImageUrl(post.coverImage);
   return {
     title: post.title,
     description: post.metaDescription,
@@ -29,7 +32,7 @@ export async function generateMetadata({
       title: post.title,
       description: post.metaDescription,
       url: canonical,
-      images: [{ url: post.coverImage }],
+      images: ogImages,
       type: "article",
       publishedTime: post.publishDate,
     },
@@ -37,7 +40,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: post.title,
       description: post.metaDescription,
-      images: [post.coverImage],
+      images: twitterImage ? [twitterImage] : undefined,
     },
   };
 }
