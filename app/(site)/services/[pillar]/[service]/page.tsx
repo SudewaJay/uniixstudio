@@ -24,6 +24,9 @@ export function generateStaticParams() {
   return services.map((s) => ({ pillar: s.pillar, service: s.slug }));
 }
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 export async function generateMetadata({
   params,
 }: {
