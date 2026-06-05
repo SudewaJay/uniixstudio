@@ -11,3 +11,4 @@ next-env.d.ts
 # Environment files (contain secrets — never commit)
 .env
 .env.production
+.env*
