@@ -3,6 +3,30 @@
 
 export type ServicePillar = "design" | "technology" | "growth";
 
+export type ServiceProcessStep = {
+  title: string;
+  detail: string;
+  duration?: string;
+};
+
+export type ServiceDeliverable = {
+  name: string;
+  description: string;
+};
+
+export type ServicePricingTier = {
+  name: string;
+  price: string;
+  summary: string;
+  includes: string[];
+  highlight?: boolean;
+};
+
+export type ServiceRelatedLink = {
+  label: string;
+  href: string;
+};
+
 export type Service = {
   slug: string;
   pillar: ServicePillar;
@@ -18,6 +42,16 @@ export type Service = {
    * emits FAQPage JSON-LD schema for AEO/PAA targeting.
    */
   faqs?: Array<{ question: string; answer: string }>;
+  /** Hero image rendered above the body. */
+  coverImage?: string;
+  /** Animated step-by-step engagement process. */
+  process?: ServiceProcessStep[];
+  /** Grid of concrete deliverables included in the engagement. */
+  deliverables?: ServiceDeliverable[];
+  /** Optional pricing tiers (renders as comparison cards). */
+  pricingTiers?: ServicePricingTier[];
+  /** Curated internal links to blog posts / other services (topic cluster). */
+  relatedReading?: ServiceRelatedLink[];
 };
 
 export type Pillar = {

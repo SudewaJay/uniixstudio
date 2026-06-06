@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/content";
-import { pillars, services } from "@/lib/services";
+import { pillars } from "@/lib/services";
+import { allServices as services } from "@/lib/services-fs";
 import { allPosts as posts } from "@/lib/blog-fs";
 import { getDetailedProjects } from "@/lib/projects-fs";
 

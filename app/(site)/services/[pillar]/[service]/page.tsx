@@ -4,13 +4,17 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
+import { pillars, getPillar } from "@/lib/services";
 import {
-  services,
-  pillars,
-  getService,
-  getPillar,
-  getServicesForPillar,
-} from "@/lib/services";
+  allServices as services,
+  getServiceFs as getService,
+  getServicesForPillarFs as getServicesForPillar,
+} from "@/lib/services-fs";
+import {
+  ServiceProcessTimeline,
+  ServiceDeliverablesGrid,
+  ServicePricingTiers,
+} from "@/components/ServiceVisuals";
 import {
   serviceSchema,
   breadcrumbSchema,
@@ -103,6 +107,24 @@ export default async function ServiceDetailPage({
         }
         lede={service.metaDescription}
       />
+
+      {/* Cover image */}
+      {service.coverImage && (
+        <section className="pb-12 md:pb-16">
+          <div className="wrap">
+            <Reveal>
+              <div className="relative w-full aspect-[16/8] rounded-3xl overflow-hidden bg-bg-warm">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={service.coverImage}
+                  alt={`${service.name} in Sri Lanka — Uniix Studio`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {/* Body */}
       <section className="pb-20 md:pb-28">
@@ -220,6 +242,56 @@ export default async function ServiceDetailPage({
           </div>
         </div>
       </section>
+
+      {/* Process timeline */}
+      {service.process && service.process.length > 0 && (
+        <ServiceProcessTimeline steps={service.process} accent={pillar.accent} />
+      )}
+
+      {/* Deliverables grid */}
+      {service.deliverables && service.deliverables.length > 0 && (
+        <ServiceDeliverablesGrid items={service.deliverables} accent={pillar.accent} />
+      )}
+
+      {/* Pricing tiers */}
+      {service.pricingTiers && service.pricingTiers.length > 0 && (
+        <ServicePricingTiers tiers={service.pricingTiers} accent={pillar.accent} />
+      )}
+
+      {/* Related reading — internal-link topic cluster */}
+      {service.relatedReading && service.relatedReading.length > 0 && (
+        <section className="py-16 md:py-20 border-t border-line">
+          <div className="wrap">
+            <Reveal>
+              <div
+                className="font-mono text-[11px] tracking-[0.22em] uppercase mb-4"
+                style={{ color: pillar.accent }}
+              >
+                Related reading
+              </div>
+              <h2
+                className="font-display font-medium mb-8 tracking-[-0.02em]"
+                style={{ fontSize: "clamp(24px,2.6vw,36px)" }}
+              >
+                Continue the thread
+              </h2>
+            </Reveal>
+            <ul className="flex flex-wrap gap-3">
+              {service.relatedReading.map((r) => (
+                <li key={r.href}>
+                  <Link
+                    href={r.href}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-bg-paper border border-line text-[14px] text-ink hover:border-brand-3 hover:text-brand-4 transition-colors"
+                  >
+                    {r.label}
+                    <span aria-hidden>→</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* FAQ — Masterplan §3.1. Renders only when faqs are populated on the service. */}
       {service.faqs && service.faqs.length > 0 && (
