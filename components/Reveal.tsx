@@ -10,9 +10,10 @@ type Props = {
   className?: string;
   /** Kept for API compatibility; rendering is always motion.div */
   as?: keyof JSX.IntrinsicElements;
+  amount?: number | "some" | "all";
 };
 
-export default function Reveal({ children, delay = 0, className }: Props) {
+export default function Reveal({ children, delay = 0, className, amount = 0.12 }: Props) {
   const reduce = useReducedMotion();
 
   if (reduce) {
@@ -24,7 +25,7 @@ export default function Reveal({ children, delay = 0, className }: Props) {
       className={clsx(className)}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -60px 0px", amount: 0.12 }}
+      viewport={{ once: true, margin: "0px 0px -60px 0px", amount }}
       transition={{
         duration: 0.65,
         delay: delay * 0.09,
@@ -35,3 +36,4 @@ export default function Reveal({ children, delay = 0, className }: Props) {
     </motion.div>
   );
 }
+

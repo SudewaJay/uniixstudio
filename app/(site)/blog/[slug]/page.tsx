@@ -146,7 +146,7 @@ export default async function BlogPostPage({
       <section className="pb-20 md:pb-28">
         <div className="wrap">
           <div className="max-w-[68ch] mx-auto prose-uniix">
-            <Reveal>
+            <Reveal amount="some">
               <ReactMarkdown
                 components={{
                   h1: ({ children }) => (
