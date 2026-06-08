@@ -39,6 +39,7 @@ export async function generateMetadata({
   const ogImages = ogImageMeta(project.coverImage);
   const twitterImage = ogImageUrl(project.coverImage);
   return {
+    metadataBase: new URL(site.url),
     title: `${project.title} — Case Study | Uniix Studio`,
     description: project.summary,
     alternates: { canonical },

@@ -3,11 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
-import {
-  pillars,
-  getPillar,
-  getServicesForPillar,
-} from "@/lib/services";
+import { pillars, getPillar } from "@/lib/services";
+import { getServicesForPillarFs as getServicesForPillar } from "@/lib/services-fs";
 import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import { site } from "@/lib/content";
@@ -29,6 +26,7 @@ export async function generateMetadata({
   if (!pillar) return { title: "Services" };
   const canonical = site.canonical(`/services/${pillarSlug}/`);
   return {
+    metadataBase: new URL(site.url),
     title: `${pillar.label} Services in Sri Lanka | Uniix Studio`,
     description: pillar.description,
     alternates: { canonical },

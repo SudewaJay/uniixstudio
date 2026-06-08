@@ -53,7 +53,6 @@ export const metadata: Metadata = {
   // metadata export or generateMetadata().
   openGraph: {
     type: "website",
-    url: site.url,
     title: `${site.name} — ${site.tagline}`,
     description: site.description,
     siteName: site.name,
@@ -101,10 +100,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
-      <head>
-        <JsonLd data={siteSchema} />
-      </head>
+      <head />
       <body className="font-sans">
+        <JsonLd data={siteSchema} />
         <a href="#main-content" className="skip-link">Skip to main content</a>
         <PromoBar />
         <Nav />

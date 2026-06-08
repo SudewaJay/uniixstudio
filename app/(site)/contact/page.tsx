@@ -3,6 +3,8 @@ import PageHeader from "@/components/PageHeader";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
 import { site } from "@/lib/content";
+import { breadcrumbSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "Contact Uniix Studio | Hire a Creative Digital Agency in Sri Lanka",
@@ -12,8 +14,14 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const crumbs = breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Contact", url: "/contact/" },
+  ]);
+
   return (
     <>
+      <JsonLd data={crumbs} />
       <PageHeader
         eyebrow="Get in touch"
         title={

@@ -41,7 +41,7 @@ export const posts: BlogPost[] = [
     publishDate: `2026-03-16`,
     wordCount: 1921,
     readTime: `9 min read`,
-    coverImage: `https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/6444367/pexels-photo-6444367.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Has your business ever felt like it’s wearing an old sarong to a modern gala? You’re there, but you don’t quite fit in. In today's dynamic Sri Lankan market, a dated brand isn't just a minor inconvenience; it's a silent killer of opportunities and client trust. If you're wondering about the **signs you need a rebrand**, you're already on the right track. Many SME owners in Sri Lanka overlook the subtle cues that their brand is holding them back, costing them valuable growth and market share.
 
@@ -161,7 +161,7 @@ Here's a general breakdown of factors influencing the cost:
     publishDate: `2026-03-19`,
     wordCount: 1572,
     readTime: `7 min read`,
-    coverImage: `https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Thinking about getting a new website for your business in Sri Lanka? You're not alone. Every day, entrepreneurs like you grapple with the same fundamental question: **how much does a website cost in Sri Lanka**? It's a critical investment, and understanding the true **website cost Sri Lanka** businesses face is essential for making an informed decision. At Uniix Studio, we believe in full transparency, which is why we're breaking down everything you need to know about web development pricing in Sri Lanka for 2026.
 
@@ -260,7 +260,7 @@ Here's why investing in quality from the start pays off:`,
     publishDate: `2026-03-23`,
     wordCount: 1628,
     readTime: `7 min read`,
-    coverImage: `https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/6476808/pexels-photo-6476808.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Every business owner in Sri Lanka dreams of standing out in a crowded market. You want your customers to remember you, trust you, and choose you over and over again. But how do you achieve that lasting impression? The answer lies in understanding **what is brand identity**. It's not just a logo or a catchy slogan; it's the sum of all visible elements that represent your company, communicating its unique personality, values, and purpose to the world. A strong brand identity is your business's visual and emotional fingerprint, ensuring consistency and recognition across every touchpoint.
 
@@ -358,7 +358,7 @@ With a well-defined brand identity, your marketing and advertising campaigns bec
     publishDate: `2026-03-26`,
     wordCount: 1878,
     readTime: `9 min read`,
-    coverImage: `https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Building a powerful online presence for your business in Sri Lanka starts with a great website. But as you begin your journey, you might hear terms like "web design" and "web development" used interchangeably. This often leads to confusion, especially for business owners planning a new website. Understanding the **web design vs web development** distinction is crucial for setting realistic expectations, managing your budget, and ultimately achieving your digital goals.
 
@@ -467,7 +467,7 @@ Simultaneously, our skilled **web developers** transform these designs into powe
     publishDate: `2026-03-30`,
     wordCount: 850,
     readTime: `4 min read`,
-    coverImage: `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Nadeesha Perera`, role: `Growth Lead`, initial: `N` },
     body: `The digital landscape in Sri Lanka is evolving at an unprecedented pace. For any business aiming to thrive, understanding and implementing effective **digital marketing Sri Lanka** strategies isn't just an advantage—it's a necessity. This comprehensive guide will equip Sri Lankan SME owners like you with the knowledge and tools to navigate the online world, attract customers, and achieve sustainable growth by 2026 and beyond. We'll explore the channels that truly work here, how to build a robust strategy, and measure your success.
 
@@ -528,7 +528,7 @@ Content marketing involves creating and distributing valuable, relevant, and con
     publishDate: `2026-04-02`,
     wordCount: 1614,
     readTime: `7 min read`,
-    coverImage: `https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `In today's fast-paced digital landscape, a seamless and intuitive user experience isn't just a luxury—it's a necessity. Understanding the **UI UX design process** is crucial for anyone looking to build a successful digital product, whether it's a mobile app, a website, or an enterprise system. This step-by-step guide from Uniix Studio will demystify the entire journey, outlining how we transform ideas into exceptional digital experiences. By following a structured UX design process, you ensure your product resonates with users, solves real problems, and delivers tangible business value.
 
@@ -639,7 +639,7 @@ This phase is critical for validating design decisions and ensuring that the fin
     publishDate: `2026-04-06`,
     wordCount: 69,
     readTime: `1 min read`,
-    coverImage: `https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Embarking on a new website project is an exciting venture for any business owner in Sri Lanka. Your website isn't just an online brochure; it's your digital storefront, your marketing hub, and often the first impression potential customers have of your brand. But with so many agencies vying for your attention, knowing **how to choose web development company** can feel overwhelming. The key lies in asking the right questions`,
     ctaBlock: `Ask Uniix Studio all 10 of these questions. We welcome every single one. Contact us today.`,
@@ -656,7 +656,7 @@ This phase is critical for validating design decisions and ensuring that the fin
     publishDate: `2026-04-09`,
     wordCount: 1412,
     readTime: `6 min read`,
-    coverImage: `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Nadeesha Perera`, role: `Growth Lead`, initial: `N` },
     body: `The pristine beaches, lush tea estates, and vibrant culture of Sri Lanka attract millions of tourists annually. Yet, many incredible hotels and resorts struggle to fill their rooms. The truth is, if your property isn't leveraging a robust **social media marketing hotels Sri Lanka** strategy, you're leaving bookings on the table. In today's digital-first world, your potential guests are scrolling through Instagram, Facebook, and TikTok long before they ever visit a booking site. This guide provides a 2026 roadmap for Sri Lankan hospitality businesses to dominate the digital landscape and convert scrolls into stays.
 
@@ -762,7 +762,7 @@ When choosing influencers:
     publishDate: `2026-04-13`,
     wordCount: 1657,
     readTime: `8 min read`,
-    coverImage: `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/270637/pexels-photo-270637.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Nadeesha Perera`, role: `Growth Lead`, initial: `N` },
     body: `Imagine your business is a hidden gem in Sri Lanka, offering incredible products or services. You know you're good, your customers love you, but new people just aren't finding you online. You've heard whispers of "SEO" or "search engine optimisation," but it sounds like a complex, technical puzzle. What exactly is it, and more importantly, **what is SEO for business** in the dynamic Sri Lankan market of 2026?
 
@@ -871,7 +871,7 @@ Generally, you can expect to start seeing noticeable improvements in your rankin
     publishDate: `2026-04-16`,
     wordCount: 2025,
     readTime: `9 min read`,
-    coverImage: `https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Building a powerful online presence is non-negotiable for businesses in Sri Lanka today. Whether you're a startup in Colombo or an established enterprise in Kandy, your website is often the first impression you make. This crucial decision often boils down to two main paths: opting for a popular Content Management System (CMS) like WordPress, or investing in a custom-built website from the ground up. Understanding the nuances of **WordPress vs custom development** is key to ensuring your digital foundation supports your business goals effectively.
 
@@ -994,13 +994,13 @@ Ultimately, the decision between **WordPress vs custom development** is a strate
     slug: `how-to-measure-digital-marketing-roi`,
     title: `How to Measure Digital Marketing ROI: A Practical 2026 Guide`,
     excerpt: `In the fast-paced digital landscape of 2026, every rupee spent on marketing needs to work harder than ever. As a business owner in Sri Lanka, you're constantly seeking growth, but how do you truly know if your…`,
-    metaDescription: `Unlock the secrets of **how to measure digital marketing ROI** for your Sri Lankan business. This guide helps you track key metrics & prove your marketing budget is working. Get started!`,
+    metaDescription: `Unlock the secrets of how to measure digital marketing ROI for your Sri Lankan business. This guide helps you track key metrics & prove your marketing budget is working. Get started!`,
     primaryKeyword: `how to measure digital marketing ROI`,
     category: `Growth`,
     publishDate: `2026-04-20`,
     wordCount: 1416,
     readTime: `6 min read`,
-    coverImage: `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/5077048/pexels-photo-5077048.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Nadeesha Perera`, role: `Growth Lead`, initial: `N` },
     body: `In the fast-paced digital landscape of 2026, every rupee spent on marketing needs to work harder than ever. As a business owner in Sri Lanka, you're constantly seeking growth, but how do you truly know if your marketing efforts are paying off? The answer lies in mastering **how to measure digital marketing ROI**. This guide will equip you with the practical knowledge and tools to confidently assess your marketing spend, moving beyond guesswork to data-driven decisions that fuel your business's success.
 
@@ -1107,7 +1107,7 @@ For businesses in Sri Lanka, setting up GA4 correctly is paramount to gaining ac
     publishDate: `2026-04-23`,
     wordCount: 1556,
     readTime: `7 min read`,
-    coverImage: `https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/6802049/pexels-photo-6802049.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `The vibrant economic landscape of Sri Lanka is continually evolving, presenting both unique opportunities and significant challenges for businesses. In this dynamic environment, a strong brand is no longer a luxury but a necessity for survival and growth. But what does the current state of branding truly look like across the island? What are the critical branding statistics Sri Lanka 2026 reveals about local businesses?
 
@@ -1197,7 +1197,7 @@ In conclusion, the branding statistics Sri Lanka 2026 reveal a landscape of both
     publishDate: `2026-04-27`,
     wordCount: 1320,
     readTime: `6 min read`,
-    coverImage: `https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `In today's digital age, establishing a strong online presence is no longer an option, but a necessity for businesses in Sri Lanka. If you're looking to expand your reach, boost sales, and connect with customers across the island and beyond, then **ecommerce website development Sri Lanka** is your strategic pathway forward. This comprehensive guide from Uniix Studio will walk you through everything you need to know to successfully launch and grow your online store by 2026, ensuring you're equipped with the insights and tools for success.
 
@@ -1270,7 +1270,7 @@ To create a compelling and functional **online shop Sri Lanka**, your website ne
     publishDate: `2026-04-30`,
     wordCount: 1427,
     readTime: `6 min read`,
-    coverImage: `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/4458339/pexels-photo-4458339.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Nadeesha Perera`, role: `Growth Lead`, initial: `N` },
     body: `In the dynamic landscape of digital business, a robust **content marketing strategy B2B** is no longer optional – it's your essential roadmap to growth. For B2B businesses aiming to generate high-quality leads and establish authority by 2026, understanding and implementing a tailored content approach is paramount. This guide from Uniix Studio, your trusted content marketing agency Sri Lanka, will equip you with the practical steps and insights needed to thrive. We’ll dive deep into creating a content strategy for business that resonates with decision-makers and drives measurable results.
 
@@ -1384,7 +1384,7 @@ At Uniix Studio, we understand that B2B buyers seek information that helps them 
     publishDate: `2026-05-04`,
     wordCount: 1354,
     readTime: `6 min read`,
-    coverImage: `https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/6207365/pexels-photo-6207365.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Imagine a truly exceptional product or service. Perhaps it's a small boutique hotel in Ella with breathtaking views, a local artisan crafting exquisite jewelry in Galle, or a tech startup in Colombo with a revolutionary app. You know your offering is top-notch, yet your business struggles to stand out, attract the right customers, or achieve the growth you envision. If this resonates with you, you're likely encountering common **branding mistakes small business** owners frequently make.
 
@@ -1465,7 +1465,7 @@ Consider a small local business`,
     publishDate: `2026-05-07`,
     wordCount: 1665,
     readTime: `8 min read`,
-    coverImage: `https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/374074/pexels-photo-374074.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `The digital landscape in Sri Lanka is evolving rapidly, making the choice between a mobile app vs web app a pivotal decision for any business. Many assume a mobile app is always superior, or that a website is "good enough." This isn't always true. The right choice depends entirely on your business goals, target audience, and desired user experience.
 
@@ -1573,7 +1573,7 @@ If your business model later demands advanced features, offline capabilities, or
     publishDate: `2026-05-11`,
     wordCount: 54,
     readTime: `1 min read`,
-    coverImage: `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Nadeesha Perera`, role: `Growth Lead`, initial: `N` },
     body: `Every business, especially here in Sri Lanka, faces a pivotal decision when it comes to digital marketing: how to best allocate a limited budget for maximum impact. In 2026, the fundamental question remains: **PPC vs SEO 2026** – which strategy will deliver the most sustainable growth and immediate returns for your unique business needs`,
     ctaBlock: `Not sure where to start? Uniix Studio growth team will build you the right strategy for your budget.`,
@@ -1590,7 +1590,7 @@ If your business model later demands advanced features, offline capabilities, or
     publishDate: `2026-05-14`,
     wordCount: 1261,
     readTime: `6 min read`,
-    coverImage: `https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/7821498/pexels-photo-7821498.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `In the vibrant, competitive market of Sri Lanka, standing out isn't just about having a great product or service – it's about having a memorable, consistent brand. But how do you ensure everyone in your team, from design to marketing, speaks the same brand language? The answer lies in a robust **brand style guide template**. This essential document is your brand's bible, outlining every visual and verbal element to ensure consistency across all touchpoints. Uniix Studio, a creative digital agency in Sri Lanka, understands this deeply. We're here to show you exactly how to craft your own in 2026, complete with a free template to kickstart your journey.
 
@@ -1695,15 +1695,15 @@ Creating your **brand style guide template** doesn't have to be an overwhelming 
   {
     id: 19,
     slug: `case-study-wasana-drivers-brand-identity`,
-    title: `** Brand Identity Case Study Sri Lanka: Uniix Studio & Wasana Drivers`,
+    title: `Brand Identity Case Study Sri Lanka: Uniix Studio & Wasana Drivers`,
     excerpt: `Imagine a business with an incredible service, deep local knowledge, and a passion for connecting travellers with the beauty of Sri Lanka. Now, imagine that same business struggling to stand out in a vibrant,…`,
-    metaDescription: `** Explore our brand identity case study from Sri Lanka, showcasing how Uniix Studio transformed Wasana Drivers from zero to a compelling tourism brand. See the results!`,
+    metaDescription: `Explore our brand identity case study from Sri Lanka, showcasing how Uniix Studio transformed Wasana Drivers from zero to a compelling tourism brand. See the results!`,
     primaryKeyword: `brand identity case study Sri Lanka`,
     category: `Design`,
     publishDate: `2026-05-18`,
     wordCount: 67,
     readTime: `1 min read`,
-    coverImage: `https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/5483069/pexels-photo-5483069.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Imagine a business with an incredible service, deep local knowledge, and a passion for connecting travellers with the beauty of Sri Lanka. Now, imagine that same business struggling to stand out in a vibrant, competitive market because it lacks a distinct visual voice. This was the precise challenge faced by Wasana Drivers, a dedicated team offering exceptional tour and transportation services across our island nation.
 
@@ -1716,13 +1716,13 @@ At Uniix`,
     slug: `uniix-studio-2026-digital-trends-report`,
     title: `Digital Trends Sri Lanka 2026: Uniix Studio Report for Businesses`,
     excerpt: `The digital landscape is shifting at an unprecedented pace, and for Sri Lankan businesses, 2026 promises to be a year of profound transformation. The choices you make today will define your success tomorrow. Are you…`,
-    metaDescription: `Uncover the essential **digital trends Sri Lanka 2026** report by Uniix Studio. Learn about AI, SGE, and more to future-proof your business strategy. Plan for success today.`,
+    metaDescription: `Uncover the essential digital trends Sri Lanka 2026 report by Uniix Studio. Learn about AI, SGE, and more to future-proof your business strategy. Plan for success today.`,
     primaryKeyword: `digital trends Sri Lanka 2026`,
     category: `Growth`,
     publishDate: `2026-05-25`,
     wordCount: 1171,
     readTime: `5 min read`,
-    coverImage: `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=80&auto=format&fit=crop`,
+    coverImage: `https://images.pexels.com/photos/4050291/pexels-photo-4050291.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
     author: { name: `Nadeesha Perera`, role: `Growth Lead`, initial: `N` },
     body: `The digital landscape is shifting at an unprecedented pace, and for Sri Lankan businesses, 2026 promises to be a year of profound transformation. The choices you make today will define your success tomorrow. Are you ready to navigate the evolving world of digital innovation?
 

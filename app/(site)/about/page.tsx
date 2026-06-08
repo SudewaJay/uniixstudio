@@ -4,6 +4,8 @@ import Reveal from "@/components/Reveal";
 import CTASection from "@/components/CTASection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import { whyPoints, site } from "@/lib/content";
+import { breadcrumbSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "About Uniix Studio | Creative Digital Agency Team in Sri Lanka",
@@ -13,8 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const crumbs = breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "About", url: "/about/" },
+  ]);
+
   return (
     <>
+      <JsonLd data={crumbs} />
       <PageHeader
         eyebrow="About Uniix Studio"
         title={

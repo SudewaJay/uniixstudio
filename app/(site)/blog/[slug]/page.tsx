@@ -33,6 +33,7 @@ export async function generateMetadata({
   const ogImages = ogImageMeta(post.coverImage);
   const twitterImage = ogImageUrl(post.coverImage);
   return {
+    metadataBase: new URL(site.url),
     title: post.title,
     description: post.metaDescription,
     alternates: { canonical },

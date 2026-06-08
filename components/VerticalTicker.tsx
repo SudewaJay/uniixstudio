@@ -40,7 +40,7 @@ const posters: Poster[] = [
  * Build a column of N posters by rotating the source list — so each column
  * shows a different sequence and the four columns never look identical.
  */
-function buildColumn(offset: number, length = 8): Poster[] {
+function buildColumn(offset: number, length = 5): Poster[] {
   return Array.from(
     { length },
     (_, i) => posters[(i + offset) % posters.length]
