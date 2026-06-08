@@ -23,6 +23,7 @@ export async function generateMetadata({
   if (!ind) return { title: "Industry" };
   const canonical = site.canonical(`/industries/${slug}/`);
   return {
+    metadataBase: new URL(site.url),
     title: `${ind.name} — Digital Agency for ${ind.name} | Uniix Studio`,
     description: ind.description,
     alternates: { canonical },

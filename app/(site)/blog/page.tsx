@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { allPosts as posts } from "@/lib/blog-fs";
 import BlogIndexClient from "@/components/BlogIndexClient";
 import { site } from "@/lib/content";
+import { breadcrumbSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Digital Marketing & Design Blog Sri Lanka | Uniix Studio Insights",
+  metadataBase: new URL(site.url),
+  title: "Digital Marketing & Design Blog Sri Lanka | Uniix Studio",
   description:
     "Field notes on design, growth, and digital marketing — learnings from shipping work for brands across Sri Lanka, Australia and the UK. The Uniix Studio blog.",
   alternates: { canonical: site.canonical("/blog/") },
@@ -13,8 +16,14 @@ export const metadata: Metadata = {
 export default function BlogIndexPage() {
   const published = posts.filter((p) => !p.isStub);
 
+  const crumbs = breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Insights", url: "/blog/" },
+  ]);
+
   return (
     <>
+      <JsonLd data={crumbs} />
       {/* Hero header — server-rendered for SEO */}
       <section className="pt-32 pb-12 md:pt-40 md:pb-16">
         <div className="wrap">

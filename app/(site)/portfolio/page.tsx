@@ -6,6 +6,8 @@ import CTASection from "@/components/CTASection";
 import Reveal from "@/components/Reveal";
 import { allProjects, getDetailedProjects } from "@/lib/projects-fs";
 import { site } from "@/lib/content";
+import { breadcrumbSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "Portfolio · Web Design, Branding & SEO Case Studies | Uniix Studio",
@@ -17,8 +19,14 @@ export const metadata: Metadata = {
 export default function PortfolioPage() {
   const caseStudies = getDetailedProjects();
 
+  const crumbs = breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Portfolio", url: "/portfolio/" },
+  ]);
+
   return (
     <>
+      <JsonLd data={crumbs} />
       <PageHeader
         eyebrow="Selected work"
         title={

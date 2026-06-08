@@ -41,6 +41,7 @@ export async function generateMetadata({
   if (!service) return { title: "Service" };
   const canonical = site.canonical(`/services/${pillar}/${serviceSlug}/`);
   return {
+    metadataBase: new URL(site.url),
     title: service.pageTitle,
     description: service.metaDescription,
     alternates: { canonical },

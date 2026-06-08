@@ -26,6 +26,7 @@ export async function generateMetadata({
   if (!pillar) return { title: "Services" };
   const canonical = site.canonical(`/services/${pillarSlug}/`);
   return {
+    metadataBase: new URL(site.url),
     title: `${pillar.label} Services in Sri Lanka | Uniix Studio`,
     description: pillar.description,
     alternates: { canonical },
