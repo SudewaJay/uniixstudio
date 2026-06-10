@@ -337,7 +337,7 @@ export default async function ProjectDetailPage({
         project.body && (
           <section className="py-20 md:py-28">
             <div className="wrap max-w-[760px] mx-auto prose-blog">
-              <Reveal>
+              <Reveal amount="some">
                 <ReactMarkdown>{project.body}</ReactMarkdown>
               </Reveal>
             </div>

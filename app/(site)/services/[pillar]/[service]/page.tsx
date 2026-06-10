@@ -133,7 +133,7 @@ export default async function ServiceDetailPage({
           <div className="grid lg:grid-cols-[1fr_280px] gap-12 lg:gap-16">
             {/* Markdown body */}
             <div className="max-w-[68ch]">
-              <Reveal>
+              <Reveal amount="some">
                 <ReactMarkdown
                   components={{
                     h1: ({ children }) => (
