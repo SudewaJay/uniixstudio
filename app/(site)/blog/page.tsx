@@ -10,7 +10,10 @@ export const metadata: Metadata = {
   title: "Digital Marketing & Design Blog Sri Lanka | Uniix Studio",
   description:
     "Field notes on design, growth, and digital marketing — learnings from shipping work for brands across Sri Lanka, Australia and the UK. The Uniix Studio blog.",
-  alternates: { canonical: site.canonical("/blog/") },
+  alternates: {
+    canonical: site.canonical("/blog/"),
+    types: { "application/rss+xml": site.canonical("/blog/rss.xml") },
+  },
 };
 
 export default function BlogIndexPage() {
