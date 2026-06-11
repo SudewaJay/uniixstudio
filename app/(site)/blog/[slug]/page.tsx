@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import Reveal from "@/components/Reveal";
 import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
 import {
@@ -148,7 +149,26 @@ export default async function BlogPostPage({
           <div className="max-w-[68ch] mx-auto prose-uniix">
             <Reveal amount="some">
               <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
                 components={{
+                  iframe: ({ src, title, ...rest }) => (
+                    <span className="block my-8 rounded-xl overflow-hidden border border-line bg-bg-warm">
+                      <span
+                        className="block relative w-full"
+                        style={{ paddingTop: "56.25%" }}
+                      >
+                        <iframe
+                          src={src}
+                          title={title ?? "Embedded video"}
+                          loading="lazy"
+                          allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                          allowFullScreen
+                          className="absolute inset-0 w-full h-full"
+                          {...rest}
+                        />
+                      </span>
+                    </span>
+                  ),
                   h1: ({ children }) => (
                     <h1
                       className="font-display font-medium text-ink mt-12 mb-6 leading-[1.1] tracking-[-0.02em]"
