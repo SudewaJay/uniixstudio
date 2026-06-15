@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import Reveal from "@/components/Reveal";
 import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
 import {
@@ -149,8 +150,46 @@ export default async function BlogPostPage({
           <div className="max-w-[68ch] mx-auto prose-uniix">
             <Reveal amount="some">
               <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
                 components={{
+                  img: ({ src, alt }) =>
+                    typeof src === "string" ? (
+                      <figure className="my-8">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={src}
+                          alt={alt ?? ""}
+                          loading="lazy"
+                          className="w-full rounded-xl border border-line bg-bg-warm"
+                        />
+                        {alt ? (
+                          <figcaption className="mt-3 text-center text-sm text-ink-2/70">
+                            {alt}
+                          </figcaption>
+                        ) : null}
+                      </figure>
+                    ) : null,
+                  table: ({ children }) => (
+                    <div className="my-8 overflow-x-auto rounded-xl border border-line">
+                      <table className="w-full border-collapse text-[15px] text-ink-2">
+                        {children}
+                      </table>
+                    </div>
+                  ),
+                  thead: ({ children }) => (
+                    <thead className="bg-bg-warm text-ink">{children}</thead>
+                  ),
+                  th: ({ children }) => (
+                    <th className="border-b border-line px-4 py-3 text-left font-semibold align-top">
+                      {children}
+                    </th>
+                  ),
+                  td: ({ children }) => (
+                    <td className="border-b border-line px-4 py-3 align-top leading-[1.6]">
+                      {children}
+                    </td>
+                  ),
                   iframe: ({ src, title, ...rest }) => (
                     <span className="block my-8 rounded-xl overflow-hidden border border-line bg-bg-warm">
                       <span
