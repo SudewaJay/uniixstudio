@@ -98,6 +98,13 @@ export type ContentBlock = {
   imagePosition?: "left" | "right";
 };
 
+export type AudienceTier =
+  | "enterprise"
+  | "midmarket"
+  | "smb"
+  | "startup"
+  | "nonprofit";
+
 export type Project = {
   slug: string;
   title: string;
@@ -110,6 +117,10 @@ export type Project = {
   bigText: string;
   bigClass: string;
   coverImage: string;
+  /** Service / discipline tags rendered as pills on portfolio cards + used by the filter UI. */
+  tags?: string[];
+  /** Audience tier for the "Filter by Business Type" pill row. */
+  audienceTier?: AudienceTier;
   /* Detail-page extras (optional) */
   client?: string;
   industry?: string;

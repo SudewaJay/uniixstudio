@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
-import WorkGrid from "@/components/WorkGrid";
 import CTASection from "@/components/CTASection";
 import Reveal from "@/components/Reveal";
+import {
+  PortfolioLogoCloud,
+  PortfolioFeatured,
+  PortfolioFilterableGrid,
+} from "@/components/PortfolioLayout";
 import { allProjects, getDetailedProjects } from "@/lib/projects-fs";
-import { site } from "@/lib/content";
+import { site, clients } from "@/lib/content";
 import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "Portfolio · Web Design, Branding & SEO Case Studies | Uniix Studio",
   description:
-    "Selected case studies from Uniix Studio — St Luke's Medical Laboratory, Zerro, Wasana Drivers, Coventry Business Club, Terraflow. Brand identity, web design and digital strategy work for ambitious brands.",
+    "Selected case studies from Uniix Studio — St Luke's Medical Laboratory, RentMyCar.lk, Zerro, Wasana Drivers, Coventry Business Club, Terraflow. Brand identity, web design and digital strategy work for ambitious brands.",
   alternates: { canonical: site.canonical("/portfolio/") },
 };
 
@@ -38,14 +42,16 @@ export default function PortfolioPage() {
         lede="A small selection of recent work across brand identity, web design and digital strategy. Every project starts with a real problem and ends with measurable change."
       />
 
-      {/* Grid */}
-      <section className="py-12 md:py-16">
-        <div className="wrap">
-          <WorkGrid items={allProjects} />
-        </div>
-      </section>
+      {/* Client logo strip */}
+      <PortfolioLogoCloud clients={clients} />
 
-      {/* Case studies */}
+      {/* Featured projects — staggered 2-col grid */}
+      <PortfolioFeatured projects={allProjects} />
+
+      {/* All projects — 3-col with filters */}
+      <PortfolioFilterableGrid projects={allProjects} />
+
+      {/* Case studies — Problem / Solution / Result */}
       {caseStudies.length > 0 && (
         <section className="py-20 md:py-28 bg-bg-warm">
           <div className="wrap">
