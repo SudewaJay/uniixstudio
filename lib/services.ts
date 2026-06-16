@@ -27,6 +27,16 @@ export type ServiceRelatedLink = {
   href: string;
 };
 
+export type ServiceVideo = {
+  vimeoId: string;
+  title: string;
+  client: string;
+  description?: string;
+  year?: string;
+  /** ISO 8601 date — used for VideoObject.uploadDate when provided. */
+  uploadDate?: string;
+};
+
 export type Service = {
   slug: string;
   pillar: ServicePillar;
@@ -52,6 +62,8 @@ export type Service = {
   pricingTiers?: ServicePricingTier[];
   /** Curated internal links to blog posts / other services (topic cluster). */
   relatedReading?: ServiceRelatedLink[];
+  /** Commercial videos / showreel embedded on the service page. */
+  videos?: ServiceVideo[];
 };
 
 export type Pillar = {

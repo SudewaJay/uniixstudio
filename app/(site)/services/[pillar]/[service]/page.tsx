@@ -15,10 +15,12 @@ import {
   ServiceDeliverablesGrid,
   ServicePricingTiers,
 } from "@/components/ServiceVisuals";
+import { VideoShowcase } from "@/components/VideoShowcase";
 import {
   serviceSchema,
   breadcrumbSchema,
   faqPageSchema,
+  videoObjectSchema,
   schemaGraph,
 } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
@@ -82,6 +84,11 @@ export default async function ServiceDetailPage({
   ];
   if (service.faqs && service.faqs.length > 0) {
     schemas.push(faqPageSchema(service.faqs));
+  }
+  if (service.videos && service.videos.length > 0) {
+    for (const v of service.videos) {
+      schemas.push(videoObjectSchema(v));
+    }
   }
   const pageSchema = schemaGraph(...schemas);
 
@@ -257,6 +264,11 @@ export default async function ServiceDetailPage({
       {/* Pricing tiers */}
       {service.pricingTiers && service.pricingTiers.length > 0 && (
         <ServicePricingTiers tiers={service.pricingTiers} accent={pillar.accent} />
+      )}
+
+      {/* Video showcase (commercial reel) */}
+      {service.videos && service.videos.length > 0 && (
+        <VideoShowcase videos={service.videos} accent={pillar.accent} />
       )}
 
       {/* Related reading — internal-link topic cluster */}

@@ -218,6 +218,32 @@ export function articleSchema(post: BlogPost) {
   };
 }
 
+/** VideoObject — eligible for Google Video search rich result. */
+export function videoObjectSchema(v: {
+  vimeoId: string;
+  title: string;
+  client: string;
+  description?: string;
+  uploadDate?: string;
+  year?: string;
+}) {
+  const date = v.uploadDate ?? (v.year ? `${v.year}-01-01` : undefined);
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: v.title,
+    description:
+      v.description ?? `${v.title} — commercial work by Uniix Studio for ${v.client}.`,
+    thumbnailUrl: `https://vumbnail.com/${v.vimeoId}_large.jpg`,
+    embedUrl: `https://player.vimeo.com/video/${v.vimeoId}`,
+    contentUrl: `https://vimeo.com/${v.vimeoId}`,
+    uploadDate: date,
+    creator: { "@id": `${SITE_URL}/#organization` },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    inLanguage: "en",
+  };
+}
+
 /**
  * Helper to bundle multiple schemas into a single @graph object —
  * cleaner than emitting many <script> tags per page.
