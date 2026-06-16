@@ -11,6 +11,7 @@ import {
   type ServiceDeliverable,
   type ServicePricingTier,
   type ServiceRelatedLink,
+  type ServiceVideo,
 } from "./services";
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "services");
@@ -28,6 +29,7 @@ type Frontmatter = {
   deliverables?: ServiceDeliverable[];
   pricingTiers?: ServicePricingTier[];
   relatedReading?: ServiceRelatedLink[];
+  videos?: ServiceVideo[];
 };
 
 function readMdxServices(): Service[] {
@@ -62,6 +64,7 @@ function readMdxServices(): Service[] {
         deliverables: fm.deliverables,
         pricingTiers: fm.pricingTiers,
         relatedReading: fm.relatedReading,
+        videos: fm.videos,
       });
     }
   }
@@ -93,4 +96,5 @@ export type {
   ServiceDeliverable,
   ServicePricingTier,
   ServiceRelatedLink,
+  ServiceVideo,
 };

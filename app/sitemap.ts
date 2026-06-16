@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/industries", priority: 0.7, freq: "monthly" },
     { path: "/about", priority: 0.7, freq: "monthly" },
     { path: "/contact", priority: 0.8, freq: "monthly" },
+    { path: "/showreel", priority: 0.75, freq: "monthly" },
   ];
 
   const pillarRoutes = pillars.map((p) => ({
