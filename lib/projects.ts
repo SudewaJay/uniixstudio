@@ -133,6 +133,10 @@ export type Project = {
   result?: string;
   stats?: ProjectStat[];
   gallery?: string[];
+  /** CSS aspect-ratio for gallery items (e.g. "4/3" landscape, "4/5" social/portrait, "1/1" square). Defaults to "4/3". */
+  galleryAspect?: string;
+  /** Heading for the gallery section. Defaults to "Selected views". */
+  galleryHeading?: string;
   testimonial?: ProjectTestimonial;
   /* Design rationale block (optional, rendered when present) */
   designRationale?: string;

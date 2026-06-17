@@ -374,13 +374,16 @@ export default async function ProjectDetailPage({
                 className="font-display font-medium mb-10 md:mb-14"
                 style={{ fontSize: "clamp(28px,3.5vw,48px)", letterSpacing: "-0.02em" }}
               >
-                Selected views
+                {project.galleryHeading ?? "Selected views"}
               </h2>
             </Reveal>
             <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
               {project.gallery.map((src, i) => (
                 <Reveal key={src} delay={(i % 4) as 0 | 1 | 2 | 3}>
-                  <div className="relative w-full aspect-[4/3] rounded-lg2 overflow-hidden bg-bg-paper">
+                  <div
+                    className="relative w-full rounded-lg2 overflow-hidden bg-bg-paper"
+                    style={{ aspectRatio: project.galleryAspect ?? "4 / 3" }}
+                  >
                     <Image
                       src={src}
                       alt={`${project.title} ${project.industry ? `(${project.industry}) ` : ""}— selected view ${i + 1}`}
