@@ -7,6 +7,8 @@
  * grid keeps rendering during the migration.
  */
 
+import type { ServiceVideo } from "./services";
+
 export type ProjectStat = { label: string; value: string };
 
 export type ProjectTestimonial = {
@@ -137,6 +139,10 @@ export type Project = {
   galleryAspect?: string;
   /** Heading for the gallery section. Defaults to "Selected views". */
   galleryHeading?: string;
+  /** Optional second gallery for social/brand creatives, rendered in a square (1:1) grid. */
+  socialGallery?: string[];
+  /** Heading for the social gallery section. Defaults to "Social media design". */
+  socialGalleryHeading?: string;
   testimonial?: ProjectTestimonial;
   /* Design rationale block (optional, rendered when present) */
   designRationale?: string;
@@ -145,6 +151,8 @@ export type Project = {
   uiPrinciples?: DesignPrinciple[];
   motionPrinciples?: DesignPrinciple[];
   /* Tech stack, wireframes, and narrative blocks (Eight25-style additions) */
+  /** Vimeo videos showcased on the project (reuses the showreel VideoShowcase + VideoObject schema). */
+  videos?: ServiceVideo[];
   techStack?: TechItem[];
   wireframes?: Wireframe[];
   contentBlocks?: ContentBlock[];

@@ -8,6 +8,7 @@ import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
 import { getProject, getDetailedProjects } from "@/lib/projects-fs";
 import DesignRationaleSection from "@/components/DesignRationaleSection";
+import { VideoShowcase } from "@/components/VideoShowcase";
 import CaseStudyNarrative from "@/components/CaseStudyNarrative";
 import {
   TechStackMotion,
@@ -15,7 +16,7 @@ import {
   WireframeGridMotion,
   HeroOverlayMotion,
 } from "@/components/PortfolioMotion";
-import { breadcrumbSchema, creativeWorkSchema, faqPageSchema, schemaGraph } from "@/lib/schema";
+import { breadcrumbSchema, creativeWorkSchema, faqPageSchema, schemaGraph, videoObjectSchema } from "@/lib/schema";
 import { resolveServiceLinks, getServiceUrl } from "@/lib/service-links";
 import { site } from "@/lib/content";
 import { ogImageUrl, ogImageMeta } from "@/lib/og-image";
@@ -83,6 +84,9 @@ export default async function ProjectDetailPage({
     creativeWorkSchema(project),
     ...(project.faqs && project.faqs.length > 0
       ? [faqPageSchema(project.faqs)]
+      : []),
+    ...(project.videos && project.videos.length > 0
+      ? project.videos.map((v) => videoObjectSchema(v))
       : []),
   );
 
@@ -397,6 +401,46 @@ export default async function ProjectDetailPage({
             </div>
           </div>
         </section>
+      )}
+
+      {/* Social media design — square creatives grid */}
+      {project.socialGallery && project.socialGallery.length > 0 && (
+        <section className="py-16 md:py-24">
+          <div className="wrap">
+            <Reveal>
+              <h2
+                className="font-display font-medium mb-10 md:mb-14"
+                style={{ fontSize: "clamp(28px,3.5vw,48px)", letterSpacing: "-0.02em" }}
+              >
+                {project.socialGalleryHeading ?? "Social media design"}
+              </h2>
+            </Reveal>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+              {project.socialGallery.map((src, i) => (
+                <Reveal key={src} delay={(i % 4) as 0 | 1 | 2 | 3}>
+                  <div className="relative w-full aspect-square rounded-lg2 overflow-hidden bg-bg-paper">
+                    <Image
+                      src={src}
+                      alt={`${project.title} ${project.industry ? `(${project.industry}) ` : ""}— social media post ${i + 1}`}
+                      fill
+                      sizes="(min-width:1024px) 360px, (min-width:640px) 50vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Video showcase — reuses the showreel component + emits VideoObject schema */}
+      {project.videos && project.videos.length > 0 && (
+        <VideoShowcase
+          videos={project.videos}
+          heading="Motion & video"
+          subheading={`Brand films and promotional video we directed, edited and motion-led for ${project.client ?? project.title}.`}
+        />
       )}
 
       {/* Testimonial */}
