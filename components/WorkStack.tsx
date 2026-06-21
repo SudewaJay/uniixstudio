@@ -10,8 +10,7 @@ import {
   MotionValue,
 } from "framer-motion";
 import { projects } from "@/lib/content";
-
-type Project = (typeof projects)[number];
+import type { Project } from "@/lib/projects";
 
 // Each card pins for ~100vh of scroll. Total section height = N × CARD_VH.
 const CARD_VH = 100;
@@ -145,8 +144,15 @@ function StackCard({
   );
 }
 
-export default function WorkStack({ limit }: { limit?: number }) {
-  const items = limit ? projects.slice(0, limit) : projects;
+export default function WorkStack({
+  limit,
+  items: itemsProp,
+}: {
+  limit?: number;
+  items?: Project[];
+}) {
+  const source = (itemsProp ?? projects) as Project[];
+  const items = limit ? source.slice(0, limit) : source;
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({

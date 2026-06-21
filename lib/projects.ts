@@ -123,6 +123,12 @@ export type Project = {
   tags?: string[];
   /** Audience tier for the "Filter by Business Type" pill row. */
   audienceTier?: AudienceTier;
+  /** Optional social-media campaign showcase rendered as an auto-sliding carousel on the case study page. */
+  socialCampaign?: {
+    title?: string;
+    description?: string;
+    images: Array<{ src: string; alt: string; label?: string }>;
+  };
   /* Detail-page extras (optional) */
   client?: string;
   industry?: string;
