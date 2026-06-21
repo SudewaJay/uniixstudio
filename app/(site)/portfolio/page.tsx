@@ -4,12 +4,12 @@ import PageHeader from "@/components/PageHeader";
 import CTASection from "@/components/CTASection";
 import Reveal from "@/components/Reveal";
 import {
-  PortfolioLogoCloud,
   PortfolioFeatured,
   PortfolioFilterableGrid,
 } from "@/components/PortfolioLayout";
+import LogoCloud from "@/components/LogoCloud";
 import { allProjects, getDetailedProjects } from "@/lib/projects-fs";
-import { site, clients } from "@/lib/content";
+import { site } from "@/lib/content";
 import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
@@ -42,8 +42,8 @@ export default function PortfolioPage() {
         lede="A small selection of recent work across brand identity, web design and digital strategy. Every project starts with a real problem and ends with measurable change."
       />
 
-      {/* Client logo strip */}
-      <PortfolioLogoCloud clients={clients} />
+      {/* Client logo cloud — same component as homepage */}
+      <LogoCloud />
 
       {/* Featured projects — staggered 2-col grid */}
       <PortfolioFeatured projects={allProjects} />
