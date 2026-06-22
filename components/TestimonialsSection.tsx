@@ -1,20 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion, type Transition } from "framer-motion";
 import { testimonials } from "@/lib/content";
 import Reveal from "./Reveal";
 
-const transition: Transition = {
-  type: "spring",
-  duration: 0.8,
-  bounce: 0.2,
+/**
+ * testimonial-03 layout — a horizontal carousel of alternating cards:
+ *  - text cards: quote glyph → quote → avatar / name / role
+ *  - video cards: full-bleed portrait → name / role → play button (plays inline)
+ *
+ * `videoUrl`/`poster` are optional per item. When present the card renders as a
+ * video card; otherwise it renders as a text card. With text-only data every
+ * card is a text card and the video path is ready for client clips later.
+ */
+type Testimonial = {
+  quote: string;
+  headline?: string;
+  name: string;
+  role: string;
+  initial: string;
+  project?: string;
+  year?: string;
+  videoUrl?: string;
+  poster?: string;
 };
 
-const AUTO_ROTATE_MS = 7000;
+const items = testimonials as readonly Testimonial[];
 
-function StarIcon({ className }: { className?: string }) {
+function PlayGlyph({ className }: { className?: string }) {
   return (
     <svg
       width="20"
@@ -24,178 +38,189 @@ function StarIcon({ className }: { className?: string }) {
       className={className}
       aria-hidden="true"
     >
-      <path d="M12 2l2.95 6.97L22 10l-5.5 4.85L18.18 22 12 18.27 5.82 22l1.68-7.15L2 10l7.05-1.03L12 2z" />
+      <path d="M8 5v14l11-7z" />
     </svg>
   );
 }
 
-export default function TestimonialsSection() {
-  const reduce = useReducedMotion();
-  const [i, setI] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    if (reduce || paused) return;
-    const t = setInterval(() => {
-      setI((prev) => (prev + 1) % testimonials.length);
-    }, AUTO_ROTATE_MS);
-    return () => clearInterval(t);
-  }, [reduce, paused]);
-
-  const review = testimonials[i];
-
+function Author({ initial, name, role }: { initial: string; name: string; role: string }) {
   return (
-    <section
-      id="testimonials"
-      className="bg-ink py-24 sm:py-32 relative overflow-hidden"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      {/* Background photograph — atmospheric, 30% opacity */}
-      <div className="absolute inset-0 pointer-events-none opacity-30" aria-hidden="true">
-        <Image
-          src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1920&q=70&auto=format&fit=crop"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
-          priority={false}
+    <div className="flex items-center gap-3">
+      <div className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-grad font-display text-[15px] font-semibold text-white ring-2 ring-white/15">
+        {initial}
+      </div>
+      <div>
+        <p className="text-[15px] font-semibold text-white">{name}</p>
+        <p className="text-[12px] text-white/55">{role}</p>
+      </div>
+    </div>
+  );
+}
+
+function TextCard({ t }: { t: Testimonial }) {
+  return (
+    <figure className="flex h-full flex-col justify-between gap-8 rounded-lg2 border border-white/10 bg-white/[0.04] p-8 backdrop-blur-sm">
+      <div className="flex flex-col gap-6">
+        <span
+          className="font-display leading-none text-brand-3"
+          style={{ fontSize: "56px" }}
+          aria-hidden="true"
+        >
+          &ldquo;
+        </span>
+        {t.headline && (
+          <p className="font-display text-[19px] font-medium leading-snug text-white">
+            {t.headline}
+          </p>
+        )}
+        <blockquote className="text-[16px] leading-[1.6] text-white/75">
+          {t.quote}
+        </blockquote>
+      </div>
+      <figcaption>
+        <Author initial={t.initial} name={t.name} role={t.role} />
+      </figcaption>
+    </figure>
+  );
+}
+
+function VideoCard({ t }: { t: Testimonial }) {
+  const [playing, setPlaying] = useState(false);
+  const poster = t.poster;
+
+  if (playing && t.videoUrl) {
+    return (
+      <div className="relative h-full overflow-hidden rounded-lg2 border border-white/10">
+        <video
+          src={t.videoUrl}
+          poster={poster}
+          controls
+          autoPlay
+          className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
+    );
+  }
 
-      {/* Vignette to keep text legible */}
+  return (
+    <button
+      type="button"
+      onClick={() => setPlaying(true)}
+      aria-label={`Play video testimonial from ${t.name}`}
+      className="group relative block h-full overflow-hidden rounded-lg2 border border-white/10 text-left"
+    >
+      {poster ? (
+        <Image
+          src={poster}
+          alt={`Video testimonial from ${t.name}`}
+          fill
+          sizes="(min-width:1024px) 33vw, 80vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-brand-grad opacity-90" aria-hidden="true" />
+      )}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(26,20,16,0.55) 0%, rgba(26,20,16,0.30) 35%, rgba(26,20,16,0.65) 100%)",
+            "linear-gradient(180deg, rgba(26,20,16,0.10) 0%, rgba(26,20,16,0.75) 100%)",
         }}
         aria-hidden="true"
       />
+      <span className="absolute right-5 top-5 grid size-14 place-items-center rounded-full bg-brand-grad text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+        <PlayGlyph />
+      </span>
+      <div className="absolute inset-x-0 bottom-0 p-6">
+        <p className="text-[16px] font-semibold text-white">{t.name}</p>
+        <p className="text-[13px] text-white/70">{t.role}</p>
+      </div>
+    </button>
+  );
+}
 
+function ArrowButton({
+  dir,
+  onClick,
+}: {
+  dir: "prev" | "next";
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={dir === "prev" ? "Previous testimonials" : "Next testimonials"}
+      className="grid size-11 place-items-center rounded-full border border-white/15 text-white/80 transition-colors hover:border-brand-4 hover:text-white"
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {dir === "prev" ? <path d="M15 18l-6-6 6-6" /> : <path d="M9 18l6-6-6-6" />}
+      </svg>
+    </button>
+  );
+}
+
+export default function TestimonialsSection() {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  if (items.length === 0) return null;
+
+  const scrollByCard = (dir: "prev" | "next") => {
+    const track = trackRef.current;
+    if (!track) return;
+    const amount = track.clientWidth * 0.8;
+    track.scrollBy({ left: dir === "prev" ? -amount : amount, behavior: "smooth" });
+  };
+
+  return (
+    <section id="testimonials" className="relative overflow-hidden bg-ink py-24 sm:py-32">
       {/* Brand glow */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-60"
+        className="pointer-events-none absolute inset-0 opacity-60"
         style={{
           background:
-            "radial-gradient(45% 50% at 80% 20%, rgba(232,98,26,0.22), transparent 70%), radial-gradient(40% 50% at 10% 90%, rgba(248,200,74,0.12), transparent 70%)",
+            "radial-gradient(45% 50% at 80% 15%, rgba(232,98,26,0.20), transparent 70%), radial-gradient(40% 50% at 10% 90%, rgba(248,200,74,0.10), transparent 70%)",
         }}
         aria-hidden="true"
       />
 
       <div className="relative mx-auto max-w-6xl px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-14 grid items-end gap-8 md:mb-16 lg:grid-cols-[1fr_auto]">
+          <Reveal>
+            <span className="eyebrow text-brand-3">Client stories</span>
+            <h2 className="display mt-4 text-white" style={{ fontSize: "clamp(40px,5.5vw,72px)" }}>
+              What our clients
+              <br />
+              <span className="italic-display gradient-text">actually say.</span>
+            </h2>
+          </Reveal>
+          {items.length > 1 && (
+            <Reveal delay={1}>
+              <div className="flex gap-3">
+                <ArrowButton dir="prev" onClick={() => scrollByCard("prev")} />
+                <ArrowButton dir="next" onClick={() => scrollByCard("next")} />
+              </div>
+            </Reveal>
+          )}
+        </div>
+
+        {/* Carousel */}
         <Reveal>
-          <div className="flex items-center justify-center gap-3 mb-12 md:mb-16">
-            <span className="w-10 h-px bg-brand-4" />
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-brand-4">
-              Client stories
-            </span>
-            <span className="w-10 h-px bg-brand-4" />
+          <div
+            ref={trackRef}
+            className="-mx-6 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-6 pb-4 lg:mx-0 lg:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {items.map((t) => (
+              <div
+                key={t.name}
+                className="w-[82%] shrink-0 snap-start sm:w-[60%] lg:w-[calc((100%-3rem)/3)]"
+              >
+                {t.videoUrl ? <VideoCard t={t} /> : <TextCard t={t} />}
+              </div>
+            ))}
           </div>
         </Reveal>
-
-        <div className="flex flex-col items-center gap-12">
-          <figure className="flex max-w-4xl flex-col gap-10 text-center min-h-[320px] md:min-h-[360px]">
-            <AnimatePresence initial={false} mode="popLayout">
-              <motion.blockquote
-                key={i + "-quote"}
-                initial={{ opacity: 0, scale: 0.98, y: 20 }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  y: 0,
-                  transition: { ...transition, delay: 0.4 },
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 0.98,
-                  y: 20,
-                  transition: { ...transition, delay: 0.06 },
-                }}
-                className="origin-bottom font-display font-medium text-white tracking-[-0.02em] leading-[1.15] will-change-transform"
-                style={{ fontSize: "clamp(28px,3.6vw,48px)" }}
-              >
-                <span className="text-brand-3">&ldquo;</span>
-                {review.quote}
-                <span className="text-brand-3">&rdquo;</span>
-              </motion.blockquote>
-
-              <motion.figcaption
-                key={i + "-author"}
-                initial={{ opacity: 0, scale: 0.98, y: 20 }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  y: 0,
-                  transition: { ...transition, delay: 0.5 },
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 0.98,
-                  y: 20,
-                  transition,
-                }}
-                className="flex origin-bottom flex-col items-center gap-5 will-change-transform"
-              >
-                {/* Star row — staggered entrance */}
-                <div className="flex gap-1.5 text-brand-3" aria-label="5 out of 5 stars">
-                  {Array.from({ length: 5 }).map((_, idx) => (
-                    <motion.div
-                      key={`${i}-star-${idx}`}
-                      initial={{ opacity: 0, scale: 0.85, y: 6 }}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                        y: 0,
-                        transition: { ...transition, delay: 0.5 + idx * 0.08 },
-                      }}
-                      exit={{ opacity: 0, scale: 0.85, y: 6, transition }}
-                    >
-                      <StarIcon />
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Avatar (initial-based) + name + role */}
-                <div className="flex items-center gap-4">
-                  <div className="size-14 rounded-full bg-brand-grad text-white grid place-items-center font-display font-semibold text-[20px] ring-2 ring-white/15">
-                    {review.initial}
-                  </div>
-                  <div className="text-left">
-                    <p className="font-semibold text-white text-[16px]">
-                      {review.name}
-                    </p>
-                    <cite className="text-white/65 text-[13px] mt-0.5 not-italic block">
-                      {review.role}
-                    </cite>
-                  </div>
-                </div>
-              </motion.figcaption>
-            </AnimatePresence>
-          </figure>
-
-          {/* Pagination dots */}
-          <div className="flex items-center gap-2.5" role="tablist" aria-label="Choose testimonial">
-            {testimonials.map((_, idx) => {
-              const active = idx === i;
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setI(idx)}
-                  role="tab"
-                  aria-selected={active}
-                  aria-label={`Show testimonial ${idx + 1}`}
-                  className={`h-2 rounded-full transition-all duration-500 ease-out ${
-                    active
-                      ? "w-10 bg-brand-grad"
-                      : "w-2 bg-white/30 hover:bg-white/55"
-                  }`}
-                />
-              );
-            })}
-          </div>
-        </div>
       </div>
     </section>
   );
