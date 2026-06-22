@@ -10,8 +10,7 @@ import {
   MotionValue,
 } from "framer-motion";
 import { projects } from "@/lib/content";
-
-type Project = (typeof projects)[number];
+import type { Project } from "@/lib/projects";
 
 // Each card pins for ~100vh of scroll. Total section height = N × CARD_VH.
 const CARD_VH = 100;
@@ -114,17 +113,14 @@ function StackCard({
                 {p.overline}
               </span>
               <h3
-                className="font-display font-medium leading-[1.05]"
+                className="font-display font-medium leading-[1.08]"
                 style={{
-                  fontSize: "clamp(32px, 4.2vw, 64px)",
-                  letterSpacing: "-0.025em",
+                  fontSize: "clamp(24px, 2.8vw, 40px)",
+                  letterSpacing: "-0.02em",
                 }}
               >
                 {p.headline}
               </h3>
-              <p className="mt-4 text-[15px] md:text-[16px] leading-[1.55] text-white/80 max-w-[55ch]">
-                {p.summary}
-              </p>
             </div>
             <div className="w-14 h-14 rounded-full bg-white text-ink grid place-items-center flex-shrink-0 transition-transform duration-300 hover:rotate-[-45deg] hover:scale-105">
               <svg
@@ -145,8 +141,15 @@ function StackCard({
   );
 }
 
-export default function WorkStack({ limit }: { limit?: number }) {
-  const items = limit ? projects.slice(0, limit) : projects;
+export default function WorkStack({
+  limit,
+  items: itemsProp,
+}: {
+  limit?: number;
+  items?: Project[];
+}) {
+  const source = (itemsProp ?? projects) as Project[];
+  const items = limit ? source.slice(0, limit) : source;
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({

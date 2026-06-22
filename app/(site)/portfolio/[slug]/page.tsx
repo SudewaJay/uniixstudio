@@ -8,6 +8,7 @@ import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
 import { getProject, getDetailedProjects } from "@/lib/projects-fs";
 import DesignRationaleSection from "@/components/DesignRationaleSection";
+import SocialCampaignCarousel from "@/components/SocialCampaignCarousel";
 import { VideoShowcase } from "@/components/VideoShowcase";
 import CaseStudyNarrative from "@/components/CaseStudyNarrative";
 import {
@@ -367,6 +368,15 @@ export default async function ProjectDetailPage({
             <WireframeGridMotion items={project.wireframes} projectTitle={project.title} />
           </div>
         </section>
+      )}
+
+      {/* Social media campaign — auto-sliding carousel */}
+      {project.socialCampaign && project.socialCampaign.images.length > 0 && (
+        <SocialCampaignCarousel
+          title={project.socialCampaign.title ?? "Social media campaign"}
+          description={project.socialCampaign.description}
+          images={project.socialCampaign.images}
+        />
       )}
 
       {/* Gallery */}

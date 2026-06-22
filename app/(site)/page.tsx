@@ -13,12 +13,25 @@ import IndustriesSection from "@/components/IndustriesSection";
 import BlogSection from "@/components/BlogSection";
 import Reveal from "@/components/Reveal";
 import { whyPoints, site } from "@/lib/content";
+import { allProjects } from "@/lib/projects-fs";
+
+// Curated order for the homepage "Selected work" stack.
+const HOME_WORK_ORDER = [
+  "rentmycar-lk",
+  "st-lukes-medilab",
+  "ecowave-energy",
+  "sierra-energy-solutions",
+];
 
 export const metadata: Metadata = {
   alternates: { canonical: site.canonical("/") },
 };
 
 export default function HomePage() {
+  const homeWork = HOME_WORK_ORDER.map((slug) =>
+    allProjects.find((p) => p.slug === slug),
+  ).filter((p): p is NonNullable<typeof p> => Boolean(p));
+
   return (
     <>
       <Hero />
@@ -46,7 +59,7 @@ export default function HomePage() {
             </Reveal>
           </div>
         </div>
-        <WorkStack limit={4} />
+        <WorkStack items={homeWork} />
       </section>
 
       <IndustriesSection />
