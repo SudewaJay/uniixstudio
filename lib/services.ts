@@ -156,6 +156,93 @@ Your logo is more`,
 In today's competitive digital landscape, exceptional`,
   },
   {
+    slug: `motion-graphics`,
+    pillar: `design`,
+    name: `Motion Graphics`,
+    rawName: `Motion Graphics`,
+    pageTitle: `Motion Graphics in Sri Lanka | Uniix Studio`,
+    metaDescription: `Bring your brand to life with professional Motion Graphics in Sri Lanka. Uniix Studio crafts animated logos, explainers, and social video that stops the scroll. Let's animate your story.`,
+    body: `## Motion That Stops the Scroll
+
+Static design gets noticed; motion gets remembered. In a feed full of competing content, animated brand assets hold attention longer, explain complex ideas faster, and make your business feel modern and alive.
+
+At Uniix Studio, we create motion graphics that are on-brand and built for performance — from a polished animated logo to social-first explainer videos engineered for the first three seconds where attention is won or lost.
+
+## What's Included in Our Motion Graphics Service
+
+*   **Animated Logo & Brand Stings:** Signature intros and outros for video, ads, and presentations.
+*   **Explainer Videos:** Clear, animated storytelling that turns a complex product into an easy yes.
+*   **Social Motion:** Reels, shorts, and ad creative sized and paced for each platform.
+*   **Kinetic Typography:** Animated text that makes key messages land with rhythm and impact.
+*   **UI & Product Motion:** Micro-animations that make your website or app feel premium.
+*   **Sound & Edit:** Music, sound design, and editing that complete the experience.
+
+## Our Motion Graphics Process
+
+1.  **Brief & Script:** We define the goal, message, platform, and length before a single frame moves.
+2.  **Storyboard & Style Frames:** We lock the look and narrative so there are no surprises in production.
+3.  **Animation & Sound:** We bring the boards to life with motion, music, and sound design.
+4.  **Delivery & Variants:** We export platform-ready files in every aspect ratio you need.`,
+  },
+  {
+    slug: `packaging-design`,
+    pillar: `design`,
+    name: `Packaging Design`,
+    rawName: `Packaging Design`,
+    pageTitle: `Packaging Design in Sri Lanka | Uniix Studio`,
+    metaDescription: `Make your product impossible to ignore on the shelf. Uniix Studio creates retail-ready Packaging Design in Sri Lanka — labels, boxes, and unboxing experiences that sell. Get a free consultation!`,
+    body: `## Packaging That Sells Before a Word Is Read
+
+On a crowded Sri Lankan shelf, your packaging has about three seconds to win a customer. Great packaging design is not decoration — it is your hardest-working salesperson, communicating quality, value, and personality the instant a shopper looks at it.
+
+At Uniix Studio, we design packaging that is as practical as it is beautiful. We balance shelf impact, regulatory and print requirements, and your brand story so your product earns the pick-up — whether it sits in a Colombo supermarket, a boutique, or a customer's hands at unboxing.
+
+## What's Included in Our Packaging Design Service
+
+*   **Structural & Dieline Design:** Boxes, pouches, labels, and cartons built to real print and manufacturing specs.
+*   **Label & Surface Design:** Front-of-pack hierarchy, ingredients, barcodes, and compliance information laid out for clarity.
+*   **Retail Shelf Testing:** Mock-ups that prove how your design reads against competitors at a glance.
+*   **Unboxing Experience:** Inserts, tissue, and interior print that turn delivery into a shareable moment.
+*   **Print-Ready Artwork:** Final files with bleeds, spot colours, and finishes prepared for your printer.
+*   **Brand Consistency:** Packaging that extends your existing identity system, not a one-off design.
+
+## Our Packaging Design Process
+
+1.  **Discovery & Audit:** We study your product, audience, competitors, and the shelf or channel it will live in.
+2.  **Concept Development:** We present distinct directions with structure, hierarchy, and finish options.
+3.  **Design & Refinement:** We refine the chosen route across every SKU and variant.
+4.  **Pre-Press & Handover:** We deliver print-ready artwork and liaise with your printer to protect quality.`,
+  },
+  {
+    slug: `print-collateral`,
+    pillar: `design`,
+    name: `Print & Collateral`,
+    rawName: `Print & Collateral`,
+    pageTitle: `Print & Collateral Design in Sri Lanka | Uniix Studio`,
+    metaDescription: `Professional Print & Collateral Design in Sri Lanka. Uniix Studio designs brochures, business cards, and marketing material that feel as good as they look. Get a free consultation!`,
+    body: `## Print That Feels as Good as It Looks
+
+Digital is everywhere, but print still closes deals. A beautifully designed brochure, a business card with weight, or a pitch deck handed across the table signals a level of care that a PDF rarely matches.
+
+At Uniix Studio, we design print and marketing collateral that extends your brand into the physical world — meticulously typeset, production-ready, and finished to feel premium in the hand.
+
+## What's Included in Our Print & Collateral Service
+
+*   **Business Cards & Stationery:** Cards, letterheads, and envelopes with considered stock and finishes.
+*   **Brochures & Catalogues:** Multi-page layouts that guide the reader and showcase your offer.
+*   **Pitch & Sales Decks:** Persuasive, on-brand documents built to win the room.
+*   **Flyers & Posters:** Eye-catching campaign material for events and promotions.
+*   **Large-Format & Signage:** Banners, standees, and signage prepared at the right scale and resolution.
+*   **Print Production Support:** Paper, finish, and printer recommendations with press-ready files.
+
+## Our Print & Collateral Process
+
+1.  **Discovery & Scope:** We clarify the audience, message, and where each piece will be used.
+2.  **Layout & Typesetting:** We design clean, on-brand layouts with a clear visual hierarchy.
+3.  **Refinement & Proofing:** We refine copy fit, imagery, and details across every page.
+4.  **Pre-Press & Handover:** We deliver print-ready artwork and support the print run end to end.`,
+  },
+  {
     slug: `analytics`,
     pillar: `growth`,
     name: `Analytics & Reporting`,
