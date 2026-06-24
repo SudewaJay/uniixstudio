@@ -156,7 +156,7 @@ export default function AboutPage() {
                   className="font-display font-medium mb-3"
                   style={{ fontSize: "clamp(28px,3vw,36px)", letterSpacing: "-0.02em" }}
                 >
-                  Sudewa Jayanath
+                  Uniix Studio
                 </h3>
                 <p className="text-ink-2 text-[16px] leading-[1.6] max-w-[60ch]">
                   Founder of Uniix Studio. Leads creative direction across brand identity,

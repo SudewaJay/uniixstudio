@@ -8,7 +8,7 @@ category: "Insights"
 publishDate: "2026-06-02"
 coverImage: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600&q=80&auto=format&fit=crop"
 author:
-  name: "Sudewa Jayanath"
+  name: "Uniix Studio"
   role: "Founder · Uniix Studio"
   initial: "S"
 ---

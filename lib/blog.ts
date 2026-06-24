@@ -42,7 +42,7 @@ export const posts: BlogPost[] = [
     wordCount: 1921,
     readTime: `9 min read`,
     coverImage: `https://images.pexels.com/photos/6444367/pexels-photo-6444367.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Has your business ever felt like it’s wearing an old sarong to a modern gala? You’re there, but you don’t quite fit in. In today's dynamic Sri Lankan market, a dated brand isn't just a minor inconvenience; it's a silent killer of opportunities and client trust. If you're wondering about the **signs you need a rebrand**, you're already on the right track. Many SME owners in Sri Lanka overlook the subtle cues that their brand is holding them back, costing them valuable growth and market share.
 
 At Uniix Studio, we understand that your brand is more than just a logo; it's the heartbeat of your business. It's how you communicate, how you connect, and ultimately, how you convert. Ignoring an outdated brand identity can lead to decreased customer loyalty, a struggle to attract new talent, and a constant battle against competitors who simply look more professional. This guide will walk you through ten undeniable indicators that it's time to refresh your brand identity and secure your future.
@@ -162,7 +162,7 @@ Here's a general breakdown of factors influencing the cost:
     wordCount: 1572,
     readTime: `7 min read`,
     coverImage: `https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Thinking about getting a new website for your business in Sri Lanka? You're not alone. Every day, entrepreneurs like you grapple with the same fundamental question: **how much does a website cost in Sri Lanka**? It's a critical investment, and understanding the true **website cost Sri Lanka** businesses face is essential for making an informed decision. At Uniix Studio, we believe in full transparency, which is why we're breaking down everything you need to know about web development pricing in Sri Lanka for 2026.
 
 We know navigating web development quotes can feel like deciphering a secret code. Many factors influence the final price tag, from design complexity to specific functionalities. Our goal is to demystify these costs, helping you compare options effectively and invest wisely in your digital future.
@@ -261,7 +261,7 @@ Here's why investing in quality from the start pays off:`,
     wordCount: 1628,
     readTime: `7 min read`,
     coverImage: `https://images.pexels.com/photos/6476808/pexels-photo-6476808.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Every business owner in Sri Lanka dreams of standing out in a crowded market. You want your customers to remember you, trust you, and choose you over and over again. But how do you achieve that lasting impression? The answer lies in understanding **what is brand identity**. It's not just a logo or a catchy slogan; it's the sum of all visible elements that represent your company, communicating its unique personality, values, and purpose to the world. A strong brand identity is your business's visual and emotional fingerprint, ensuring consistency and recognition across every touchpoint.
 
 ## Brand Identity: The Definition Most People Get Wrong
@@ -359,7 +359,7 @@ With a well-defined brand identity, your marketing and advertising campaigns bec
     wordCount: 1878,
     readTime: `9 min read`,
     coverImage: `https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Building a powerful online presence for your business in Sri Lanka starts with a great website. But as you begin your journey, you might hear terms like "web design" and "web development" used interchangeably. This often leads to confusion, especially for business owners planning a new website. Understanding the **web design vs web development** distinction is crucial for setting realistic expectations, managing your budget, and ultimately achieving your digital goals.
 
 At Uniix Studio, we see this confusion firsthand. Many clients wonder if they need a web designer, a web developer, or both. The truth is, while distinct, these two disciplines are deeply intertwined and equally vital for creating a successful, high-performing website. Let's break down the core differences and show you why both are indispensable.
@@ -529,7 +529,7 @@ Content marketing involves creating and distributing valuable, relevant, and con
     wordCount: 1614,
     readTime: `7 min read`,
     coverImage: `https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `In today's fast-paced digital landscape, a seamless and intuitive user experience isn't just a luxury—it's a necessity. Understanding the **UI UX design process** is crucial for anyone looking to build a successful digital product, whether it's a mobile app, a website, or an enterprise system. This step-by-step guide from Uniix Studio will demystify the entire journey, outlining how we transform ideas into exceptional digital experiences. By following a structured UX design process, you ensure your product resonates with users, solves real problems, and delivers tangible business value.
 
 For businesses and product managers in Sri Lanka and beyond, grasping these fundamental user experience design process steps means better collaboration, clearer expectations, and ultimately, a superior end product. Let's dive into how thoughtful design planning leads to outstanding results.
@@ -640,7 +640,7 @@ This phase is critical for validating design decisions and ensuring that the fin
     wordCount: 69,
     readTime: `1 min read`,
     coverImage: `https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Embarking on a new website project is an exciting venture for any business owner in Sri Lanka. Your website isn't just an online brochure; it's your digital storefront, your marketing hub, and often the first impression potential customers have of your brand. But with so many agencies vying for your attention, knowing **how to choose web development company** can feel overwhelming. The key lies in asking the right questions`,
     ctaBlock: `Ask Uniix Studio all 10 of these questions. We welcome every single one. Contact us today.`,
     isStub: true,
@@ -872,7 +872,7 @@ Generally, you can expect to start seeing noticeable improvements in your rankin
     wordCount: 2025,
     readTime: `9 min read`,
     coverImage: `https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Building a powerful online presence is non-negotiable for businesses in Sri Lanka today. Whether you're a startup in Colombo or an established enterprise in Kandy, your website is often the first impression you make. This crucial decision often boils down to two main paths: opting for a popular Content Management System (CMS) like WordPress, or investing in a custom-built website from the ground up. Understanding the nuances of **WordPress vs custom development** is key to ensuring your digital foundation supports your business goals effectively.
 
 At Uniix Studio, we understand that this isn't just a technical choice; it's a strategic one that impacts your budget, scalability, and long-term digital growth. We’re here to guide you through this comparison, offering expert insights to help you decide which path is right for your unique business needs.
@@ -1108,7 +1108,7 @@ For businesses in Sri Lanka, setting up GA4 correctly is paramount to gaining ac
     wordCount: 1556,
     readTime: `7 min read`,
     coverImage: `https://images.pexels.com/photos/6802049/pexels-photo-6802049.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `The vibrant economic landscape of Sri Lanka is continually evolving, presenting both unique opportunities and significant challenges for businesses. In this dynamic environment, a strong brand is no longer a luxury but a necessity for survival and growth. But what does the current state of branding truly look like across the island? What are the critical branding statistics Sri Lanka 2026 reveals about local businesses?
 
 At Uniix Studio, we delve deep into these questions to bring you an exclusive report. Our findings indicate a growing awareness of branding's importance, yet significant gaps remain in strategic implementation and investment. This report aims to equip business owners, marketers, and journalists with actionable insights into current branding trends in Sri Lanka, helping you navigate the future with confidence.
@@ -1198,7 +1198,7 @@ In conclusion, the branding statistics Sri Lanka 2026 reveal a landscape of both
     wordCount: 1320,
     readTime: `6 min read`,
     coverImage: `https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `In today's digital age, establishing a strong online presence is no longer an option, but a necessity for businesses in Sri Lanka. If you're looking to expand your reach, boost sales, and connect with customers across the island and beyond, then **ecommerce website development Sri Lanka** is your strategic pathway forward. This comprehensive guide from Uniix Studio will walk you through everything you need to know to successfully launch and grow your online store by 2026, ensuring you're equipped with the insights and tools for success.
 
 We understand the unique challenges and opportunities within the Sri Lankan market. That's why we've crafted this guide to be practical, locally-specific, and packed with actionable advice to help you **build online store Sri Lanka** that truly thrives. From choosing the right platform to understanding payment gateways and mastering SEO, we're here to empower your digital journey.
@@ -1385,7 +1385,7 @@ At Uniix Studio, we understand that B2B buyers seek information that helps them 
     wordCount: 1354,
     readTime: `6 min read`,
     coverImage: `https://images.pexels.com/photos/6207365/pexels-photo-6207365.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Imagine a truly exceptional product or service. Perhaps it's a small boutique hotel in Ella with breathtaking views, a local artisan crafting exquisite jewelry in Galle, or a tech startup in Colombo with a revolutionary app. You know your offering is top-notch, yet your business struggles to stand out, attract the right customers, or achieve the growth you envision. If this resonates with you, you're likely encountering common **branding mistakes small business** owners frequently make.
 
 It’s easy to focus solely on your product or service, but your brand is the entire experience and perception your customers have of you. It's the story you tell, the feeling you evoke, and the promise you deliver. At Uniix Studio, we understand that a strong brand is not just about a pretty logo; it’s a strategic asset. We're here to help you identify these crucial brand design mistakes and provide actionable solutions to transform your business's presence and impact.
@@ -1466,7 +1466,7 @@ Consider a small local business`,
     wordCount: 1665,
     readTime: `8 min read`,
     coverImage: `https://images.pexels.com/photos/374074/pexels-photo-374074.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `The digital landscape in Sri Lanka is evolving rapidly, making the choice between a mobile app vs web app a pivotal decision for any business. Many assume a mobile app is always superior, or that a website is "good enough." This isn't always true. The right choice depends entirely on your business goals, target audience, and desired user experience.
 
 At Uniix Studio, we understand that this isn't just a technical decision; it's a strategic one that impacts your growth. By 2026, failing to choose the optimal platform could leave your business lagging behind. Let's break down the core differences to help you make an informed decision.
@@ -1591,7 +1591,7 @@ If your business model later demands advanced features, offline capabilities, or
     wordCount: 1261,
     readTime: `6 min read`,
     coverImage: `https://images.pexels.com/photos/7821498/pexels-photo-7821498.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `In the vibrant, competitive market of Sri Lanka, standing out isn't just about having a great product or service – it's about having a memorable, consistent brand. But how do you ensure everyone in your team, from design to marketing, speaks the same brand language? The answer lies in a robust **brand style guide template**. This essential document is your brand's bible, outlining every visual and verbal element to ensure consistency across all touchpoints. Uniix Studio, a creative digital agency in Sri Lanka, understands this deeply. We're here to show you exactly how to craft your own in 2026, complete with a free template to kickstart your journey.
 
 A well-defined brand style guide simplifies decision-making, accelerates content creation, and ultimately strengthens your brand's presence, whether you're a burgeoning startup in Colombo or an established enterprise reaching global markets. It's not just a nice-to-have; it's a strategic imperative. Ready to transform your brand's consistency? Let's dive in.
@@ -1704,7 +1704,7 @@ Creating your **brand style guide template** doesn't have to be an overwhelming 
     wordCount: 67,
     readTime: `1 min read`,
     coverImage: `https://images.pexels.com/photos/5483069/pexels-photo-5483069.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop`,
-    author: { name: `Sudewa Jayanath`, role: `Founder · Uniix Studio`, initial: `S` },
+    author: { name: `Uniix Studio`, role: `Founder · Uniix Studio`, initial: `S` },
     body: `Imagine a business with an incredible service, deep local knowledge, and a passion for connecting travellers with the beauty of Sri Lanka. Now, imagine that same business struggling to stand out in a vibrant, competitive market because it lacks a distinct visual voice. This was the precise challenge faced by Wasana Drivers, a dedicated team offering exceptional tour and transportation services across our island nation.
 
 At Uniix`,

@@ -125,8 +125,8 @@ export default function ContactPage() {
                       &lt; 24 hrs
                     </div>
                     <p className="text-white/80 text-[14px] leading-[1.55] mt-4 max-w-[34ch]">
-                      Every enquiry gets a real response from a real person — usually
-                      from Sudewa, our founder.
+                      Every enquiry gets a real response from a real person on
+                      the Uniix Studio team.
                     </p>
                   </div>
                 </div>

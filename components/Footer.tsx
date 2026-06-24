@@ -8,7 +8,7 @@ const socials = [
   { label: "Instagram", href: site.socials.instagram },
   { label: "LinkedIn", href: site.socials.linkedin },
   { label: "Facebook", href: site.socials.facebook },
-  { label: "Behance", href: "https://www.behance.net/sudewajayanath" },
+  { label: "Behance", href: "https://www.behance.net/uniixstudio" },
   { label: "Dribbble", href: "https://dribbble.com/uniixstudio" },
 ];
 

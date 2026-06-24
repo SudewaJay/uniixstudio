@@ -147,7 +147,7 @@ export default function ContactForm() {
           required
           value={form.name}
           onChange={(v) => update("name", v)}
-          placeholder="Sudewa Jayanath"
+          placeholder="Your full name"
           autoComplete="name"
         />
         <Field
