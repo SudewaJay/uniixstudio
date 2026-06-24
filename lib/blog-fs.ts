@@ -52,7 +52,7 @@ function readMdxPosts(): BlogPost[] {
         fm.coverImage ??
         "https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1600&q=80&auto=format&fit=crop",
       author: {
-        name: fm.author?.name ?? "Sudewa Jayanath",
+        name: fm.author?.name ?? "Uniix Studio",
         role: fm.author?.role ?? "Founder · Uniix Studio",
         initial: fm.author?.initial ?? "S",
       },
