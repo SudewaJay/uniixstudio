@@ -38,7 +38,42 @@ function nl2br(s: string): string {
   return escapeHtml(s).replace(/\n/g, "<br>");
 }
 
+/**
+ * Best-effort in-memory rate limiter — a sliding window per client IP.
+ * Fluid Compute reuses instances so this catches most abuse from a single
+ * source; it is not a hard guarantee across regions/instances. For strict
+ * limits, back this with a durable store (Upstash Redis / Vercel KV).
+ */
+const RATE_LIMIT_MAX = 5; // requests
+const RATE_LIMIT_WINDOW_MS = 60_000; // per minute
+const hits = new Map<string, number[]>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  // Opportunistically prune other stale keys so the map can't grow unbounded.
+  if (hits.size > 5000) {
+    for (const [key, times] of hits) {
+      if (times.every((t) => now - t >= RATE_LIMIT_WINDOW_MS)) hits.delete(key);
+    }
+  }
+  return recent.length > RATE_LIMIT_MAX;
+}
+
 export async function POST(req: Request) {
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests. Please wait a moment and try again." },
+      { status: 429 },
+    );
+  }
+
   let data: Payload;
   try {
     data = (await req.json()) as Payload;

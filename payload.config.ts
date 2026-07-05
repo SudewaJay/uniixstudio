@@ -107,7 +107,16 @@ export default buildConfig({
     PromoBar,
     Stats,
   ],
-  secret: process.env.PAYLOAD_SECRET || 'fallback-secret',
+  secret: (() => {
+    const secret = process.env.PAYLOAD_SECRET
+    if (!secret) {
+      throw new Error(
+        'PAYLOAD_SECRET is not set. Refusing to start with an insecure fallback — ' +
+          'set it in your environment (e.g. Vercel project env vars).',
+      )
+    }
+    return secret
+  })(),
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

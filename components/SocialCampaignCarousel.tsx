@@ -30,7 +30,8 @@ export default function SocialCampaignCarousel({
   accent?: string;
 }) {
   const reduce = useReducedMotion();
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(false); // transient hover/touch pause
+  const [userPaused, setUserPaused] = useState(false); // explicit toggle
   const controls = useAnimationControls();
 
   // Duplicate the list so the marquee loops without a visible seam
@@ -38,7 +39,7 @@ export default function SocialCampaignCarousel({
 
   useEffect(() => {
     if (reduce) return;
-    if (paused) {
+    if (paused || userPaused) {
       controls.stop();
       return;
     }
@@ -50,7 +51,7 @@ export default function SocialCampaignCarousel({
         repeat: Infinity,
       },
     });
-  }, [paused, reduce, durationSec, controls]);
+  }, [paused, userPaused, reduce, durationSec, controls]);
 
   if (!images || images.length === 0) return null;
 
@@ -74,6 +75,17 @@ export default function SocialCampaignCarousel({
             <p className="text-[clamp(16px,1.3vw,18px)] text-ink-2 leading-[1.6] mt-5 max-w-[60ch]">
               {description}
             </p>
+          )}
+          {!reduce && (
+            <button
+              type="button"
+              onClick={() => setUserPaused((p) => !p)}
+              aria-pressed={userPaused}
+              className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-ink-2 border border-line rounded-full px-4 py-2 hover:text-ink transition-colors"
+            >
+              <span aria-hidden="true">{userPaused ? "▶" : "❚❚"}</span>
+              {userPaused ? "Play animation" : "Pause animation"}
+            </button>
           )}
         </div>
       </div>

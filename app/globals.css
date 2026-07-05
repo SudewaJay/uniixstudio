@@ -152,6 +152,30 @@
   height: 100%;
   display: block;
 }
+/* Static gradient shown instantly under the hero while the WebGL shader is
+   deferred — matches the silk palette so the white H1 stays legible and there
+   is no layout shift or flash when the canvas mounts. */
+.hero-silk-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(140deg, #F0730F 0%, #F5972B 55%, #FBC24A 100%);
+}
+/* Fade the shader in over the fallback once it lazy-mounts. */
+.hero-silk-bg {
+  animation: silk-in 0.6s ease both;
+}
+@keyframes silk-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* Honour reduced-motion for the CSS-driven H1 word rise. Removing the
+   animation returns the words to their natural (visible) position. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise { animation: none !important; }
+  .hero-silk-bg { animation: none; }
+}
 /* Frosted glass overlay — keeps the existing hero copy legible over the silk */
 /* Shimmer pass — light highlight sweeps across italic accent on a slow loop */
 .shimmer-text {

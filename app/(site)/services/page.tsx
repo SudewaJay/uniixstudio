@@ -8,9 +8,9 @@ import { pillars, getServicesForPillar } from "@/lib/services";
 import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Services — Brand, Web, SEO & Digital Marketing | Uniix Studio Sri Lanka",
+  title: "Services — Brand, Web & Digital Marketing | Uniix Studio",
   description:
-    "Brand identity, web design and development, performance marketing, SEO and digital strategy — all under one roof. Explore Uniix Studio's three service pillars: Design, Technology, Growth.",
+    "Brand identity, web design, performance marketing and SEO — all under one roof. Explore Uniix Studio's three pillars: Design, Technology, Growth.",
   alternates: { canonical: site.canonical("/services/") },
 };
 

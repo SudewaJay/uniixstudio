@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -15,17 +15,37 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const path = usePathname();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    // rAF-throttle so we do at most one state update per frame during scroll.
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 24);
+        ticking = false;
+      });
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= DESKTOP_BP);
-    check();
+    // rAF-throttle the resize handler too — it only flips a boolean breakpoint.
+    let ticking = false;
+    const check = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setIsDesktop(window.innerWidth >= DESKTOP_BP);
+        ticking = false;
+      });
+    };
+    setIsDesktop(window.innerWidth >= DESKTOP_BP);
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
@@ -35,6 +55,46 @@ export default function Nav() {
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  // Focus management for the mobile drawer: trap Tab within the panel, close
+  // on Escape, and restore focus to the hamburger button when it closes.
+  useEffect(() => {
+    if (!open) return;
+    const opener = openerRef.current;
+    const panel = panelRef.current;
+    const first = panel?.querySelector<HTMLElement>(
+      'a[href], button:not([disabled])',
+    );
+    first?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !panel) return;
+      const focusable = Array.from(
+        panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+      );
+      if (focusable.length === 0) return;
+      const firstEl = focusable[0];
+      const lastEl = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === firstEl) {
+        e.preventDefault();
+        lastEl.focus();
+      } else if (!e.shiftKey && document.activeElement === lastEl) {
+        e.preventDefault();
+        firstEl.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      opener?.focus();
+    };
   }, [open]);
 
   return (
@@ -110,6 +170,7 @@ export default function Nav() {
             )}
             {!isDesktop && (
               <button
+                ref={openerRef}
                 onClick={() => setOpen(true)}
                 aria-label="Open navigation menu"
                 aria-expanded={open}
@@ -152,6 +213,7 @@ export default function Nav() {
             />
 
             <motion.div
+              ref={panelRef}
               id="mobile-menu"
               role="dialog"
               aria-modal="true"

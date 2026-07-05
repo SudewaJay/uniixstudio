@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, Variants } from "framer-motion";
 import HeroSilkBackground from "./HeroSilkBackground";
@@ -11,11 +12,6 @@ const containerVariants: Variants = {
   show: {
     transition: { staggerChildren: 0.09, delayChildren: 0.05 },
   },
-};
-
-const wordRise: Variants = {
-  hidden: { y: "105%" },
-  show: { y: "0%", transition: { duration: 0.85, ease: EASE_OUT } },
 };
 
 const fadeUp: Variants = {
@@ -37,9 +33,31 @@ export default function Hero() {
   const reduce = useReducedMotion();
   const initial = reduce ? "show" : "hidden";
 
+  // Defer the WebGL shader until the browser is idle so shader compilation and
+  // the rAF loop don't compete with the critical first paint / LCP.
+  const [showSilk, setShowSilk] = useState(false);
+  useEffect(() => {
+    const w = window as typeof window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    let id: number;
+    if (w.requestIdleCallback) {
+      id = w.requestIdleCallback(() => setShowSilk(true), { timeout: 1500 });
+    } else {
+      id = window.setTimeout(() => setShowSilk(true), 200);
+    }
+    return () => {
+      if (w.cancelIdleCallback) w.cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
+  }, []);
+
   return (
     <section className="pt-32 pb-20 md:pt-36 md:pb-28 relative overflow-hidden">
-      <HeroSilkBackground />
+      {/* Instant static backdrop; the animated shader fades in once idle. */}
+      <div className="hero-silk-fallback" aria-hidden="true" />
+      {showSilk && <HeroSilkBackground />}
       <div className="wrap relative z-10">
         <motion.div
           variants={containerVariants}
@@ -86,20 +104,17 @@ export default function Hero() {
               style={{ fontSize: "clamp(40px,8.5vw,112px)" }}
             >
               <span className="word">
-                <motion.span
-                  variants={wordRise}
-                  className="block font-display font-medium leading-[0.8] tracking-[-0.03em] text-white"
-                >
+                <span className="block font-display font-medium leading-[0.8] tracking-[-0.03em] text-white animate-rise">
                   Creative Digital Agency
-                </motion.span>
+                </span>
               </span>
               <span className="word" style={{ display: "block", marginTop: "-0.35em" }}>
-                <motion.span
-                  variants={wordRise}
-                  className="block italic-display font-display font-medium tracking-[-0.03em] leading-[0.8] shimmer-text"
+                <span
+                  className="block italic-display font-display font-medium tracking-[-0.03em] leading-[0.8] shimmer-text animate-rise"
+                  style={{ animationDelay: "0.09s" }}
                 >
                   for Bold Brands.
-                </motion.span>
+                </span>
               </span>
             </h1>
             <motion.p

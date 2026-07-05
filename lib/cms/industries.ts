@@ -1,6 +1,6 @@
 import { getPayload } from './client'
 
-export async function getIndustries(): Promise<any[]> {
+export async function getIndustries() {
   const payload = await getPayload()
   const res = await payload.find({
     collection: 'industries',
@@ -9,7 +9,7 @@ export async function getIndustries(): Promise<any[]> {
   return res.docs
 }
 
-export async function getIndustry(slug: string): Promise<any | undefined> {
+export async function getIndustry(slug: string) {
   const payload = await getPayload()
   const res = await payload.find({
     collection: 'industries',
