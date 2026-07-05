@@ -8,9 +8,9 @@ import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "About Uniix Studio | Creative Digital Agency Team in Sri Lanka",
+  title: "About Uniix Studio | Creative Design Agency in Sri Lanka",
   description:
-    "Meet the team behind Uniix Studio — a Colombo-based creative agency working with ambitious companies across Sri Lanka, Australia and the UK. Senior people, no middlemen, real results.",
+    "Meet the team behind Uniix Studio — a Colombo-based creative agency working with ambitious brands across Sri Lanka, Australia and the UK. No middlemen.",
   alternates: { canonical: site.canonical("/about/") },
 };
 

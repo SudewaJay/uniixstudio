@@ -14,9 +14,9 @@ import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Portfolio · Web Design, Branding & SEO Case Studies | Uniix Studio",
+  title: "Portfolio · Web, Branding & SEO Case Studies | Uniix Studio",
   description:
-    "Selected case studies from Uniix Studio — St Luke's Medical Laboratory, RentMyCar.lk, Zerro, Wasana Drivers, Coventry Business Club, Terraflow. Brand identity, web design and digital strategy work for ambitious brands.",
+    "Selected case studies from Uniix Studio — brand identity, web design and digital strategy work for ambitious brands across Sri Lanka, Australia & the UK.",
   alternates: { canonical: site.canonical("/portfolio/") },
 };
 
