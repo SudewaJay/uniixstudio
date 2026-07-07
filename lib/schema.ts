@@ -176,7 +176,10 @@ export function creativeWorkSchema(project: Project) {
           "@type": "Organization",
           name: project.client,
           ...(project.url ? { url: project.url } : {}),
-          ...(project.industry ? { industry: project.industry } : {}),
+          // `industry` is NOT a valid schema.org Organization property (it
+          // fails structured-data validation). `knowsAbout` is the correct
+          // property for the entity's field/sector.
+          ...(project.industry ? { knowsAbout: project.industry } : {}),
           ...(project.location
             ? {
                 address: {
@@ -186,7 +189,9 @@ export function creativeWorkSchema(project: Project) {
               }
             : {}),
         }
-      : project.industry,
+      : project.industry
+        ? { "@type": "Thing", name: project.industry }
+        : undefined,
     keywords: keywords || undefined,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
   };

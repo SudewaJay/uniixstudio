@@ -65,9 +65,23 @@ export default async function BlogPostPage({
   const post = getPost(slug);
   if (!post || post.isStub) notFound();
 
-  const related = posts
-    .filter((p) => !p.isStub && p.slug !== slug)
-    .slice(0, 3);
+  // Rotate the published list to start right after the current post (wrapping
+  // around) so every post is surfaced as "related" by the posts preceding it.
+  // The previous `.slice(0, 3)` always linked the same first three posts,
+  // leaving every other post with only its single blog-index link (Semrush:
+  // "pages have only one incoming internal link"). Same-category posts are
+  // preferred for relevance, then the rotated sequence fills the rest — which
+  // guarantees no post is orphaned.
+  const allPublished = posts.filter((p) => !p.isStub);
+  const curIdx = allPublished.findIndex((p) => p.slug === slug);
+  const rotated =
+    curIdx >= 0
+      ? [...allPublished.slice(curIdx + 1), ...allPublished.slice(0, curIdx)]
+      : allPublished.filter((p) => p.slug !== slug);
+  const related = [
+    ...rotated.filter((p) => p.category === post.category),
+    ...rotated.filter((p) => p.category !== post.category),
+  ].slice(0, 3);
 
   const schemas: object[] = [
     articleSchema(post),
