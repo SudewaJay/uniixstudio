@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { site } from "@/lib/content";
+import { locations } from "@/lib/locations";
 
 const socials = [
   { label: "Instagram", href: site.socials.instagram },
@@ -145,6 +146,35 @@ export default function Footer() {
         </Link>
 
         <div className="h-px bg-white/12" />
+
+        {/* Areas we serve — sitewide internal links to location pages */}
+        <div className="pt-5 md:pt-6 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/40 shrink-0">
+            Areas we serve
+          </span>
+          <ul className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
+            <li>
+              <Link
+                href="/locations"
+                className="text-[13px] text-white/55 hover:text-white transition-colors"
+              >
+                All areas
+              </Link>
+            </li>
+            {locations.map((l) => (
+              <li key={l.slug}>
+                <Link
+                  href={`/locations/${l.slug}`}
+                  className="text-[13px] text-white/55 hover:text-white transition-colors"
+                >
+                  Web design {l.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-5 md:mt-6 h-px bg-white/12" />
 
         {/* Bottom row — copyright + location + live clock */}
         <div className="pt-5 md:pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6">

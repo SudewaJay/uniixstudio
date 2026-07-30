@@ -4,6 +4,8 @@ import { pillars } from "@/lib/services";
 import { allServices as services } from "@/lib/services-fs";
 import { allPosts as posts } from "@/lib/blog-fs";
 import { getDetailedProjects } from "@/lib/projects-fs";
+import { locations } from "@/lib/locations";
+import { locationServices } from "@/lib/location-services";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -18,7 +20,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/about", priority: 0.7, freq: "monthly" },
     { path: "/contact", priority: 0.8, freq: "monthly" },
     { path: "/showreel", priority: 0.75, freq: "monthly" },
+    { path: "/locations", priority: 0.8, freq: "monthly" },
   ];
+
+  const locationRoutes = locations.map((l) => ({
+    path: `/locations/${l.slug}`,
+    priority: 0.85,
+    freq: "monthly" as const,
+  }));
+
+  const locationServiceRoutes = locationServices.map((ls) => ({
+    path: `/locations/${ls.area}/${ls.service}`,
+    priority: 0.8,
+    freq: "monthly" as const,
+  }));
 
   const pillarRoutes = pillars.map((p) => ({
     path: `/services/${p.slug}`,
@@ -50,6 +65,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const all = [
     ...staticRoutes.map((r) => ({ ...r, lastModified: now })),
     ...pillarRoutes.map((r) => ({ ...r, lastModified: now })),
+    ...locationRoutes.map((r) => ({ ...r, lastModified: now })),
+    ...locationServiceRoutes.map((r) => ({ ...r, lastModified: now })),
     ...serviceRoutes.map((r) => ({ ...r, lastModified: now })),
     ...portfolioRoutes.map((r) => ({ ...r, lastModified: now })),
     ...blogRoutes,
