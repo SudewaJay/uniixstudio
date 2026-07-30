@@ -6,6 +6,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import Reveal from "@/components/Reveal";
 import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
+import { locations } from "@/lib/locations";
 import {
   articleSchema,
   breadcrumbSchema,
@@ -82,6 +83,10 @@ export default async function BlogPostPage({
     ...rotated.filter((p) => p.category === post.category),
     ...rotated.filter((p) => p.category !== post.category),
   ].slice(0, 3);
+
+  // Location pages that reference this post → reverse internal link, so the
+  // link equity flows both ways (post ↔ service-area page).
+  const servingAreas = locations.filter((l) => l.relatedPosts.includes(slug));
 
   const schemas: object[] = [
     articleSchema(post),
@@ -329,6 +334,38 @@ export default async function BlogPostPage({
                 </Link>
               </div>
             </Reveal>
+          </div>
+        </section>
+      )}
+
+      {/* Serving local areas — reverse link to service-area pages */}
+      {servingAreas.length > 0 && (
+        <section className="py-14 md:py-16 border-t border-line-soft">
+          <div className="wrap">
+            <div className="max-w-3xl mx-auto text-center">
+              <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-ink-mute mb-3">
+                Local web design & SEO
+              </p>
+              <p className="text-ink/75 text-[16px] leading-[1.6] mb-5">
+                Uniix Studio puts these tactics to work for businesses across{" "}
+                {servingAreas.map((a, i) => (
+                  <span key={a.slug}>
+                    <Link
+                      href={`/locations/${a.slug}`}
+                      className="font-medium text-ink underline underline-offset-4 decoration-line hover:decoration-ink transition-colors"
+                    >
+                      {a.name}
+                    </Link>
+                    {i < servingAreas.length - 2
+                      ? ", "
+                      : i === servingAreas.length - 2
+                        ? " and "
+                        : ""}
+                  </span>
+                ))}
+                .
+              </p>
+            </div>
           </div>
         </section>
       )}

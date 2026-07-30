@@ -9,6 +9,21 @@ export const site = {
   whatsapp: "+94740555898",
   whatsappLink: "https://wa.me/94740555898",
   location: "Colombo, Sri Lanka",
+  /**
+   * Real, physical business address — MUST match your Google Business Profile
+   * character-for-character (same street line, same phone). This is the single
+   * NAP used across every location page's LocalBusiness schema.
+   * TODO(uniix): replace the placeholders below with your verified GBP details.
+   */
+  businessAddress: {
+    streetAddress: "", // TODO e.g. "123 Galle Road"
+    addressLocality: "Colombo", // TODO the town your GBP is registered in
+    addressRegion: "Western Province",
+    postalCode: "", // TODO e.g. "11500"
+    addressCountry: "LK",
+    // TODO set to your office's real coordinates (drop a pin in Google Maps).
+    geo: { lat: 6.9271, lng: 79.8612 },
+  },
   /** Build an absolute canonical URL for a page path. */
   canonical: (path: string = "/") => {
     const clean = path.startsWith("/") ? path : `/${path}`;

@@ -12,9 +12,30 @@ import { site } from "@/lib/content";
 import type { BlogPost } from "@/lib/blog";
 import type { Service, Pillar } from "@/lib/services";
 import type { Project } from "@/lib/projects";
+import { locations, type Location } from "@/lib/locations";
+import type { LocationService } from "@/lib/location-services";
 
 const SITE_URL = site.url.replace(/\/$/, "");
 const LOGO_URL = `${SITE_URL}/uniix-logo.svg`;
+
+/** True once real geo coordinates are configured in site.businessAddress. */
+function hasGeo(): boolean {
+  const { lat, lng } = site.businessAddress.geo;
+  return typeof lat === "number" && typeof lng === "number";
+}
+
+/** The single real business PostalAddress, omitting empty placeholder fields. */
+function postalAddress() {
+  const a = site.businessAddress;
+  return {
+    "@type": "PostalAddress",
+    ...(a.streetAddress && { streetAddress: a.streetAddress }),
+    addressLocality: a.addressLocality,
+    ...(a.addressRegion && { addressRegion: a.addressRegion }),
+    ...(a.postalCode && { postalCode: a.postalCode }),
+    addressCountry: a.addressCountry,
+  };
+}
 
 // ---------- Site-wide ----------
 
@@ -55,12 +76,20 @@ export function localBusinessSchema() {
     telephone: site.whatsapp,
     email: site.email,
     description: site.description,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Colombo",
-      addressCountry: "LK",
-    },
+    address: postalAddress(),
+    ...(hasGeo() && {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: site.businessAddress.geo.lat,
+        longitude: site.businessAddress.geo.lng,
+      },
+    }),
     areaServed: [
+      // Towns we actively serve — town-level signals for local ranking.
+      ...locations.map((l) => ({
+        "@type": "City" as const,
+        name: l.name,
+      })),
       { "@type": "Country", name: "Sri Lanka" },
       { "@type": "Country", name: "Australia" },
       { "@type": "Country", name: "United Kingdom" },
@@ -71,6 +100,86 @@ export function localBusinessSchema() {
       site.socials.linkedin,
     ],
     priceRange: "$$",
+  };
+}
+
+/**
+ * Per service-area LocalBusiness node for /locations/[area] pages.
+ * Uses the ONE real business address + a GeoCircle around the town, so Google
+ * reads it as "this business serves {town}" — not a fake second location.
+ */
+export function localBusinessAreaSchema(loc: Location) {
+  const pageUrl = `${SITE_URL}/locations/${loc.slug}/`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "@id": `${pageUrl}#localbusiness`,
+    name: `${site.name} — ${loc.name}`,
+    url: pageUrl,
+    image: LOGO_URL,
+    logo: LOGO_URL,
+    telephone: site.whatsapp,
+    email: site.email,
+    description: loc.metaDescription,
+    parentOrganization: { "@id": `${SITE_URL}/#organization` },
+    address: postalAddress(),
+    ...(hasGeo() && {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: site.businessAddress.geo.lat,
+        longitude: site.businessAddress.geo.lng,
+      },
+    }),
+    areaServed: {
+      "@type": "City",
+      name: loc.name,
+      containedInPlace: {
+        "@type": "AdministrativeArea",
+        name: `${loc.district} District`,
+      },
+      ...(loc.geo && {
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: loc.geo.lat,
+          longitude: loc.geo.lng,
+        },
+      }),
+    },
+    sameAs: [
+      site.socials.facebook,
+      site.socials.instagram,
+      site.socials.linkedin,
+    ],
+    priceRange: "$$",
+  };
+}
+
+/**
+ * Service schema for a /locations/[area]/[service] combo page — a specific
+ * service scoped to a specific town.
+ */
+export function locationServiceSchema(ls: LocationService, loc: Location) {
+  const pageUrl = `${SITE_URL}/locations/${ls.area}/${ls.service}/`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${pageUrl}#service`,
+    name: `${ls.serviceLabel} in ${loc.name}`,
+    serviceType: ls.serviceLabel,
+    description: ls.metaDescription,
+    provider: { "@id": `${SITE_URL}/#organization` },
+    areaServed: {
+      "@type": "City",
+      name: loc.name,
+      ...(loc.geo && {
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: loc.geo.lat,
+          longitude: loc.geo.lng,
+        },
+      }),
+    },
+    url: pageUrl,
   };
 }
 
