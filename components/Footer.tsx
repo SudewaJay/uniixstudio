@@ -82,7 +82,7 @@ export default function Footer() {
           </ul>
           <a
             href={`mailto:${site.email}`}
-            className="text-[14px] md:text-[15px] font-medium text-white/55 hover:text-white transition-colors"
+            className="inline-flex items-center min-h-[24px] text-[14px] md:text-[15px] font-medium text-white/55 hover:text-white transition-colors"
           >
             {site.email}
           </a>
@@ -149,7 +149,7 @@ export default function Footer() {
 
         {/* Areas we serve — sitewide internal links to location pages */}
         <div className="pt-5 md:pt-6 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-          <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/40 shrink-0">
+          <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/60 shrink-0">
             Areas we serve
           </span>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
@@ -178,7 +178,7 @@ export default function Footer() {
 
         {/* Bottom row — copyright + location + live clock */}
         <div className="pt-5 md:pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6">
-          <div className="text-[12px] md:text-[13px] text-white/45">
+          <div className="text-[12px] md:text-[13px] text-white/60">
             Uniix Studio © {new Date().getFullYear()} · All rights reserved
           </div>
           <div className="flex items-center gap-3 text-[12px] md:text-[13px] text-white/55">

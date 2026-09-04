@@ -37,13 +37,17 @@ export const site = {
   },
 };
 
+/**
+ * Primary navigation. Deliberately four items: Contact is promoted out of the
+ * list into the header's primary CTA, and Home is the logo. Every route that
+ * left this list is still reachable from the footer, so no internal-link
+ * equity is lost.
+ */
 export const nav = [
-  { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/portfolio", label: "Work" },
-  { href: "/blog", label: "Insights" },
   { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/blog", label: "Insights" },
 ];
 
 export const clients = [
@@ -280,26 +284,52 @@ export const testimonials = [
   },
 ];
 
+/**
+ * Delivery process. `deliverables` restates what each stage's `desc` already
+ * describes, itemised — used by the homepage process timeline. No new claims.
+ */
 export const process = [
   {
     num: "01",
     title: "Discover",
     desc: "Deep-dive workshops to understand your business goals, audience, and what success actually looks like — before a single pixel moves.",
+    deliverables: [
+      "Stakeholder workshops",
+      "Audience & market context",
+      "Success definition",
+    ],
   },
   {
     num: "02",
     title: "Define",
     desc: "Strategy, messaging frameworks, sitemaps and creative direction — all aligned before we move into design and development.",
+    deliverables: [
+      "Strategy & messaging framework",
+      "Sitemap & information architecture",
+      "Creative direction",
+    ],
   },
   {
     num: "03",
     title: "Design & Build",
     desc: "Brand systems, pixel-perfect UI, and production-ready code — delivered in tight, reviewable sprints with weekly check-ins.",
+    deliverables: [
+      "Brand systems",
+      "UI design",
+      "Production-ready code",
+      "Weekly review sprints",
+    ],
   },
   {
     num: "04",
     title: "Launch & Grow",
     desc: "Launch is the start, not the end. We run analytics, optimise conversion, and partner with you on growth campaigns long after delivery.",
+    deliverables: [
+      "Launch",
+      "Analytics setup",
+      "Conversion optimisation",
+      "Ongoing growth campaigns",
+    ],
   },
 ];
 

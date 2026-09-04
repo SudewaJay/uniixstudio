@@ -2,18 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   UNIIX DESIGN SYSTEM
+   Tokens first, then primitives (type, buttons, layout), then components.
+   Every value here is a system step — no one-off magic numbers in JSX.
+   ========================================================================== */
+
 @layer base {
+  :root {
+    /* Motion — three durations only. */
+    --dur-micro: 200ms;
+    --dur-std: 400ms;
+    --dur-reveal: 650ms;
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    /* Layout */
+    --container: 1280px;
+    --gutter: 20px;
+
+    /* Sticky offset: promo bar (36) + nav (~68) */
+    --header-h: 104px;
+
+    /*
+      Display face. Google Sans Flex loads from Google's CDN (see layout head)
+      — it is not open-licensed, so next/font cannot self-host it. The fallback
+      stack is sans, matched roughly on x-height so the `display=swap` reflow
+      is as small as possible.
+    */
+    --font-display: "Google Sans Flex", "Google Sans", system-ui,
+      -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    /* Body uses the same family — one text face for the whole site. Lexend is
+       no longer loaded. */
+    --font-sans: var(--font-display);
+
+    /* Google Sans Flex also exposes GRAD, ROND and wdth; we leave those at
+       their defaults and drive only opsz + slnt from the type scale. */
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --gutter: 32px;
+    }
+  }
+
   html {
-    scroll-behavior: smooth;
+    /* NOTE: smooth scrolling is scoped to anchor jumps only (see below).
+       Applying it to `html` makes every programmatic scroll animate across
+       the whole document, which is unusable on a long page. */
+    scroll-padding-top: var(--header-h);
   }
   body {
-    background: #FBFAF6;
-    color: #1A1410;
+    background: #fbfaf6;
+    color: #12100e;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     overflow-x: hidden;
+    /* Running text sits at the family's text optical size, not the display
+       one. font-variation-settings INHERITS, so any body copy nested inside a
+       heading would otherwise pick up that heading's "opsz" 144 and render
+       with display-weight strokes at 15px. The text classes below re-assert
+       it for exactly that reason. */
+    font-variation-settings: "opsz" 18, "slnt" 0;
   }
   ::selection {
-    background: #F07B20;
+    background: #bf4508;
     color: #fff;
   }
   ::-webkit-scrollbar {
@@ -21,338 +74,459 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #FBFAF6;
+    background: #fbfaf6;
   }
   ::-webkit-scrollbar-thumb {
-    background: #F07B20;
+    background: rgba(18, 16, 14, 0.28);
     border-radius: 10px;
-    border: 2px solid #FBFAF6;
+    border: 2px solid #fbfaf6;
   }
-  /* Global focus-visible ring */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #bf4508;
+  }
+
+  /* Visible focus ring on every interactive element, light + dark surfaces. */
   :focus-visible {
-    outline: 2px solid #F07B20;
+    outline: 2px solid #bf4508;
     outline-offset: 3px;
     border-radius: 4px;
   }
+  .on-dark :focus-visible,
+  .on-dark:focus-visible {
+    outline-color: #f8c84a;
+  }
 }
 
-/* Skip to content */
+/* Skip link ---------------------------------------------------------------- */
 .skip-link {
   position: absolute;
   top: -100%;
   left: 1rem;
   padding: 0.75rem 1.5rem;
-  background: #1A1410;
+  background: #12100e;
   color: #fff;
   font-size: 14px;
   font-weight: 600;
   font-family: var(--font-sans), system-ui, sans-serif;
   z-index: 9999;
   border-radius: 0 0 12px 12px;
-  transition: top 0.2s ease;
+  transition: top var(--dur-micro) var(--ease);
   text-decoration: none;
 }
 .skip-link:focus {
   top: 0;
-  outline: 2px solid #F07B20;
+  outline: 2px solid #bf4508;
   outline-offset: -2px;
 }
 
 @layer components {
+  /* ---------------------------------------------------------------- Layout */
   .wrap {
-    @apply max-w-[1320px] mx-auto px-5 md:px-8;
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
+  /* Wider container for full-bleed editorial moments. */
+  .wrap-wide {
+    width: 100%;
+    max-width: 1560px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Section rhythm — three densities, all from the spacing scale. */
+  .section {
+    @apply py-[80px] md:py-[120px];
+  }
+  .section-tight {
+    @apply py-[64px] md:py-[80px];
+  }
+  .section-loose {
+    @apply py-[96px] md:py-[144px];
+  }
+
+  /* ------------------------------------------------------------ Typography */
+  /* Display — reserved for the hero and the final CTA. One per page, ideally. */
+  .t-display {
+    @apply font-display font-medium;
+    font-size: clamp(40px, 6.2vw, 88px);
+    line-height: 0.94;
+    letter-spacing: -0.042em;
+    font-variation-settings: "opsz" 144, "slnt" 0;
+  }
+  /* Section headline. */
+  .t-h2 {
+    @apply font-display font-medium;
+    font-size: clamp(34px, 4.6vw, 62px);
+    line-height: 1.05;
+    letter-spacing: -0.036em;
+    font-variation-settings: "opsz" 144, "slnt" 0;
+  }
+  /* Card / item headline. */
+  .t-h3 {
+    @apply font-display font-medium;
+    font-size: clamp(22px, 2.2vw, 30px);
+    line-height: 1.18;
+    letter-spacing: -0.028em;
+    font-variation-settings: "opsz" 72, "slnt" 0;
+  }
+  .t-h4 {
+    @apply font-display font-medium;
+    font-size: clamp(18px, 1.5vw, 21px);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 48, "slnt" 0;
+  }
+  /* Statistical / editorial numerals. */
+  .t-numeral {
+    @apply font-display font-medium tabular-nums;
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    font-variation-settings: "opsz" 144, "slnt" 0;
+  }
+  /* Running text. These re-assert opsz so they stay correct when nested
+     inside a display-scale ancestor (font-variation-settings inherits). */
+  .t-lead {
+    font-size: clamp(17px, 1.35vw, 20px);
+    line-height: 1.58;
+    letter-spacing: -0.008em;
+    font-variation-settings: "opsz" 24, "slnt" 0;
+  }
+  .t-body {
+    font-size: 15px;
+    line-height: 1.65;
+    letter-spacing: -0.003em;
+    font-variation-settings: "opsz" 18, "slnt" 0;
+  }
+  /* Mono meta is JetBrains Mono — no variable axes to reset. */
+  .t-meta {
+    @apply font-mono uppercase;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+  }
+  /*
+    Accent slant. Google Sans Flex has NO italic face — `font-style: italic`
+    would synthesise a sheared oblique. It does expose a real `slnt` axis
+    (-10..0), so the accent lines use that instead: a genuine designed slant.
+    font-variation-settings is not additive, so every rule restates opsz.
+  */
+  .t-italic {
+    font-style: normal;
+    font-variation-settings: "opsz" 144, "slnt" -10;
+  }
+
+  /* Eyebrow — one rule, used by every section header. */
   .eyebrow {
-    @apply font-mono text-[11px] font-medium tracking-[0.18em] uppercase text-ink-2 inline-flex items-center gap-[10px];
+    @apply t-meta inline-flex items-center gap-3 text-ink-mute;
   }
   .eyebrow::before {
     content: "";
-    @apply w-6 h-px bg-brand-grad;
+    @apply w-7 h-px bg-brand-ink;
+    flex: none;
   }
-  .display {
-    @apply font-display font-normal tracking-[-0.025em] leading-[1.02];
-    font-variation-settings: "opsz" 144;
+  .on-dark .eyebrow {
+    @apply text-white/60;
   }
-  .italic-display {
-    @apply italic;
-    font-variation-settings: "opsz" 144, "SOFT" 100;
+  .on-dark .eyebrow::before {
+    @apply bg-brand-2;
   }
-  .gradient-text {
+
+  /* Accent text. `.accent` is the text-safe solid; `.accent-grad-text` is the
+     darkened gradient, valid only at >=24px (3:1 large-text threshold). */
+  .accent {
+    @apply text-brand-ink;
+  }
+  .on-dark .accent {
+    @apply text-brand-2;
+  }
+  .accent-grad-text {
+    @apply bg-accent-grad bg-clip-text text-transparent;
+  }
+  .on-dark .accent-grad-text {
     @apply bg-brand-grad bg-clip-text text-transparent;
   }
-  /* Animated variant — gradient slowly drifts left↔right on a 6s loop. */
-  .gradient-text-animated {
-    background: linear-gradient(
-      120deg,
-      #F8C84A 0%,
-      #F5A623 25%,
-      #F07B20 50%,
-      #E8621A 75%,
-      #F8C84A 100%
-    );
-    background-size: 220% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    animation: gradient-drift 6s ease-in-out infinite;
-  }
-  @keyframes gradient-drift {
-    0%, 100% { background-position: 0% 50%; }
-    50%      { background-position: 100% 50%; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .gradient-text-animated { animation: none; }
-  }
+
+  /* --------------------------------------------------------------- Buttons */
+  /* One button system. Same height, radius, type and focus everywhere. */
   .btn {
-    @apply inline-flex items-center gap-[10px] px-7 py-4 rounded-full font-medium text-[15px] transition-all duration-300 whitespace-nowrap cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-medium
+           whitespace-nowrap cursor-pointer select-none;
+    min-height: 52px;
+    padding: 0 28px;
+    font-size: 15px;
+    letter-spacing: -0.008em;
+    font-variation-settings: "opsz" 18, "slnt" 0;
+    transition:
+      background-color var(--dur-micro) var(--ease),
+      color var(--dur-micro) var(--ease),
+      border-color var(--dur-micro) var(--ease),
+      transform var(--dur-micro) var(--ease),
+      box-shadow var(--dur-std) var(--ease);
   }
+  .btn-sm {
+    min-height: 44px;
+    padding: 0 20px;
+    font-size: 14px;
+  }
+
+  /* Primary — solid ink. The single most important action on a light surface. */
   .btn-primary {
     @apply bg-ink text-white border border-ink;
   }
   .btn-primary:hover {
-    @apply -translate-y-0.5 shadow-[0_16px_40px_-10px_rgba(26,20,16,0.45)];
+    @apply -translate-y-0.5 shadow-lift;
+    background: #241f1a;
   }
-  .btn-grad {
-    @apply bg-brand-grad text-white;
+
+  /* Accent — solid text-safe orange (white on #BF4508 = 5.16:1). */
+  .btn-accent {
+    @apply bg-brand-ink text-white border border-brand-ink;
   }
-  .btn-grad:hover {
-    @apply -translate-y-0.5 shadow-[0_16px_40px_-10px_rgba(232,98,26,0.45)];
+  .btn-accent:hover {
+    @apply -translate-y-0.5;
+    background: #a33a06;
+    border-color: #a33a06;
+    box-shadow: 0 18px 44px -14px rgba(191, 69, 8, 0.55);
   }
-  .btn-ghost {
+
+  /* Secondary — outline on light. */
+  .btn-secondary {
     @apply bg-transparent text-ink border border-line;
   }
-  .btn-ghost:hover {
+  .btn-secondary:hover {
+    @apply bg-ink text-white border-ink -translate-y-0.5;
+  }
+
+  /* Dark-surface pair. */
+  .btn-light {
+    @apply bg-white text-ink border border-white;
+  }
+  .btn-light:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 18px 44px -14px rgba(0, 0, 0, 0.6);
+  }
+  .btn-outline-light {
+    @apply bg-transparent text-white border border-line-dark;
+  }
+  .btn-outline-light:hover {
+    @apply bg-white text-ink border-white -translate-y-0.5;
+  }
+
+  /* Text CTA — the third tier. "View case study ↗" */
+  .link-cta {
+    @apply inline-flex items-center gap-2 font-medium text-ink;
+    font-size: 15px;
+    letter-spacing: -0.008em;
+    font-variation-settings: "opsz" 18, "slnt" 0;
+    /* Target size. 2.5.8 (AA) wants 24x24 for a standalone control; on a
+       coarse pointer we go to the 44px comfort size. The border stays on the
+       text baseline via padding-bottom, so the box grows upward only. */
+    min-height: 24px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(18, 16, 14, 0.25);
+    transition:
+      color var(--dur-micro) var(--ease),
+      border-color var(--dur-micro) var(--ease),
+      gap var(--dur-micro) var(--ease);
+  }
+  .link-cta:hover {
+    @apply text-brand-ink gap-3;
+    border-color: #bf4508;
+  }
+  @media (pointer: coarse) {
+    .link-cta {
+      min-height: 44px;
+      align-items: flex-end;
+    }
+  }
+  .on-dark .link-cta {
+    @apply text-white;
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+  }
+  .on-dark .link-cta:hover {
+    @apply text-brand-2;
+    border-bottom-color: #f5a623;
+  }
+
+  /* Arrow glyph — nudges on hover of any parent marked .group */
+  .cta-arrow {
+    @apply inline-block;
+    transition: transform var(--dur-micro) var(--ease);
+  }
+  .group:hover .cta-arrow,
+  .link-cta:hover .cta-arrow {
+    transform: translate(2px, -2px);
+  }
+
+  /* ------------------------------------------------------------- Utilities */
+  .rule {
+    @apply h-px w-full bg-line;
+  }
+  .on-dark .rule {
+    @apply bg-line-dark;
+  }
+  /* Image frame — every project/editorial image shares this treatment. */
+  .frame {
+    @apply relative overflow-hidden rounded-lg2 bg-bg-warm;
+  }
+  .frame img {
+    transition: transform var(--dur-reveal) var(--ease);
+  }
+  .group:hover .frame img,
+  .frame.is-hover img {
+    transform: scale(1.04);
+  }
+}
+
+/* ==========================================================================
+   LEGACY COMPATIBILITY LAYER
+   The homepage now uses the tokens above. The other ~40 routes (services,
+   portfolio, about, blog, industries, locations, contact) still author with
+   the original class names, so those names are kept and re-pointed at the new
+   system. Every page therefore inherits the contrast fix for free — most
+   importantly `.gradient-text`, which at #F8C84A scored 1.51:1 on cream and is
+   used for the accent line of nearly every heading on the site.
+
+   New work should use `.t-h2` / `.t-italic` / `.accent-grad-text` / `.btn-*`.
+   ========================================================================== */
+@layer components {
+  .display {
+    @apply font-display font-medium tracking-[-0.035em] leading-[1.05];
+    font-variation-settings: "opsz" 144, "slnt" 0;
+  }
+  .italic-display {
+    font-style: normal;
+    font-variation-settings: "opsz" 144, "slnt" -10;
+  }
+  /* Re-pointed from the bright ramp (1.51:1) to the text-safe ramp (3.85:1 at
+     its lightest stop). Valid for large text; on dark surfaces the bright ramp
+     is restored, where it scores 12:1. */
+  .gradient-text {
+    @apply bg-accent-grad bg-clip-text text-transparent;
+  }
+  .on-dark .gradient-text,
+  .bg-ink .gradient-text,
+  .bg-bg-ink .gradient-text {
+    @apply bg-brand-grad bg-clip-text text-transparent;
+  }
+  .gradient-text-animated {
+    @apply bg-accent-grad bg-clip-text text-transparent;
+  }
+
+  .btn-ghost {
+    @apply btn-secondary;
+  }
+  .btn-grad {
+    @apply btn-accent;
+  }
+
+  /* Process rows — still used by /services. */
+  .process-row {
+    transition: padding var(--dur-std) var(--ease);
+  }
+  .process-row:hover {
+    @apply pl-3;
+  }
+  .process-row:hover .pr-num {
+    @apply bg-accent-grad bg-clip-text text-transparent;
+  }
+  .process-row:hover .pr-icon {
     @apply bg-ink text-white border-ink;
   }
 }
 
-/* Hero word-rise clip — framer-motion drives the transform */
-.word {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-}
-.word > span {
-  display: inline-block;
+/* ==========================================================================
+   Motion primitives
+   ========================================================================== */
+
+/* Smooth scrolling for anchor jumps only — never for programmatic scrolls. */
+@media (prefers-reduced-motion: no-preference) {
+  :has(:target) {
+    scroll-behavior: smooth;
+  }
 }
 
-/* Hero silk shader backdrop — WebGL fluid orange palette */
-.hero-silk-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.hero-silk-bg canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-/* Static gradient shown instantly under the hero while the WebGL shader is
-   deferred — matches the silk palette so the white H1 stays legible and there
-   is no layout shift or flash when the canvas mounts. */
-.hero-silk-fallback {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(140deg, #F0730F 0%, #F5972B 55%, #FBC24A 100%);
-}
-/* Fade the shader in over the fallback once it lazy-mounts. */
-.hero-silk-bg {
-  animation: silk-in 0.6s ease both;
-}
-@keyframes silk-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-/* Honour reduced-motion for the CSS-driven H1 word rise. Removing the
-   animation returns the words to their natural (visible) position. */
-@media (prefers-reduced-motion: reduce) {
-  .animate-rise { animation: none !important; }
-  .hero-silk-bg { animation: none; }
-}
-/* Frosted glass overlay — keeps the existing hero copy legible over the silk */
-/* Shimmer pass — light highlight sweeps across italic accent on a slow loop */
-.shimmer-text {
-  background: linear-gradient(
-    100deg,
-    #1A0F08 0%,
-    #1A0F08 40%,
-    rgba(255, 255, 255, 0.95) 50%,
-    #1A0F08 60%,
-    #1A0F08 100%
-  );
-  background-size: 220% 100%;
-  background-position: 200% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer-pass 4s ease-in-out infinite;
-}
-@keyframes shimmer-pass {
-  0%   { background-position: 200% 0; }
-  55%  { background-position: -60% 0; }
-  100% { background-position: -60% 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .shimmer-text { animation: none; background: #1A0F08; -webkit-background-clip: text; background-clip: text; }
-}
-
-.hero-silk-glass {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(40px) saturate(130%) brightness(1.05);
-  -webkit-backdrop-filter: blur(40px) saturate(130%) brightness(1.05);
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 96%);
-  mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 96%);
-}
-
-/* Hero backdrop — subtle static brand-warm tint */
-.hero-grid-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(60% 50% at 80% 20%, rgba(248, 200, 74, 0.18), transparent 70%),
-    radial-gradient(50% 50% at 10% 90%, rgba(232, 98, 26, 0.10), transparent 70%);
-}
-/* Animated grid mesh — slides one tile width (80px) left→right on a seamless loop */
-.hero-grid-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, rgba(26, 20, 16, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(26, 20, 16, 0.06) 1px, transparent 1px);
-  background-size: 80px 80px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 80%);
-  animation: hero-grid-slide 18s linear infinite;
-  will-change: background-position;
-}
-@keyframes hero-grid-slide {
-  from { background-position: 0 0, 0 0; }
-  to   { background-position: 80px 0, 80px 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-grid-bg::after { animation: none; }
-}
-
-/* Service cards — list row hover arrows */
-.service-list li {
-  @apply py-3.5 text-sm flex items-center justify-between gap-3 border-b transition-[padding] duration-300;
-}
-.service-list li::after {
-  content: "→";
-  @apply opacity-0 -translate-x-1 transition-all duration-300 text-[13px];
-}
-.service-card:hover .service-list li::after {
-  @apply opacity-70 translate-x-0;
-}
-.service-list li:hover {
-  @apply pl-2;
-}
-
-/* Process row hover */
-.process-row {
-  @apply transition-[padding] duration-300;
-}
-.process-row:hover {
-  @apply pl-3;
-}
-.process-row:hover .pr-num {
-  @apply bg-brand-grad bg-clip-text text-transparent;
-}
-.process-row:hover .pr-icon {
-  @apply bg-ink text-white border-ink;
-}
-
-/* Marquee — must repeat */
+/* Marquee (hero services strip) */
 .marquee-track {
   display: flex;
-  gap: 4rem;
-  animation: scroll 38s linear infinite;
+  gap: 0;
+  animation: marquee 42s linear infinite;
   width: max-content;
 }
 .marquee-track:hover {
   animation-play-state: paused;
 }
-@keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-/* Vertical poster columns — alternating up/down infinite scroll */
-@keyframes scrollColUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
-}
-@keyframes scrollColDown {
-  from { transform: translateY(-50%); }
-  to { transform: translateY(0); }
-}
-.scroll-col-up {
-  animation: scrollColUp var(--scroll-duration, 40s) linear infinite;
-  will-change: transform;
-}
-.scroll-col-down {
-  animation: scrollColDown var(--scroll-duration, 40s) linear infinite;
-  will-change: transform;
-}
-.scroll-col-pause:hover .scroll-col-up,
-.scroll-col-pause:hover .scroll-col-down {
-  animation-play-state: paused;
-}
-@media (max-width: 639px) {
-  /* Disable column scroll on mobile — keep stack static */
-  .scroll-col-up,
-  .scroll-col-down {
-    animation: none;
+@keyframes marquee {
+  from {
+    transform: translateX(0);
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  .scroll-col-up,
-  .scroll-col-down {
-    animation: none;
+  to {
+    transform: translateX(-50%);
   }
 }
 
-/* Status dot */
+/* Availability dot */
 .status-dot {
-  @apply w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse2;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
-}
-@keyframes pulse2 {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
-}
-.animate-pulse2 {
-  animation: pulse2 2s ease infinite;
+  @apply w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse2;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.18);
+  flex: none;
 }
 
-/* Respect user motion preferences */
+/* Hero entrance. Deliberately CSS, not JS: the above-the-fold copy must never
+   sit at opacity:0 waiting for a framer-motion bundle to hydrate. */
+.rise-in {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rise-in var(--dur-reveal) var(--ease) forwards;
+}
+@keyframes rise-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Text mask reveal — used by the hero headline. Lines clip to their own box
+   and rise into place; removing the animation leaves them naturally visible. */
+.mask-line {
+  display: block;
+  overflow: hidden;
+}
+.mask-line > span {
+  display: block;
+  transform: translateY(105%);
+  animation: mask-rise var(--dur-reveal) var(--ease) forwards;
+}
+@keyframes mask-rise {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Reduced motion — a clean static experience, not a degraded one.
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .mask-line > span,
+  .rise-in {
+    opacity: 1;
+    transform: none;
+    animation: none;
   }
   .marquee-track {
-    animation-play-state: paused;
-  }
-  .status-dot,
-  .animate-pulse2 {
     animation: none;
+    transform: none;
   }
-  .process-row,
-  .service-list li,
-  .service-list li::after {
-    transition: none;
+  .status-dot {
+    animation: none;
   }
 }

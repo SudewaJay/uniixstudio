@@ -6,6 +6,9 @@ const nextConfig = {
   // Per SEO Masterplan: every URL ends with a trailing slash for consistency
   trailingSlash: true,
   images: {
+    // AVIF first, WebP fallback. Next only negotiates formats the browser
+    // advertises, so older clients still get WebP/JPEG.
+    formats: ["image/avif", "image/webp"],
     // Scoped to the CDNs actually in use — Cloudinary (next-cloudinary),
     // Vercel Blob (Payload uploads), Pexels (blog covers) and Vimeo thumbnails.
     // Avoid the "**" wildcard: it lets any origin proxy through the image

@@ -5,27 +5,33 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { nav } from "@/lib/content";
+import { PROMO_BAR_HEIGHT } from "./PromoBar";
 import Logo from "./Logo";
 import clsx from "clsx";
 
-const DESKTOP_BP = 1024;
-
+/**
+ * Header.
+ *
+ * Desktop/mobile split is done with CSS breakpoints, NOT a JS `isDesktop`
+ * boolean. The previous implementation initialised that flag to `false`, so
+ * the server rendered only a hamburger — the entire primary navigation was
+ * absent from the HTML (invisible to crawlers and no-JS) and visibly swapped
+ * in after hydration on every page load.
+ */
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
   const path = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
   const openerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // rAF-throttle so we do at most one state update per frame during scroll.
     let ticking = false;
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 24);
+        setScrolled(window.scrollY > 16);
         ticking = false;
       });
     };
@@ -35,38 +41,24 @@ export default function Nav() {
   }, []);
 
   useEffect(() => {
-    // rAF-throttle the resize handler too — it only flips a boolean breakpoint.
-    let ticking = false;
-    const check = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        setIsDesktop(window.innerWidth >= DESKTOP_BP);
-        ticking = false;
-      });
-    };
-    setIsDesktop(window.innerWidth >= DESKTOP_BP);
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  useEffect(() => { setOpen(false); }, [path]);
+    setOpen(false);
+  }, [path]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
-  // Focus management for the mobile drawer: trap Tab within the panel, close
-  // on Escape, and restore focus to the hamburger button when it closes.
+  // Drawer focus management: move focus in, trap Tab, Escape closes, focus
+  // returns to the opener.
   useEffect(() => {
     if (!open) return;
     const opener = openerRef.current;
     const panel = panelRef.current;
-    const first = panel?.querySelector<HTMLElement>(
-      'a[href], button:not([disabled])',
-    );
-    first?.focus();
+    const sel = 'a[href], button:not([disabled])';
+    panel?.querySelector<HTMLElement>(sel)?.focus();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -75,18 +67,16 @@ export default function Nav() {
         return;
       }
       if (e.key !== "Tab" || !panel) return;
-      const focusable = Array.from(
-        panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
-      );
-      if (focusable.length === 0) return;
-      const firstEl = focusable[0];
-      const lastEl = focusable[focusable.length - 1];
-      if (e.shiftKey && document.activeElement === firstEl) {
+      const f = Array.from(panel.querySelectorAll<HTMLElement>(sel));
+      if (!f.length) return;
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
-        lastEl.focus();
-      } else if (!e.shiftKey && document.activeElement === lastEl) {
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
         e.preventDefault();
-        firstEl.focus();
+        first.focus();
       }
     };
 
@@ -97,108 +87,81 @@ export default function Nav() {
     };
   }, [open]);
 
+  const isActive = (href: string) => path === href || path === `${href}/`;
+
   return (
     <>
-      <nav
+      <header
         className={clsx(
-          "fixed inset-x-0 z-[100] bg-bg transition-all duration-300",
+          "fixed inset-x-0 z-[100] transition-all duration-std ease-uniix",
           scrolled
-            ? "py-3 border-b border-line shadow-[0_1px_20px_-6px_rgba(26,20,16,0.10)]"
-            : "py-4 border-b border-line-soft"
+            ? "bg-bg/85 backdrop-blur-xl border-b border-line py-3"
+            : "bg-transparent border-b border-transparent py-4",
         )}
-        style={{ top: 36 }}
+        style={{ top: PROMO_BAR_HEIGHT }}
       >
-        <div className="wrap flex items-center justify-between gap-4">
-
-          {/* Logo — left */}
+        <nav aria-label="Primary" className="wrap flex items-center gap-6">
           <Logo />
 
-          {/* Nav links — center (desktop only) */}
-          {isDesktop && (
-            <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
-              {nav.map((item) => {
-                const active = path === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    style={{
-                      position: "relative",
-                      padding: "8px 14px",
-                      fontSize: "14px",
-                      fontWeight: 500,
-                      borderRadius: "8px",
-                      whiteSpace: "nowrap",
-                      color: active ? "#1A1410" : "#3A2F26",
-                      textDecoration: "none",
-                      transition: "color 0.2s",
-                    }}
-                  >
-                    {item.label}
-                    {active && (
-                      <span
-                        style={{
-                          position: "absolute",
-                          bottom: "2px",
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          width: "4px",
-                          height: "4px",
-                          borderRadius: "50%",
-                          background: "#E8621A",
-                          display: "block",
-                        }}
-                        aria-hidden="true"
-                      />
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
+          {/* Desktop links — server-rendered, hidden by CSS under 1024px. */}
+          <ul className="hidden lg:flex items-center gap-1 ml-auto">
+            {nav.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={clsx(
+                    "relative inline-flex items-center px-4 py-2.5 rounded-full text-[14.5px] font-medium",
+                    "transition-colors duration-micro ease-uniix",
+                    isActive(item.href)
+                      ? "text-ink"
+                      : "text-ink-2 hover:text-ink",
+                  )}
+                >
+                  {item.label}
+                  {isActive(item.href) && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-1 h-1 rounded-full bg-brand-ink"
+                    />
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-          {/* CTA + hamburger — right */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            {isDesktop && (
-              <Link
-                href="/contact"
-                className="btn btn-grad"
-                style={{ fontSize: "14px", padding: "10px 20px", display: "inline-flex" }}
+          <div className="flex items-center gap-3 ml-auto lg:ml-4">
+            <Link href="/contact" className="btn btn-primary btn-sm hidden sm:inline-flex">
+              Start a project <span className="cta-arrow">↗</span>
+            </Link>
+
+            {/* Mobile opener — hidden by CSS at >=1024px. */}
+            <button
+              ref={openerRef}
+              onClick={() => setOpen(true)}
+              aria-label="Open navigation menu"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              className="lg:hidden grid place-items-center w-11 h-11 rounded-full bg-ink text-white"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                aria-hidden="true"
               >
-                Let&apos;s talk ↗
-              </Link>
-            )}
-            {!isDesktop && (
-              <button
-                ref={openerRef}
-                onClick={() => setOpen(true)}
-                aria-label="Open navigation menu"
-                aria-expanded={open}
-                aria-controls="mobile-menu"
-                style={{
-                  display: "grid",
-                  placeItems: "center",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  background: "#1A1410",
-                  color: "white",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="3" y1="8" x2="21" y2="8" />
-                  <line x1="3" y1="16" x2="21" y2="16" />
-                </svg>
-              </button>
-            )}
+                <line x1="3" y1="8" x2="21" y2="8" />
+                <line x1="3" y1="16" x2="21" y2="16" />
+              </svg>
+            </button>
           </div>
+        </nav>
+      </header>
 
-        </div>
-      </nav>
-
-      {/* Mobile drawer */}
       <AnimatePresence>
         {open && (
           <>
@@ -207,7 +170,7 @@ export default function Nav() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[190] bg-ink/30 backdrop-blur-sm"
+              className="fixed inset-0 z-[190] bg-ink/40 backdrop-blur-sm lg:hidden"
               onClick={() => setOpen(false)}
               aria-hidden="true"
             />
@@ -221,59 +184,65 @@ export default function Nav() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-              className="fixed top-0 right-0 bottom-0 z-[200] w-full max-w-sm bg-bg px-8 pt-20 pb-10 flex flex-col gap-1 shadow-[-8px_0_40px_rgba(26,20,16,0.12)]"
+              transition={{ duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
+              className="fixed top-0 right-0 bottom-0 z-[200] w-full max-w-sm bg-bg px-7 pt-20 pb-8 flex flex-col shadow-[-8px_0_40px_rgba(18,16,14,0.16)] lg:hidden overflow-y-auto"
             >
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close navigation menu"
-                className="absolute top-6 right-6 grid place-items-center w-10 h-10 rounded-full bg-ink text-white"
+                className="absolute top-6 right-6 grid place-items-center w-11 h-11 rounded-full bg-ink text-white"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
 
-              <div className="flex flex-col gap-1 mb-8">
-                {nav.map((item, i) => (
-                  <motion.div
+              <ul className="flex flex-col">
+                {[...nav, { href: "/contact", label: "Contact" }].map((item, i) => (
+                  <motion.li
                     key={item.href}
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, x: 16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.08 + i * 0.055, duration: 0.28, ease: "easeOut" }}
+                    transition={{ delay: 0.06 + i * 0.05, duration: 0.28, ease: "easeOut" }}
                   >
                     <Link
                       href={item.href}
+                      aria-current={isActive(item.href) ? "page" : undefined}
                       className={clsx(
-                        "py-4 font-display text-3xl font-medium border-b border-line-soft block transition-colors duration-200",
-                        path === item.href ? "text-brand-4" : "text-ink hover:text-brand-4"
+                        "py-4 font-display text-[30px] font-medium border-b border-line-soft block tracking-[-0.02em] transition-colors duration-micro",
+                        isActive(item.href) ? "text-brand-ink" : "text-ink hover:text-brand-ink",
                       )}
                     >
                       {item.label}
                     </Link>
-                  </motion.div>
+                  </motion.li>
                 ))}
-              </div>
+              </ul>
 
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.38, duration: 0.28, ease: "easeOut" }}
+                transition={{ delay: 0.34, duration: 0.28, ease: "easeOut" }}
+                className="mt-8"
               >
-                <Link href="/contact" className="btn btn-grad w-full justify-center">
-                  Let&apos;s talk ↗
+                <Link href="/contact" className="btn btn-accent w-full">
+                  Start a project <span className="cta-arrow">↗</span>
                 </Link>
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.45, duration: 0.3 }}
-                className="mt-auto font-mono text-[11px] tracking-[0.14em] uppercase text-ink-mute"
-              >
+              <div className="mt-auto pt-10 t-meta text-ink-mute">
                 Colombo · Working globally
-              </motion.div>
+              </div>
             </motion.div>
           </>
         )}
