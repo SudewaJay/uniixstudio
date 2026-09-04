@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Lexend, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThirdPartyScripts from "@/components/ThirdPartyScripts";
@@ -16,17 +16,6 @@ import PromoBar from "@/components/PromoBar";
 import Footer from "@/components/Footer";
 import "../globals.css";
 
-const display = Fraunces({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-display",
-  axes: ["opsz", "SOFT"],
-});
-const sans = Lexend({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-sans",
-});
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
@@ -99,8 +88,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
-      <head />
+    <html lang="en" className={mono.variable}>
+      <head>
+        {/*
+          Google Sans Flex — display AND body.
+          It is NOT in next/font's bundled catalog and is not open-licensed, so
+          it cannot be self-hosted through next/font — it loads from Google's
+          CDN. preconnect to both hosts keeps the extra hop off the critical
+          path as much as possible, and `display=swap` means text paints in the
+          fallback immediately rather than blocking.
+
+          Axes requested: opsz 6–144 (optical sizing for display type),
+          slnt -10–0 (a real slant axis — the accent lines use it instead of a
+          synthetic oblique, since the family ships no true italic),
+          wght 300–800.
+
+          It is the only text face on the site now (JetBrains Mono still
+          handles the mono meta labels), so Lexend is no longer downloaded —
+          that saving offsets part of this third-party request.
+        */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,slnt,wght@6..144,-10..0,300..800&display=swap"
+        />
+      </head>
       <body className="font-sans">
         <JsonLd data={siteSchema} />
         <a href="#main-content" className="skip-link">Skip to main content</a>
