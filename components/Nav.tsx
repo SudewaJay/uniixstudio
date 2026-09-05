@@ -20,6 +20,7 @@ import clsx from "clsx";
  */
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [overDark, setOverDark] = useState(false);
   const [open, setOpen] = useState(false);
   const path = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -39,6 +40,31 @@ export default function Nav() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /**
+   * Invert the bar while it sits over a dark hero.
+   *
+   * Any section can opt in with `data-nav-invert` — the homepage hero is
+   * full-bleed dark video, so the default ink-on-cream nav would be invisible
+   * against it. Driven by IntersectionObserver rather than a scroll threshold
+   * so it stays correct at any hero height, and re-queried on route change
+   * because the sentinel is per-page.
+   */
+  useEffect(() => {
+    const target = document.querySelector("[data-nav-invert]");
+    if (!target) {
+      setOverDark(false);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => setOverDark(entry.isIntersecting),
+      // Shrink the viewport box to the strip the header occupies: the target
+      // intersects it only while it is actually behind the bar.
+      { rootMargin: `-${PROMO_BAR_HEIGHT + 64}px 0px 0px 0px`, threshold: 0 },
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, [path]);
 
   useEffect(() => {
     setOpen(false);
@@ -89,6 +115,9 @@ export default function Nav() {
 
   const isActive = (href: string) => path === href || path === `${href}/`;
 
+  /** Inverted only while transparent AND over a dark section. */
+  const light = overDark && !scrolled;
+
   return (
     <>
       <header
@@ -101,7 +130,7 @@ export default function Nav() {
         style={{ top: PROMO_BAR_HEIGHT }}
       >
         <nav aria-label="Primary" className="wrap flex items-center gap-6">
-          <Logo />
+          <Logo light={light} />
 
           {/* Desktop links — server-rendered, hidden by CSS under 1024px. */}
           <ul className="hidden lg:flex items-center gap-1 ml-auto">
@@ -114,15 +143,22 @@ export default function Nav() {
                     "relative inline-flex items-center px-4 py-2.5 rounded-full text-[14.5px] font-medium",
                     "transition-colors duration-micro ease-uniix",
                     isActive(item.href)
-                      ? "text-ink"
-                      : "text-ink-2 hover:text-ink",
+                      ? light
+                        ? "text-white"
+                        : "text-ink"
+                      : light
+                        ? "text-white/75 hover:text-white"
+                        : "text-ink-2 hover:text-ink",
                   )}
                 >
                   {item.label}
                   {isActive(item.href) && (
                     <span
                       aria-hidden="true"
-                      className="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-1 h-1 rounded-full bg-brand-ink"
+                      className={clsx(
+                        "absolute left-1/2 -translate-x-1/2 bottom-0.5 w-1 h-1 rounded-full",
+                        light ? "bg-brand-2" : "bg-brand-ink",
+                      )}
                     />
                   )}
                 </Link>
@@ -131,7 +167,13 @@ export default function Nav() {
           </ul>
 
           <div className="flex items-center gap-3 ml-auto lg:ml-4">
-            <Link href="/contact" className="btn btn-primary btn-sm hidden sm:inline-flex">
+            <Link
+              href="/contact"
+              className={clsx(
+                "btn btn-sm hidden sm:inline-flex",
+                light ? "btn-light" : "btn-primary",
+              )}
+            >
               Start a project <span className="cta-arrow">↗</span>
             </Link>
 
@@ -142,7 +184,10 @@ export default function Nav() {
               aria-label="Open navigation menu"
               aria-expanded={open}
               aria-controls="mobile-menu"
-              className="lg:hidden grid place-items-center w-11 h-11 rounded-full bg-ink text-white"
+              className={clsx(
+                "lg:hidden grid place-items-center w-11 h-11 rounded-full transition-colors duration-micro ease-uniix",
+                light ? "bg-white text-ink" : "bg-ink text-white",
+              )}
             >
               <svg
                 width="18"

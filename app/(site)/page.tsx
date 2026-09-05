@@ -12,6 +12,7 @@ import Insights from "@/components/home/Insights";
 import FinalCTA from "@/components/home/FinalCTA";
 import { site } from "@/lib/content";
 import { allProjects } from "@/lib/projects-fs";
+import { getShowreelFilms } from "@/lib/showreel-fs";
 
 /**
  * Curated order for the homepage work showcase. Each of these has an MDX case
@@ -38,7 +39,9 @@ export const metadata: Metadata = {
   alternates: { canonical: site.canonical("/") },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const films = await getShowreelFilms();
+
   const homeWork = HOME_WORK_ORDER.map((slug) =>
     allProjects.find((p) => p.slug === slug),
   ).filter((p): p is NonNullable<typeof p> => Boolean(p));
@@ -52,7 +55,7 @@ export default function HomePage() {
 
   return (
     <>
-      {/* 01 */} <Hero projects={homeWork} />
+      {/* 01 */} <Hero films={films} />
       {/* 02 */} <BrandStatement />
       {/* 03 */} <Pillars proof={pillarProof} />
       {/* 04 */} <WorkShowcase items={homeWork} />

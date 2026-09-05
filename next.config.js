@@ -20,6 +20,10 @@ const nextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "image.thum.io" },
       { protocol: "https", hostname: "vumbnail.com" },
+      // Vimeo's own thumbnail CDN. vumbnail.com caps at 640px, which is too
+      // soft for a full-bleed hero poster; i.vimeocdn serves the same frame at
+      // any width via the `-d_<w>` suffix (1920 ≈ 91KB).
+      { protocol: "https", hostname: "i.vimeocdn.com" },
     ],
   },
   async redirects() {

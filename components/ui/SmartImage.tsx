@@ -10,8 +10,10 @@ import clsx from "clsx";
  * viewport.
  *
  * SVGs bypass the optimizer (Next refuses to optimize SVG without
- * `dangerouslyAllowSVG`, and vector marks gain nothing from it) but still get
- * explicit dimensions so they never shift layout.
+ * `dangerouslyAllowSVG`, and vector marks gain nothing from it). They carry no
+ * width/height attributes; instead they fill an already-sized parent via
+ * `absolute inset-0`, so the box exists before the file arrives and there is
+ * still no layout shift.
  *
  * `sizes` is required by convention: without it Next assumes 100vw and serves
  * a desktop-width file to phones.
