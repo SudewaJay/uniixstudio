@@ -39,12 +39,32 @@ const mdxSlugs = new Set(mdxProjects.map((p) => p.slug));
  * that don't yet have an MDX file. Feature flag controls ordering inside
  * the grid.
  */
-export const allProjects: Project[] = [
+const CURATED_ORDER = [
+  "rentmycar-lk",
+  "st-lukes-medilab",
+  "ecowave-energy",
+  "sierra-energy-solutions",
+  "zerro",
+  "wasana",
+  "terraflow",
+  "coventry",
+];
+
+const rawProjects: Project[] = [
   ...mdxProjects,
   ...legacyProjects
     .filter((p) => !mdxSlugs.has(p.slug))
     .map((p) => ({ ...p, hasDetail: false }) as Project),
 ];
+
+export const allProjects: Project[] = [...rawProjects].sort((a, b) => {
+  const indexA = CURATED_ORDER.indexOf(a.slug);
+  const indexB = CURATED_ORDER.indexOf(b.slug);
+  if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+  if (indexA !== -1) return -1;
+  if (indexB !== -1) return 1;
+  return 0;
+});
 
 export function getProject(slug: string): Project | undefined {
   return allProjects.find((p) => p.slug === slug);

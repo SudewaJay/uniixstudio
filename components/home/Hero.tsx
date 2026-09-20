@@ -1,271 +1,147 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  motion,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
-import SmartImage from "../ui/SmartImage";
+import type { ReelFilm } from "./HeroShowreel";
 
-const EASE = [0.22, 0.61, 0.36, 1] as const;
-
-export type HeroProject = {
-  slug: string;
-  title: string;
-  overline: string;
-  coverImage: string;
-};
-
-/** Verified figures — the numbers already published on the site. */
-const STATS = [
-  { value: "50+", label: "Projects shipped" },
-  { value: "30+", label: "Clients served" },
-  { value: "92%", label: "Client retention" },
-];
-
-/** Card placement + parallax depth for the desktop cluster. */
-const LAYOUT = [
-  { pos: "left-0 top-[8%] w-[62%] aspect-[4/5] z-[3]", depth: 14 },
-  { pos: "right-0 top-0 w-[46%] aspect-[3/4] z-[2]", depth: 7 },
-  { pos: "right-[6%] bottom-0 w-[54%] aspect-[4/3] z-[4]", depth: 18 },
-];
-
-function HeroCard({
-  project,
-  index,
-  px,
-  py,
-  parallax,
-  reduce,
-}: {
-  project: HeroProject;
-  index: number;
-  px: MotionValue<number>;
-  py: MotionValue<number>;
-  parallax: boolean;
-  reduce: boolean | null;
-}) {
-  const { pos, depth } = LAYOUT[index] ?? LAYOUT[0];
-  // Hooks are called unconditionally; only their *use* is conditional.
-  const x = useTransform(px, (v) => v * depth);
-  const y = useTransform(py, (v) => v * depth);
-
-  return (
-    <motion.article
-      className={`absolute ${pos} group`}
-      initial={reduce ? false : { opacity: 0, y: 26, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.7, delay: 0.16 + index * 0.09, ease: EASE }}
-      style={parallax ? { x, y } : undefined}
-    >
-      <Link
-        href={`/portfolio/${project.slug}/`}
-        className="block frame h-full shadow-lift ring-1 ring-black/5"
-      >
-        <SmartImage
-          src={project.coverImage}
-          alt={`${project.title} — ${project.overline}`}
-          sizes="(min-width:1280px) 28vw, (min-width:768px) 34vw, 80vw"
-          priority={index === 0}
-        />
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-std ease-uniix"
-        />
-        <span className="absolute inset-x-0 bottom-0 p-5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 transition-all duration-std ease-uniix">
-          <span className="block t-meta text-white/70 text-[10px]">
-            {project.overline.split("·")[0].trim()}
-          </span>
-          <span className="mt-1.5 flex items-center gap-2 font-display font-medium text-white text-[19px] tracking-[-0.02em]">
-            {project.title} <span className="cta-arrow">↗</span>
-          </span>
-        </span>
-      </Link>
-    </motion.article>
-  );
+interface HeroProps {
+  films?: ReelFilm[];
 }
 
 /**
- * Hero.
+ * Cinematic Hero Section.
  *
- * Replaces the previous full-bleed WebGL silk shader (3 nested 6-octave fBm
- * evaluations per pixel at 2× DPR, running at 60fps for the life of the page,
- * under a backdrop-blur layer) with real project work. The studio's quality is
- * now demonstrated rather than asserted, and the hero costs no GPU.
- *
- * Parallax is pointer-driven, spring-damped, ≤18px, and switched off entirely
- * for touch input and reduced-motion.
+ * Full-bleed, full-height HTML5 video hero with layered dark cinematic overlays,
+ * minimal centered typography, dual action CTAs, and a subtle scroll indicator.
+ * Seamlessly integrates under the inverted header via `data-nav-invert`.
  */
-export default function Hero({ projects }: { projects: HeroProject[] }) {
-  const reduce = useReducedMotion();
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [fine, setFine] = useState(false);
-
-  const px = useSpring(0, { stiffness: 60, damping: 18, mass: 0.6 });
-  const py = useSpring(0, { stiffness: 60, damping: 18, mass: 0.6 });
-
-  useEffect(() => {
-    setFine(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
-  }, []);
-
-  const parallax = fine && !reduce;
-
-  useEffect(() => {
-    if (!parallax) return;
-    const el = stageRef.current;
-    if (!el) return;
-    const onMove = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      px.set(((e.clientX - r.left) / r.width - 0.5) * 2);
-      py.set(((e.clientY - r.top) / r.height - 0.5) * 2);
-    };
-    const onLeave = () => {
-      px.set(0);
-      py.set(0);
-    };
-    el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
-    return () => {
-      el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-    };
-  }, [parallax, px, py]);
-
-  const shown = projects.slice(0, 3);
-
+export default function Hero({}: HeroProps = {}) {
   return (
-    <section className="relative overflow-hidden bg-bg pt-[132px] pb-[64px] md:pt-[152px] md:pb-[88px]">
-      {/* Warm ambient wash — static, cheap, keeps the cream from going flat. */}
+    <section
+      data-nav-invert
+      aria-label="Introduction"
+      className="on-dark relative isolate flex min-h-[720px] h-[100svh] w-full flex-col justify-between overflow-hidden bg-bg-ink text-white"
+    >
+      {/* Background HTML5 Video Layer with Fallback Poster */}
       <div
+        className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-bg-ink"
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            "radial-gradient(58% 48% at 88% 8%, rgba(248,200,74,0.22), transparent 68%), radial-gradient(46% 44% at 2% 92%, rgba(232,98,26,0.10), transparent 70%)",
+          backgroundImage: "url('/images/hero-poster.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
-      />
+      >
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/images/hero-poster.jpg"
+          className="hero-video absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.88] contrast-[1.04]"
+        >
+          <source media="(max-width: 768px)" src="/videos/hero-mobile.mp4" type="video/mp4" />
+          <source src="/videos/hero.mp4" type="video/mp4" />
+          <source src="/videos/hero.webm" type="video/webm" />
+        </video>
 
-      <div className="wrap relative">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.06fr)_minmax(0,40%)] lg:gap-14 xl:gap-20 lg:items-center">
-          {/* ------------------------------------------------------ Copy */}
-          <div className="min-w-0">
-            <div
-              className="rise-in flex flex-wrap items-center gap-x-5 gap-y-2"
-              style={{ animationDelay: "40ms" }}
+        {/* Layer 1: Dark Directional Gradient Overlay for Navigation & Bottom Contrast */}
+        <div
+          className="hero-overlay absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(14,11,8,0.75) 0%, rgba(14,11,8,0.26) 30%, rgba(14,11,8,0.36) 65%, rgba(14,11,8,0.92) 100%)",
+          }}
+        />
+
+        {/* Layer 2: Editorial Center Vignette for Flawless Typographic Contrast */}
+        <div
+          className="absolute inset-0 z-[2] pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(14,11,8,0.22) 0%, rgba(14,11,8,0.70) 100%)",
+          }}
+        />
+
+        {/* Layer 3: Warm Amber Atmospheric Light in Peripheral Deep Shadows */}
+        <div
+          className="absolute inset-0 z-[2] pointer-events-none opacity-30 mix-blend-screen"
+          style={{
+            background:
+              "radial-gradient(50% 50% at 85% 85%, rgba(217,84,11,0.25) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Layer 4: Soft Edge Fade Seamlessly Connecting into BrandStatement */}
+        <div className="absolute inset-x-0 bottom-0 h-32 z-[3] pointer-events-none bg-gradient-to-b from-transparent to-bg-ink" />
+      </div>
+
+      {/* Optical Header Clearance Spacer:
+          Balances the fixed top announcement bar (36px) + header (~68px) = ~104px */}
+      <div className="h-[96px] sm:h-[104px] w-full shrink-0 pointer-events-none" aria-hidden="true" />
+
+      {/* Main Centered Hero Content */}
+      <div className="wrap relative z-10 flex flex-1 flex-col items-center justify-center text-center px-4 sm:px-6">
+        {/* Main Headline */}
+        <h1 className="t-display text-white max-w-[1180px] font-medium leading-[0.92] sm:leading-[0.90] tracking-[-0.058em] text-[clamp(44px,7.2vw,104px)]">
+          <span className="mask-line">
+            <span style={{ animationDelay: "100ms" }} className="block">
+              We build brands
+            </span>
+          </span>
+          <span className="mask-line mt-1 sm:mt-2">
+            <span
+              style={{ animationDelay: "220ms" }}
+              className="t-italic accent-grad-text block"
             >
-              <span className="eyebrow">Creative Digital Agency</span>
-              <span className="inline-flex items-center gap-2 t-meta text-ink-mute">
-                <span className="status-dot" />
-                2 slots open for Q3 2026
-              </span>
-            </div>
+              people remember.
+            </span>
+          </span>
+        </h1>
 
-            <h1 className="t-display mt-7">
-              <span className="mask-line">
-                <span style={{ animationDelay: "80ms" }}>We build brands</span>
-              </span>
-              <span className="mask-line">
-                <span
-                  className="t-italic accent-grad-text"
-                  style={{ animationDelay: "170ms" }}
-                >
-                  people remember.
-                </span>
-              </span>
-            </h1>
+        {/* Minimal Supporting Text */}
+        <p
+          className="rise-in mt-6 sm:mt-7 max-w-[640px] text-white/80 font-normal leading-[1.55] sm:leading-[1.6] text-[clamp(15px,1.2vw,17.5px)] tracking-[-0.01em]"
+          style={{ animationDelay: "380ms" }}
+        >
+          Brand identities, digital experiences, and growth systems for ambitious companies.
+        </p>
 
-            <p
-              className="rise-in t-lead mt-7 max-w-[52ch] text-ink-2"
-              style={{ animationDelay: "300ms" }}
-            >
-              Uniix Studio is a creative digital agency in Colombo. We design brand
-              identities, build conversion-focused websites, and run the growth systems
-              that keep them earning — for ambitious companies in Sri Lanka and beyond.
-            </p>
-
-            <div
-              className="rise-in mt-9 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap"
-              style={{ animationDelay: "380ms" }}
-            >
-              <Link href="/contact" className="btn btn-primary group">
-                Start a project <span className="cta-arrow">↗</span>
-              </Link>
-              <Link href="/portfolio" className="btn btn-secondary">
-                View our work
-              </Link>
-            </div>
-
-            {/* Stats — typographic, on a rule. No cards, no decoration. */}
-            <dl
-              className="rise-in mt-12 md:mt-14 grid grid-cols-3 gap-3 sm:gap-8 border-t border-line pt-7 max-w-[520px]"
-              style={{ animationDelay: "460ms" }}
-            >
-              {STATS.map((s) => (
-                <div key={s.label}>
-                  <dt className="sr-only">{s.label}</dt>
-                  <dd>
-                    <span className="t-numeral block text-[clamp(34px,4.4vw,52px)] text-ink">
-                      {s.value}
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="t-meta mt-3 block text-ink-mute text-[9px] sm:text-[10px] tracking-[0.1em] sm:tracking-[0.18em] leading-[1.5]"
-                    >
-                      {s.label}
-                    </span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          {/* --------------------------------------------------- Work stage */}
-          <div ref={stageRef} className="relative min-w-0">
-            {/* Desktop: overlapping editorial cluster with pointer parallax. */}
-            <div className="hidden md:block relative h-[540px] lg:h-[600px]">
-              {shown.map((p, i) => (
-                <HeroCard
-                  key={p.slug}
-                  project={p}
-                  index={i}
-                  px={px}
-                  py={py}
-                  parallax={parallax}
-                  reduce={reduce}
-                />
-              ))}
-            </div>
-
-            {/* Mobile: a swipeable strip. Same content, native interaction. */}
-            <div className="md:hidden -mx-[var(--gutter)]">
-              <ul className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-[var(--gutter)] pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                {shown.map((p) => (
-                  <li key={p.slug} className="snap-start shrink-0 w-[68%]">
-                    <Link href={`/portfolio/${p.slug}/`} className="block group">
-                      <div className="frame aspect-[4/5] shadow-sm2">
-                        <SmartImage
-                          src={p.coverImage}
-                          alt={`${p.title} — ${p.overline}`}
-                          sizes="70vw"
-                        />
-                      </div>
-                      <span className="mt-3 flex items-center gap-1.5 t-h4 text-ink">
-                        {p.title} <span className="cta-arrow accent">↗</span>
-                      </span>
-                      <span className="mt-1 block t-meta text-ink-mute text-[10px]">
-                        {p.overline.split("·")[0].trim()}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+        {/* Dual CTA Buttons */}
+        <div
+          className="rise-in mt-8 sm:mt-9 flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 w-full sm:w-auto"
+          style={{ animationDelay: "500ms" }}
+        >
+          <Link
+            href="/contact/"
+            className="btn btn-light group w-full sm:w-auto min-h-[54px] min-w-[188px] px-8 text-[15px] font-medium tracking-[-0.01em] shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.5)] transition-all duration-std ease-uniix"
+          >
+            Start a project <span className="cta-arrow ml-1">↗</span>
+          </Link>
+          <Link
+            href="/portfolio/"
+            className="btn btn-outline-light w-full sm:w-auto min-h-[54px] min-w-[172px] px-8 text-[15px] font-medium tracking-[-0.01em] border-white/30 hover:border-white hover:bg-white/10 transition-all duration-std ease-uniix"
+          >
+            View our work
+          </Link>
         </div>
+      </div>
+
+      {/* Subtle Scroll Indicator */}
+      <div
+        className="rise-in relative z-10 shrink-0 pb-6 sm:pb-8 flex flex-col items-center justify-center pointer-events-auto"
+        style={{ animationDelay: "620ms" }}
+      >
+        <a
+          href="#brand-statement"
+          aria-label="Scroll to explore"
+          className="group flex flex-col items-center gap-2 text-white/45 hover:text-white transition-colors duration-std ease-uniix"
+        >
+          <span className="w-[20px] h-[32px] rounded-full border border-white/35 group-hover:border-white/70 flex items-start justify-center p-[4px] transition-colors duration-std ease-uniix">
+            <span className="w-1 h-2 rounded-full bg-white/75 group-hover:bg-white animate-[bounce_2s_infinite]" />
+          </span>
+          <span className="text-[10px] tracking-[0.18em] uppercase font-mono text-white/40 group-hover:text-white/80 transition-colors duration-std ease-uniix">
+            Scroll
+          </span>
+        </a>
       </div>
     </section>
   );
