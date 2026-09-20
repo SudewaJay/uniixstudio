@@ -6,6 +6,7 @@ import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: "Portfolio / Selected Work | Uniix Studio",
   description:
     "Explore the selected work archive of Uniix Studio — identities, digital products, websites, and growth systems engineered to solve real business problems across Sri Lanka, Australia & the UK.",

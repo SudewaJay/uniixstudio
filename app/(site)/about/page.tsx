@@ -8,6 +8,7 @@ import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: "About Uniix Studio | Creative Design Agency in Sri Lanka",
   description:
     "Meet the team behind Uniix Studio — a Colombo-based creative agency working with ambitious brands across Sri Lanka, Australia and the UK. No middlemen.",

@@ -36,6 +36,7 @@ const PILLAR_PROOF: { pillar: string; slug: string; evidence: string }[] = [
 ];
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   alternates: { canonical: site.canonical("/") },
 };
 

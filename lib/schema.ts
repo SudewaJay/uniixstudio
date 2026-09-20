@@ -367,7 +367,8 @@ export function schemaGraph(...nodes: object[]) {
     "@context": "https://schema.org",
     "@graph": nodes.map((n) => {
       // Strip nested @context — only the wrapper needs one
-      const { "@context": _ctx, ...rest } = n as Record<string, unknown>;
+      const rest = { ...(n as Record<string, unknown>) };
+      delete rest["@context"];
       return rest;
     }),
   };
