@@ -11,7 +11,7 @@ import Reveal from "../Reveal";
  */
 export default function BrandStatement() {
   return (
-    <section className="on-dark relative overflow-hidden bg-bg-ink text-white section-tight">
+    <section id="brand-statement" className="on-dark relative overflow-hidden bg-bg-ink text-white section-tight">
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none opacity-70"

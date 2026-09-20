@@ -1,133 +1,147 @@
 import Link from "next/link";
-import HeroShowreel, { type ReelFilm } from "./HeroShowreel";
+import type { ReelFilm } from "./HeroShowreel";
 
-/** Verified figures — the numbers already published on the site. */
-const STATS = [
-  { value: "50+", label: "Projects shipped" },
-  { value: "30+", label: "Clients served" },
-  { value: "92%", label: "Client retention" },
-];
+interface HeroProps {
+  films?: ReelFilm[];
+}
 
 /**
- * Hero — full-bleed cinematic.
+ * Cinematic Hero Section.
  *
- * The background is real client work (see HeroShowreel), so the studio's
- * quality is demonstrated in the first viewport rather than asserted. This
- * component itself is a server component: the headline, CTAs and stats are in
- * the initial HTML with no JS required to render or read them. Only the
- * background layer is client-side, and it is gated behind idle + in-view.
- *
- * Copy note: the H1 stays "We build brands people remember." The primary
- * keyword ("creative digital agency") is carried by the eyebrow, the lead
- * paragraph and the unchanged <title>, so the SEO position is preserved while
- * the headline earns the space.
+ * Full-bleed, full-height HTML5 video hero with layered dark cinematic overlays,
+ * minimal centered typography, dual action CTAs, and a subtle scroll indicator.
+ * Seamlessly integrates under the inverted header via `data-nav-invert`.
  */
-export default function Hero({ films }: { films: ReelFilm[] }) {
-  const featured = films[0];
-
+export default function Hero({}: HeroProps = {}) {
   return (
-    <section data-nav-invert className="on-dark relative isolate flex min-h-[max(620px,100svh)] flex-col justify-end overflow-hidden bg-bg-ink text-white">
-      <HeroShowreel films={films} />
-
-      <div className="wrap relative z-10 pb-[72px] pt-[168px] md:pb-[88px] md:pt-[184px]">
-        <div>
-          <div
-            className="rise-in flex flex-wrap items-center gap-x-5 gap-y-2"
-            style={{ animationDelay: "40ms" }}
-          >
-            <span className="eyebrow">Creative Digital Agency</span>
-            <span className="inline-flex items-center gap-2 t-meta text-white/70">
-              <span className="status-dot" />
-              2 slots open for Q3 2026
-            </span>
-          </div>
-
-          <h1 className="t-display mt-7 max-w-[15ch] text-white">
-            <span className="mask-line">
-              <span style={{ animationDelay: "80ms" }}>We build brands</span>
-            </span>
-            <span className="mask-line">
-              <span
-                className="t-italic accent-grad-text"
-                style={{ animationDelay: "170ms" }}
-              >
-                people remember.
-              </span>
-            </span>
-          </h1>
-        </div>
-
-        <p
-          className="rise-in t-lead mt-7 max-w-[54ch] text-white/80"
-          style={{ animationDelay: "300ms" }}
+    <section
+      data-nav-invert
+      aria-label="Introduction"
+      className="on-dark relative isolate flex min-h-[720px] h-[100svh] w-full flex-col justify-between overflow-hidden bg-bg-ink text-white"
+    >
+      {/* Background HTML5 Video Layer with Fallback Poster */}
+      <div
+        className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-bg-ink"
+        aria-hidden="true"
+        style={{
+          backgroundImage: "url('/images/hero-poster.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/images/hero-poster.jpg"
+          className="hero-video absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.88] contrast-[1.04]"
         >
-          Uniix Studio is a creative digital agency in Colombo. We design brand
-          identities, build conversion-focused websites, and run the growth systems
-          that keep them earning — for ambitious companies in Sri Lanka and beyond.
-        </p>
+          <source media="(max-width: 768px)" src="/videos/hero-mobile.mp4" type="video/mp4" />
+          <source src="/videos/hero.mp4" type="video/mp4" />
+          <source src="/videos/hero.webm" type="video/webm" />
+        </video>
 
+        {/* Layer 1: Dark Directional Gradient Overlay for Navigation & Bottom Contrast */}
         <div
-          className="rise-in mt-9 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap"
+          className="hero-overlay absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(14,11,8,0.75) 0%, rgba(14,11,8,0.26) 30%, rgba(14,11,8,0.36) 65%, rgba(14,11,8,0.92) 100%)",
+          }}
+        />
+
+        {/* Layer 2: Editorial Center Vignette for Flawless Typographic Contrast */}
+        <div
+          className="absolute inset-0 z-[2] pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(14,11,8,0.22) 0%, rgba(14,11,8,0.70) 100%)",
+          }}
+        />
+
+        {/* Layer 3: Warm Amber Atmospheric Light in Peripheral Deep Shadows */}
+        <div
+          className="absolute inset-0 z-[2] pointer-events-none opacity-30 mix-blend-screen"
+          style={{
+            background:
+              "radial-gradient(50% 50% at 85% 85%, rgba(217,84,11,0.25) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Layer 4: Soft Edge Fade Seamlessly Connecting into BrandStatement */}
+        <div className="absolute inset-x-0 bottom-0 h-32 z-[3] pointer-events-none bg-gradient-to-b from-transparent to-bg-ink" />
+      </div>
+
+      {/* Optical Header Clearance Spacer:
+          Balances the fixed top announcement bar (36px) + header (~68px) = ~104px */}
+      <div className="h-[96px] sm:h-[104px] w-full shrink-0 pointer-events-none" aria-hidden="true" />
+
+      {/* Main Centered Hero Content */}
+      <div className="wrap relative z-10 flex flex-1 flex-col items-center justify-center text-center px-4 sm:px-6">
+        {/* Main Headline */}
+        <h1 className="t-display text-white max-w-[1180px] font-medium leading-[0.92] sm:leading-[0.90] tracking-[-0.058em] text-[clamp(44px,7.2vw,104px)]">
+          <span className="mask-line">
+            <span style={{ animationDelay: "100ms" }} className="block">
+              We build brands
+            </span>
+          </span>
+          <span className="mask-line mt-1 sm:mt-2">
+            <span
+              style={{ animationDelay: "220ms" }}
+              className="t-italic accent-grad-text block"
+            >
+              people remember.
+            </span>
+          </span>
+        </h1>
+
+        {/* Minimal Supporting Text */}
+        <p
+          className="rise-in mt-6 sm:mt-7 max-w-[640px] text-white/80 font-normal leading-[1.55] sm:leading-[1.6] text-[clamp(15px,1.2vw,17.5px)] tracking-[-0.01em]"
           style={{ animationDelay: "380ms" }}
         >
-          <Link href="/contact/" className="btn btn-light group">
-            Start a project <span className="cta-arrow">↗</span>
+          Brand identities, digital experiences, and growth systems for ambitious companies.
+        </p>
+
+        {/* Dual CTA Buttons */}
+        <div
+          className="rise-in mt-8 sm:mt-9 flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 w-full sm:w-auto"
+          style={{ animationDelay: "500ms" }}
+        >
+          <Link
+            href="/contact/"
+            className="btn btn-light group w-full sm:w-auto min-h-[54px] min-w-[188px] px-8 text-[15px] font-medium tracking-[-0.01em] shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.5)] transition-all duration-std ease-uniix"
+          >
+            Start a project <span className="cta-arrow ml-1">↗</span>
           </Link>
-          <Link href="/portfolio/" className="btn btn-outline-light">
+          <Link
+            href="/portfolio/"
+            className="btn btn-outline-light w-full sm:w-auto min-h-[54px] min-w-[172px] px-8 text-[15px] font-medium tracking-[-0.01em] border-white/30 hover:border-white hover:bg-white/10 transition-all duration-std ease-uniix"
+          >
             View our work
           </Link>
         </div>
+      </div>
 
-        <div className="mt-12 flex flex-col gap-8 border-t border-line-dark pt-7 md:mt-14 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-          {/* Stats — typographic, on a rule. No cards, no decoration. */}
-          <dl
-            className="rise-in grid w-full max-w-[520px] grid-cols-3 gap-3 sm:gap-8"
-            style={{ animationDelay: "460ms" }}
-          >
-            {STATS.map((s) => (
-              <div key={s.label}>
-                <dt className="sr-only">{s.label}</dt>
-                <dd>
-                  <span className="t-numeral block text-[clamp(34px,4.4vw,52px)] text-white">
-                    {s.value}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="t-meta mt-3 block text-[9px] leading-[1.5] tracking-[0.1em] text-white/65 sm:text-[10px] sm:tracking-[0.18em]"
-                  >
-                    {s.label}
-                  </span>
-                </dd>
-              </div>
-            ))}
-          </dl>
-
-          {/*
-            Credits the film actually on screen and links to the full reel. The
-            background is proof of work, so it is labelled rather than left as
-            anonymous decoration.
-          */}
-          {featured && (
-            <Link
-              href="/showreel/"
-              className="rise-in group flex items-center gap-3 self-start text-left lg:self-auto"
-              style={{ animationDelay: "540ms" }}
-            >
-              <span className="relative flex size-9 shrink-0 items-center justify-center rounded-full border border-line-dark transition-colors duration-micro ease-uniix group-hover:border-brand-2">
-                <span className="ml-0.5 block size-0 border-y-[5px] border-l-[8px] border-y-transparent border-l-white transition-colors duration-micro ease-uniix group-hover:border-l-brand-2" />
-              </span>
-              <span className="min-w-0">
-                <span className="t-meta block text-[9px] text-white/55">
-                  Now playing · {featured.client}
-                </span>
-                <span className="mt-1 block text-[14px] font-medium text-white/90 transition-colors duration-micro ease-uniix group-hover:text-brand-2">
-                  {featured.title}
-                  <span className="cta-arrow ml-1.5 inline-block">↗</span>
-                </span>
-              </span>
-            </Link>
-          )}
-        </div>
+      {/* Subtle Scroll Indicator */}
+      <div
+        className="rise-in relative z-10 shrink-0 pb-6 sm:pb-8 flex flex-col items-center justify-center pointer-events-auto"
+        style={{ animationDelay: "620ms" }}
+      >
+        <a
+          href="#brand-statement"
+          aria-label="Scroll to explore"
+          className="group flex flex-col items-center gap-2 text-white/45 hover:text-white transition-colors duration-std ease-uniix"
+        >
+          <span className="w-[20px] h-[32px] rounded-full border border-white/35 group-hover:border-white/70 flex items-start justify-center p-[4px] transition-colors duration-std ease-uniix">
+            <span className="w-1 h-2 rounded-full bg-white/75 group-hover:bg-white animate-[bounce_2s_infinite]" />
+          </span>
+          <span className="text-[10px] tracking-[0.18em] uppercase font-mono text-white/40 group-hover:text-white/80 transition-colors duration-std ease-uniix">
+            Scroll
+          </span>
+        </a>
       </div>
     </section>
   );
