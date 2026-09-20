@@ -8,6 +8,7 @@ import { pillars, getServicesForPillar } from "@/lib/services";
 import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: "Services — Brand, Web & Digital Marketing | Uniix Studio",
   description:
     "Brand identity, web design, performance marketing and SEO — all under one roof. Explore Uniix Studio's three pillars: Design, Technology, Growth.",

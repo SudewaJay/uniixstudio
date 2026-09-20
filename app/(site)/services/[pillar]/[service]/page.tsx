@@ -4,7 +4,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
-import { pillars, getPillar } from "@/lib/services";
+import { getPillar } from "@/lib/services";
 import {
   allServices as services,
   getServiceFs as getService,

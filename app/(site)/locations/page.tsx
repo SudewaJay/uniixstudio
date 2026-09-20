@@ -8,6 +8,7 @@ import { site } from "@/lib/content";
 import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: "Web Design & Development Near You | Uniix Studio — Negombo, Ja-Ela, Wattala",
   description:
     "Uniix Studio designs and builds websites, e-commerce and brands for businesses across Negombo, Ja-Ela, Wattala and the Gampaha–Colombo corridor.",
