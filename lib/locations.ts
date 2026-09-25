@@ -118,8 +118,8 @@ export const locations: Location[] = [
       },
     ],
     relatedPosts: [
+      "website-design-negombo-tourism-businesses",
       "restaurant-website-design-sri-lanka",
-      "local-seo-sri-lanka-guide",
       "google-my-business-setup-sri-lanka-2026",
     ],
   },
@@ -171,9 +171,9 @@ export const locations: Location[] = [
       },
     ],
     relatedPosts: [
+      "business-website-cost-ja-ela",
       "ecommerce-website-development-sri-lanka-guide",
       "how-to-rank-on-google-sri-lanka",
-      "local-seo-sri-lanka-guide",
     ],
   },
   {
@@ -224,7 +224,7 @@ export const locations: Location[] = [
       },
     ],
     relatedPosts: [
-      "local-seo-sri-lanka-guide",
+      "web-design-for-wattala-businesses",
       "real-estate-website-sri-lanka",
       "google-my-business-setup-sri-lanka-2026",
     ],
