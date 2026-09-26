@@ -1,0 +1,634 @@
+/* ==========================================================================
+   /finland — page-scoped styles.
+
+   A CSS module so none of this reaches any other route's stylesheet. Uses the
+   site's tokens (easing, durations, ink/cream/orange) and adds exactly one
+   supporting colour: a muted Nordic "ice" that marks the Finland side of the
+   model, paired against the brand's warm orange for Sri Lanka.
+
+     --ice      #A9C3D9  on dark surfaces   (10.4:1 on ink)
+     --ice-ink  #36546E  on light surfaces  (7.4:1 on cream)
+   ========================================================================== */
+
+.iceText { color: #a9c3d9; }
+.iceInk { color: #36546e; }
+.iceDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #a9c3d9;
+  box-shadow: 0 0 0 4px rgba(169, 195, 217, 0.18);
+}
+
+/* Engineering grid texture for dark sections. */
+.grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  background-position: center top;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 60% 40%, #000 30%, transparent 85%);
+  mask-image: radial-gradient(ellipse 80% 70% at 60% 40%, #000 30%, transparent 85%);
+}
+.gridFade {
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, #000 20%, transparent 80%);
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, #000 20%, transparent 80%);
+}
+
+.fadeSwap { animation: fadeSwap var(--dur-std) var(--ease) both; }
+@keyframes fadeSwap {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ==========================================================================
+   01 Hero network
+   ========================================================================== */
+.netRing {
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+}
+.netRingFar { stroke: rgba(255, 255, 255, 0.05); }
+
+.netLayer { transition: opacity var(--dur-std) var(--ease); }
+.netDim { opacity: 0.18; }
+
+.netPath {
+  stroke: rgba(255, 255, 255, 0.16);
+  stroke-width: 1;
+  transition: stroke var(--dur-std) var(--ease);
+}
+.netFlow {
+  stroke-width: 1.25;
+  stroke-dasharray: 3 10;
+  opacity: 0.35;
+  animation: netFlow 1.8s linear infinite;
+  transition: opacity var(--dur-std) var(--ease);
+}
+.netFi .netFlow { stroke: #a9c3d9; }
+.netLk .netFlow { stroke: #f5a623; animation-direction: reverse; }
+.netOn .netFlow { opacity: 1; }
+.netFi.netOn .netPath { stroke: rgba(169, 195, 217, 0.4); }
+.netLk.netOn .netPath { stroke: rgba(245, 166, 35, 0.4); }
+@keyframes netFlow { to { stroke-dashoffset: -26; } }
+
+.netDot { opacity: 0.9; }
+.netFi .netDot { fill: #a9c3d9; }
+.netLk .netDot { fill: #f5a623; }
+
+.netHub {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #1c1815;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(14px, 1.6vw, 16px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-std) var(--ease),
+    background-color var(--dur-std) var(--ease),
+    opacity var(--dur-std) var(--ease),
+    box-shadow var(--dur-std) var(--ease);
+}
+.netHubDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+}
+.netHubFi .netHubDot { background: #a9c3d9; }
+.netHubLk .netHubDot { background: #f5a623; }
+.netHubFi.netHubOn { border-color: #a9c3d9; box-shadow: 0 0 0 6px rgba(169, 195, 217, 0.12); }
+.netHubLk.netHubOn { border-color: #f5a623; box-shadow: 0 0 0 6px rgba(245, 166, 35, 0.12); }
+
+.netChip {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #12100e;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-mono);
+  font-size: clamp(9px, 1.05vw, 11px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  transition:
+    color var(--dur-std) var(--ease),
+    border-color var(--dur-std) var(--ease),
+    opacity var(--dur-std) var(--ease);
+}
+.netChipFi.netChipOn { color: #a9c3d9; border-color: rgba(169, 195, 217, 0.55); }
+.netChipLk.netChipOn { color: #f5a623; border-color: rgba(245, 166, 35, 0.55); }
+
+.netCore {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: radial-gradient(circle at 30% 25%, #2a241f, #12100e 70%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 20px 60px -20px rgba(232, 98, 26, 0.45),
+    0 -20px 60px -24px rgba(169, 195, 217, 0.35);
+}
+.netCore::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  animation: corePulse 3.2s var(--ease) infinite;
+}
+@keyframes corePulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ==========================================================================
+   02 Bridge connector — vertical on mobile, horizontal on desktop.
+   ========================================================================== */
+.bridgeTrack {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 28px;
+  overflow: hidden;
+  background: rgba(18, 16, 14, 0.14);
+}
+.bridgePulse {
+  position: absolute;
+  left: 0;
+  top: -60%;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(180deg, transparent, #36546e 40%, #bf4508 60%, transparent);
+  animation: pulseY 2.6s var(--ease) infinite;
+}
+.bridgePulseLate { animation-delay: 1.3s; }
+@keyframes pulseY { to { top: 100%; } }
+
+@media (min-width: 1024px) {
+  .bridgeTrack { width: auto; height: 1px; flex: 1 1 0; }
+  .bridgePulse {
+    top: 0;
+    left: -60%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, #36546e 40%, #bf4508 60%, transparent);
+    animation-name: pulseX;
+  }
+}
+@keyframes pulseX { to { left: 100%; } }
+
+/* ==========================================================================
+   03 Capabilities — accordion (mobile) / expanding row (desktop).
+   ========================================================================== */
+.capRow {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(18, 16, 14, 0.12);
+}
+.capCol {
+  position: relative;
+  overflow: hidden;
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(18, 16, 14, 0.12);
+}
+.capBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--dur-reveal) var(--ease),
+    opacity var(--dur-std) var(--ease);
+}
+.capOn .capBody { grid-template-rows: 1fr; opacity: 1; }
+.capNumeral { display: none; }
+
+@media (min-width: 1024px) {
+  .capRow {
+    flex-direction: row;
+    min-height: 440px;
+    border-bottom: 1px solid rgba(18, 16, 14, 0.12);
+  }
+  .capCol {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 36px 32px 40px;
+    border-bottom: 0;
+    border-left: 1px solid rgba(18, 16, 14, 0.12);
+    transition:
+      flex-grow var(--dur-reveal) var(--ease),
+      background-color var(--dur-std) var(--ease);
+  }
+  .capCol:first-child { border-left: 0; padding-left: 0; }
+  .capOn { flex-grow: 2; }
+  .capOn .capBody { transition-delay: 120ms; }
+  .capNumeral {
+    display: block;
+    position: absolute;
+    right: -0.04em;
+    bottom: -0.18em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 200px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    color: #12100e;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition:
+      opacity var(--dur-reveal) var(--ease),
+      transform var(--dur-reveal) var(--ease);
+  }
+  .capOn .capNumeral { opacity: 0.05; transform: none; }
+}
+
+/* ==========================================================================
+   04 Service cards + glyphs
+   ========================================================================== */
+.svcCard { transition: background-color var(--dur-std) var(--ease); }
+.svcCard:hover,
+.svcCard:focus-visible { background-color: #fff; }
+
+.glyph { display: block; width: 100%; height: 100%; overflow: visible; }
+.gLine { stroke: currentColor; stroke-opacity: 0.35; }
+.gGrid { stroke: currentColor; stroke-opacity: 0.12; }
+.gFill { fill: currentColor; fill-opacity: 0.16; }
+.gSolid { fill: currentColor; }
+.gSolidSoft { fill: currentColor; fill-opacity: 0.22; }
+.gAccent { fill: #bf4508; }
+.gAccentLine { stroke: #bf4508; stroke-width: 1.5; }
+
+.gShift,
+.gBar,
+.gSpin,
+.gPulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform var(--dur-reveal) var(--ease);
+}
+.gBar {
+  transform-origin: bottom;
+  transform: scaleY(var(--h, 0.5));
+}
+.gDash { stroke-dasharray: 3 4; }
+.gDraw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0.42;
+  transition: stroke-dashoffset 900ms var(--ease);
+}
+
+.svcCard:hover .gShift,
+.svcCard:focus-visible .gShift { transform: translate(-6px, -4px); }
+.svcCard:hover .gBar,
+.svcCard:focus-visible .gBar { transform: scaleY(min(1, calc(var(--h, 0.5) + 0.35))); }
+.svcCard:hover .gSpin,
+.svcCard:focus-visible .gSpin { transform: rotate(45deg) scale(0.82); }
+.svcCard:hover .gDash,
+.svcCard:focus-visible .gDash { animation: dashRun 1.2s linear infinite; }
+.svcCard:hover .gPulse,
+.svcCard:focus-visible .gPulse { animation: gPulse 1.2s var(--ease) infinite; }
+.svcCard:hover .gDraw,
+.svcCard:focus-visible .gDraw { stroke-dashoffset: 0; }
+@keyframes dashRun { to { stroke-dashoffset: -14; } }
+@keyframes gPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.6); }
+}
+
+/* ==========================================================================
+   05 Transformation frame
+   ========================================================================== */
+.tfLayer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.025);
+  transition:
+    opacity var(--dur-reveal) var(--ease),
+    transform 900ms var(--ease);
+}
+.tfOn { opacity: 1; transform: none; }
+.tfDraw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.tfOn .tfDraw { animation: tfDraw 1.4s var(--ease) 200ms forwards; }
+@keyframes tfDraw { to { stroke-dashoffset: 0; } }
+
+/* ==========================================================================
+   06 Industries
+   Base = "open" (touch / small screens): dark tiles, details visible, in a
+   horizontal swipe rail. Hover-capable desktops get a light 3×2 grid where
+   hover or keyboard focus opens a tile.
+   ========================================================================== */
+.indRail {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  padding-inline: var(--gutter);
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.indRail::-webkit-scrollbar { display: none; }
+.indGrid {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+}
+.indTile {
+  position: relative;
+  flex: 0 0 min(82vw, 380px);
+  min-height: 400px;
+  overflow: hidden;
+  border-radius: 24px;
+  scroll-snap-align: start;
+  background: #1c1815;
+  color: #fff;
+  transition:
+    background-color var(--dur-std) var(--ease),
+    color var(--dur-std) var(--ease);
+}
+.indMedia {
+  position: absolute;
+  inset: 0;
+  opacity: 0.9;
+  transition:
+    opacity var(--dur-reveal) var(--ease),
+    transform 1200ms var(--ease);
+}
+.indNum { color: #f5a623; transition: color var(--dur-std) var(--ease); }
+.indProofTag { color: rgba(255, 255, 255, 0.7); transition: color var(--dur-std) var(--ease); }
+.indName { transition: transform var(--dur-std) var(--ease); }
+.indSectors { color: rgba(255, 255, 255, 0.65); transition: color var(--dur-std) var(--ease); }
+.indDetail {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-rows var(--dur-reveal) var(--ease),
+    opacity var(--dur-std) var(--ease);
+}
+.indLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  text-underline-offset: 4px;
+}
+.indLink:hover { text-decoration-color: #f5a623; }
+
+@media (min-width: 1024px) {
+  .indRail {
+    overflow: visible;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-bottom: 0;
+  }
+  .indGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    width: auto;
+    overflow: hidden;
+    border: 1px solid rgba(18, 16, 14, 0.12);
+    border-radius: 32px;
+    background: rgba(18, 16, 14, 0.12);
+  }
+  .indTile { min-height: 380px; border-radius: 0; }
+}
+
+@media (min-width: 1024px) and (hover: hover) {
+  .indTile { background: #fbfaf6; color: #12100e; }
+  .indMedia { opacity: 0; transform: scale(1.06); }
+  .indNum { color: #5c554d; }
+  .indProofTag { color: #5c554d; }
+  .indSectors { color: #5c554d; }
+  .indDetail { grid-template-rows: 0fr; opacity: 0; }
+
+  .indTile:hover,
+  .indTile:focus-within { background: #12100e; color: #fff; }
+  .indTile:hover .indMedia,
+  .indTile:focus-within .indMedia { opacity: 0.9; transform: none; }
+  .indTile:hover .indNum,
+  .indTile:focus-within .indNum { color: #f5a623; }
+  .indTile:hover .indProofTag,
+  .indTile:focus-within .indProofTag,
+  .indTile:hover .indSectors,
+  .indTile:focus-within .indSectors { color: rgba(255, 255, 255, 0.7); }
+  .indTile:hover .indDetail,
+  .indTile:focus-within .indDetail { grid-template-rows: 1fr; opacity: 1; }
+  .indTile:hover .indName,
+  .indTile:focus-within .indName { transform: translateY(-4px); }
+}
+
+/* ==========================================================================
+   07 Work rail
+   ========================================================================== */
+.workRail {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  padding-inline: var(--gutter);
+}
+.workTitle { transition: color var(--dur-micro) var(--ease); }
+.workCard:hover .workTitle { color: #bf4508; }
+
+@media (min-width: 1024px) {
+  .workRail {
+    --rail-inset: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--rail-inset);
+    padding-inline: var(--rail-inset);
+    padding-bottom: 12px;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .workRail::-webkit-scrollbar { display: none; }
+  .workItem {
+    flex: 0 0 min(60vw, 820px);
+    scroll-snap-align: start;
+  }
+}
+
+.railBtn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 16, 14, 0.12);
+  font-size: 16px;
+  color: #12100e;
+  transition:
+    background-color var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease),
+    opacity var(--dur-micro) var(--ease);
+}
+.railBtn:hover:not(:disabled) { background: #12100e; color: #fff; }
+.railBtn:disabled { opacity: 0.35; cursor: default; }
+
+/* ==========================================================================
+   10 Why rows · 11 Engagement cards · 12 CTA
+   ========================================================================== */
+.whyRow { border-bottom: 1px solid rgba(18, 16, 14, 0.12); }
+.whyRow h3 { transition: transform var(--dur-std) var(--ease), color var(--dur-std) var(--ease); }
+.whyRow:hover h3 { transform: translateX(6px); }
+
+.engCard {
+  transition:
+    transform var(--dur-std) var(--ease),
+    box-shadow var(--dur-std) var(--ease),
+    border-color var(--dur-std) var(--ease);
+}
+.engCard:hover,
+.engCard:focus-within {
+  transform: translateY(-4px);
+  border-color: rgba(18, 16, 14, 0.2);
+  box-shadow: 0 24px 60px -30px rgba(18, 16, 14, 0.3);
+}
+.engMark {
+  width: 28px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #36546e 0 50%, #bf4508 50% 100%);
+  opacity: 0.85;
+}
+
+.ctaGlow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(1100px, 120vw);
+  aspect-ratio: 1.6;
+  margin-left: calc(min(1100px, 120vw) / -2);
+  margin-top: calc(min(1100px, 120vw) / -3.2);
+  pointer-events: none;
+  background:
+    radial-gradient(40% 45% at 35% 45%, rgba(169, 195, 217, 0.16), transparent 70%),
+    radial-gradient(40% 45% at 65% 55%, rgba(232, 98, 26, 0.24), transparent 70%);
+  animation: ctaDrift 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes ctaDrift {
+  from { transform: translate3d(-6%, -4%, 0) scale(1); }
+  to { transform: translate3d(6%, 4%, 0) scale(1.08); }
+}
+
+/* Reduced motion: the global rule already collapses durations; these make
+   sure nothing is left mid-state or looping. */
+@media (prefers-reduced-motion: reduce) {
+  .netFlow,
+  .netCore::after,
+  .bridgePulse,
+  .ctaGlow { animation: none; }
+  .bridgePulse { display: none; }
+  .tfDraw { stroke-dashoffset: 0; }
+}
+
+/* ==========================================================================
+   Nordic atmosphere layer — photography treatment, grain, snow, reveals.
+   Cold environments stay naturally cool; warm interiors keep their skin
+   tones. No blanket blue filter.
+   ========================================================================== */
+.photoCold { filter: saturate(0.82) contrast(1.04) brightness(0.97); }
+.photoWarm { filter: saturate(0.94) contrast(1.03); }
+
+/* Film grain — one static SVG noise tile, blended softly. */
+.grain {
+  pointer-events: none;
+  opacity: 0.14;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+}
+
+/* Almost imperceptible camera drift for the hero photograph. */
+.kenBurns {
+  animation: kenBurns 40s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes kenBurns {
+  from { transform: scale(1.04) translate3d(0, 0, 0); }
+  to { transform: scale(1.12) translate3d(-1.5%, -1%, 0); }
+}
+
+/* Snow — sparse, slow, transform-only. */
+.snow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.snow span {
+  position: absolute;
+  top: -10px;
+  border-radius: 999px;
+  background: #fff;
+  filter: blur(0.4px);
+  animation-name: snowFall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.snowPaused span { animation-play-state: paused; }
+@keyframes snowFall {
+  from { transform: translate3d(0, -10px, 0); }
+  to { transform: translate3d(var(--drift, 0px), 110vh, 0); }
+}
+
+/* Masked image reveal (ClipReveal). */
+.clip { position: relative; }
+.clipImg { transition: transform 1600ms var(--ease); }
+.clipArmed { clip-path: inset(100% 0 0 0 round 32px); }
+.clipArmed .clipImg { transform: scale(1.1); }
+.clipArmed.clipShown {
+  clip-path: inset(0 0 0 0 round 32px);
+  transition: clip-path 1300ms var(--ease);
+}
+.clipArmed.clipShown .clipImg { transform: none; }
+
+/* Scroll-driven parallax (progressive enhancement, no JS). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax {
+      animation: parallax linear both;
+      animation-timeline: view();
+    }
+  }
+}
+@keyframes parallax {
+  from { transform: translate3d(0, -6%, 0); }
+  to { transform: translate3d(0, 6%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kenBurns { animation: none; transform: scale(1.04); }
+  .snow { display: none; }
+}

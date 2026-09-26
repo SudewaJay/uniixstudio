@@ -19,6 +19,7 @@ const primaryNav = [
   { label: "Work", href: "/portfolio" },
   { label: "Insights", href: "/blog" },
   { label: "About", href: "/about" },
+  { label: "Finland", href: "/finland" },
   { label: "Contact", href: "/contact" },
 ];
 
