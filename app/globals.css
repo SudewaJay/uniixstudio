@@ -530,3 +530,185 @@
     animation: none;
   }
 }
+
+/* ==========================================================================
+   Cinematic reel (components/home/reel)
+   ========================================================================== */
+
+/* Full-bleed stage. Desktop never exceeds a true 16:9 so wide screens don't
+   crop the film; mobile trades width for a taller, cinematic crop. The size
+   container lets the player cover the frame via cqw/cqh. */
+.reel-stage {
+  container-type: size;
+  height: clamp(420px, 64svh, 620px);
+}
+@media (min-width: 768px) {
+  .reel-stage {
+    height: min(80svh, 56.25vw);
+    min-height: 460px;
+  }
+}
+
+/* Incoming film: a directional wipe with a slight settle of the image. */
+.reel-wipe-in {
+  animation: reel-wipe 900ms cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+.reel-settle {
+  animation: reel-settle 1400ms var(--ease) both;
+}
+@keyframes reel-wipe {
+  from { clip-path: inset(0 0 0 100%); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes reel-settle {
+  from { transform: scale(1.06); }
+  to { transform: none; }
+}
+
+/* Labels that change with the film rise into place. */
+.reel-swap {
+  animation: reel-swap var(--dur-reveal) var(--ease) both;
+}
+@keyframes reel-swap {
+  from { opacity: 0; transform: translateY(0.45em); }
+  to { opacity: 1; transform: none; }
+}
+.reel-count {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+/* Progress of the current film — driven by a CSS variable, no re-renders. */
+.reel-progress {
+  transform: scaleX(var(--p, 0));
+  transition: transform 260ms linear;
+}
+
+/* Controls */
+.reel-ctl {
+  @apply inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/25 px-3.5 font-mono uppercase text-white backdrop-blur-sm;
+  min-height: 36px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  transition: border-color var(--dur-micro) var(--ease), background-color var(--dur-micro) var(--ease);
+}
+.reel-ctl:hover {
+  @apply border-white/60 bg-black/40;
+}
+.reel-ctl-lg {
+  min-height: 48px;
+  padding-inline: 22px;
+  font-size: 11px;
+}
+.reel-play {
+  @apply inline-flex items-center gap-3 rounded-full bg-white pl-5 pr-6 font-mono uppercase text-ink;
+  min-height: 52px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.6);
+  transition: transform var(--dur-std) var(--ease);
+}
+.reel-play:hover {
+  transform: scale(1.04);
+}
+
+/* Four-bar level meter on the sound button; animates only while audible. */
+.reel-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 10px;
+}
+.reel-eq i {
+  display: block;
+  width: 1.5px;
+  height: 30%;
+  background: currentColor;
+  opacity: 0.8;
+}
+.reel-eq.is-live i {
+  animation: reel-eq 900ms ease-in-out infinite alternate;
+}
+.reel-eq.is-live i:nth-child(2) { animation-delay: -300ms; }
+.reel-eq.is-live i:nth-child(3) { animation-delay: -600ms; }
+.reel-eq.is-live i:nth-child(4) { animation-delay: -150ms; }
+@keyframes reel-eq {
+  from { height: 25%; }
+  to { height: 100%; }
+}
+
+.reel-cta {
+  @apply inline-flex items-center gap-2 font-medium text-white;
+  min-height: 36px;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  transition: border-color var(--dur-micro) var(--ease);
+}
+.reel-cta:hover {
+  border-color: #fff;
+}
+
+/* Film index */
+.reel-index {
+  scrollbar-width: none;
+  /* Snap chips to the page gutter, not the screen edge. */
+  scroll-padding-inline: var(--gutter);
+}
+.reel-index::-webkit-scrollbar {
+  display: none;
+}
+.reel-chip {
+  opacity: 0.62;
+  transition: opacity var(--dur-std) var(--ease);
+}
+.reel-chip:hover,
+.reel-chip:focus-visible,
+.reel-chip.is-on {
+  opacity: 1;
+}
+.reel-chip.is-on > span:first-child {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85);
+}
+
+/* ==========================================================================
+   Industries index (components/home/IndustryIndex)
+   ========================================================================== */
+.ind-row .ind-name {
+  transition: color var(--dur-std) var(--ease), transform var(--dur-std) var(--ease);
+}
+.ind-list.has-active .ind-row:not(.is-active) .ind-name {
+  color: rgba(18, 16, 14, 0.28);
+}
+.ind-row.is-active .ind-name {
+  transform: translateX(10px);
+}
+.ind-row .ind-rule {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-reveal) var(--ease);
+}
+.ind-row.is-active .ind-rule {
+  transform: scaleX(1);
+}
+.ind-preview {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 520ms var(--ease), opacity 300ms var(--ease);
+  opacity: 0;
+}
+.ind-preview.is-shown {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+}
+.ind-slide {
+  opacity: 0;
+  transform: scale(1.08);
+  filter: blur(6px);
+  transition: opacity 480ms var(--ease), transform 900ms var(--ease), filter 480ms var(--ease);
+}
+.ind-slide.is-on {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}

@@ -10,6 +10,8 @@ export type ShowreelFilm = ServiceVideo & {
    * unreachable during the build.
    */
   poster: string;
+  /** Seconds, from the same oEmbed call. Absent if Vimeo was unreachable. */
+  duration?: number;
 };
 
 /**
@@ -39,8 +41,8 @@ function collect(): ServiceVideo[] {
  * once at build time so the rendered HTML ships a real, optimisable URL and the
  * browser never has to talk to Vimeo just to paint the poster.
  */
-async function resolvePoster(vimeoId: string): Promise<string> {
-  const fallback = `https://vumbnail.com/${vimeoId}_large.jpg`;
+async function resolveMeta(vimeoId: string): Promise<{ poster: string; duration?: number }> {
+  const fallback = { poster: `https://vumbnail.com/${vimeoId}_large.jpg` };
   try {
     const res = await fetch(
       `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(
@@ -49,12 +51,15 @@ async function resolvePoster(vimeoId: string): Promise<string> {
       { signal: AbortSignal.timeout(5000) },
     );
     if (!res.ok) return fallback;
-    const data = (await res.json()) as { thumbnail_url?: string };
+    const data = (await res.json()) as { thumbnail_url?: string; duration?: number };
     const url = data.thumbnail_url;
     if (!url) return fallback;
     // ".../<hash>-d_295x166?region=us" → ".../<hash>-d_1920"
     const base = url.split("-d_")[0];
-    return base ? `${base}-d_1920` : fallback;
+    return {
+      poster: base ? `${base}-d_1920` : fallback.poster,
+      duration: typeof data.duration === "number" ? data.duration : undefined,
+    };
   } catch {
     return fallback;
   }
@@ -82,6 +87,6 @@ export async function getShowreelFilms(): Promise<ShowreelFilm[]> {
     ...films.filter((f) => !FEATURED_FIRST.includes(f.vimeoId)),
   ];
   return Promise.all(
-    ordered.map(async (f) => ({ ...f, poster: await resolvePoster(f.vimeoId) })),
+    ordered.map(async (f) => ({ ...f, ...(await resolveMeta(f.vimeoId)) })),
   );
 }
