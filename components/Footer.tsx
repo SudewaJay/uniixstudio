@@ -94,18 +94,18 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 items-start gap-8 md:gap-10 py-10 md:py-16">
           <Link
             href="/"
-            className="inline-flex items-baseline gap-1 group"
+            className="inline-flex items-center group w-fit"
             aria-label="Uniix Studio home"
           >
-            <span className="font-display font-medium text-white text-[28px] md:text-[30px] tracking-[-0.02em] leading-none group-hover:opacity-90 transition-opacity">
-              uniix
-            </span>
-            <span
-              aria-hidden
-              className="inline-grid place-items-center w-3.5 h-3.5 rounded-full border border-[#F07B20] text-[8px] font-bold text-[#F07B20] leading-none -translate-y-2.5"
-            >
-              ®
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/uniix-logo.svg"
+              alt="Uniix Studio"
+              width={778}
+              height={346}
+              className="h-10 md:h-12 w-auto group-hover:opacity-90 transition-opacity"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
           </Link>
 
           <nav aria-label="Footer navigation">
@@ -138,8 +138,8 @@ export default function Footer() {
           aria-label="Get in touch — contact Uniix Studio"
         >
           <div
-            className="font-display font-medium text-white tracking-[-0.045em] leading-[0.85] group-hover:tracking-[-0.04em] transition-all duration-500 select-none"
-            style={{ fontSize: "clamp(72px, 17vw, 280px)" }}
+            className="font-display font-medium text-white whitespace-nowrap tracking-[-0.045em] leading-[0.85] group-hover:tracking-[-0.04em] transition-all duration-500 select-none"
+            style={{ fontSize: "clamp(40px, 15vw, 220px)" }}
           >
             Get in Touch
           </div>
