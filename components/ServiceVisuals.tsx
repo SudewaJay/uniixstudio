@@ -5,7 +5,7 @@ import type {
   ServiceProcessStep,
   ServiceDeliverable,
   ServicePricingTier,
-} from "@/lib/services-fs";
+} from "@/lib/services";
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const;
 

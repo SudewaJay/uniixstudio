@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Reveal from "@/components/Reveal";
 import JsonLd from "@/components/JsonLd";
-import { getProject, getDetailedProjects } from "@/lib/projects-fs";
+import { getProject, getDetailedProjects } from "@/lib/cms/projects";
+import { buildMetadata } from "@/lib/cms/seo";
+import { notFoundOrRedirect } from "@/lib/cms/redirects";
 import { resolveServiceLinks } from "@/lib/service-links";
 import { site } from "@/lib/content";
-import { ogImageUrl, ogImageMeta } from "@/lib/og-image";
 import {
   breadcrumbSchema,
   creativeWorkSchema,
@@ -31,12 +31,9 @@ import CaseStudyCTA from "@/components/portfolio/case-study/CaseStudyCTA";
 import SocialCampaignCarousel from "@/components/SocialCampaignCarousel";
 import CaseStudyNarrative from "@/components/CaseStudyNarrative";
 
-export function generateStaticParams() {
-  return getDetailedProjects().map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getDetailedProjects()).map((p) => ({ slug: p.slug }));
 }
-
-export const dynamic = "force-static";
-export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -44,31 +41,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getProject(slug);
   if (!project) return { title: "Project | Uniix Studio" };
-  const canonical = site.canonical(`/portfolio/${slug}/`);
-  const ogImages = ogImageMeta(project.coverImage);
-  const twitterImage = ogImageUrl(project.coverImage);
-
-  return {
-    metadataBase: new URL(site.url),
+  return buildMetadata({
+    path: `/portfolio/${slug}/`,
     title: `${project.title} — Case Study | Uniix Studio`,
+    ogTitle: `${project.title} · ${site.name}`,
     description: project.summary,
-    alternates: { canonical },
-    openGraph: {
-      title: `${project.title} · ${site.name}`,
-      description: project.summary,
-      url: canonical,
-      images: ogImages,
-      type: "article",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${project.title} — Case Study`,
-      description: project.summary,
-      images: twitterImage ? [twitterImage] : undefined,
-    },
-  };
+    image: project.coverImage,
+    type: "article",
+    seo: project.seo,
+  });
 }
 
 export default async function ProjectDetailPage({
@@ -77,15 +60,17 @@ export default async function ProjectDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = getProject(slug);
-  if (!project || !project.hasDetail) notFound();
+  const project = await getProject(slug);
+  if (!project || !project.hasDetail) return notFoundOrRedirect(`/portfolio/${slug}/`);
 
-  const allDetailed = getDetailedProjects();
+  const allDetailed = await getDetailedProjects();
   const currentIndex = allDetailed.findIndex((p) => p.slug === slug);
   const nextIndex = (currentIndex + 1) % allDetailed.length;
   const prevIndex = (currentIndex - 1 + allDetailed.length) % allDetailed.length;
 
-  const nextProject = allDetailed[nextIndex];
+  // An editor-picked related project leads; otherwise the next in order.
+  const picked = project.relatedSlugs?.map((s) => allDetailed.find((p) => p.slug === s)).find(Boolean);
+  const nextProject = picked ?? allDetailed[nextIndex];
   const prevProject =
     allDetailed.length > 2 && currentIndex !== prevIndex
       ? allDetailed[prevIndex]

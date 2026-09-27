@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { getFeaturedPosts, formatDate } from "@/lib/blog-fs";
+import { formatDate } from "@/lib/format";
+import type { BlogPost } from "@/lib/blog-fs";
+import type { SectionCopy } from "@/lib/cms/site";
 import SmartImage from "../ui/SmartImage";
 import Reveal from "../Reveal";
 
@@ -13,8 +15,7 @@ import Reveal from "../Reveal";
  *
  * Article URLs are untouched.
  */
-export default function Insights() {
-  const posts = getFeaturedPosts(3);
+export default function Insights({ posts, copy }: { posts: BlogPost[]; copy?: SectionCopy }) {
   if (posts.length === 0) return null;
 
   const [lead, ...rest] = posts;
@@ -24,11 +25,11 @@ export default function Insights() {
       <div className="wrap">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <Reveal>
-            <span className="eyebrow">Insights</span>
+            <span className="eyebrow">{copy?.eyebrow ?? "Insights"}</span>
             <h2 className="t-h2 mt-5">
-              Field notes for
+              {copy?.heading ?? "Field notes for"}
               <br />
-              <span className="t-italic accent-grad-text">ambitious teams.</span>
+              <span className="t-italic accent-grad-text">{copy?.headingAccent ?? "ambitious teams."}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>

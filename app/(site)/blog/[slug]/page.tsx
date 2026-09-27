@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import Reveal from "@/components/Reveal";
-import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
-import { locations } from "@/lib/locations";
+import { formatDate } from "@/lib/format";
+import { getPost, getPosts } from "@/lib/cms/blog";
+import { getLocations } from "@/lib/cms/locations";
+import { getServices } from "@/lib/cms/services";
+import { getSiteSettings } from "@/lib/cms/site";
+import { buildMetadata } from "@/lib/cms/seo";
+import { notFoundOrRedirect } from "@/lib/cms/redirects";
 import {
   articleSchema,
   breadcrumbSchema,
@@ -14,16 +18,11 @@ import {
   schemaGraph,
 } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
-import { site } from "@/lib/content";
-import { ogImageUrl, ogImageMeta } from "@/lib/og-image";
 import EditorialArticle from "@/components/blog/EditorialArticle";
 
-export function generateStaticParams() {
-  return posts.filter((p) => !p.isStub).map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getPosts()).map((p) => ({ slug: p.slug }));
 }
-
-export const dynamic = "force-static";
-export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -31,34 +30,18 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPost(slug);
   if (!post) return { title: "Article" };
-  const canonical = site.canonical(`/blog/${slug}/`);
-  const socialImage = post.ogImage ?? post.coverImage;
-  const ogImages = ogImageMeta(socialImage);
-  const twitterImage = ogImageUrl(socialImage);
-  const title = post.seoTitle ?? post.title;
-  return {
-    metadataBase: new URL(site.url),
-    title,
+  return buildMetadata({
+    path: `/blog/${slug}/`,
+    title: post.seoTitle ?? post.title,
     description: post.metaDescription,
-    alternates: { canonical },
-    openGraph: {
-      title,
-      description: post.metaDescription,
-      url: canonical,
-      images: ogImages,
-      type: "article",
-      publishedTime: post.publishDate,
-      ...(post.updatedDate ? { modifiedTime: post.updatedDate } : {}),
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description: post.metaDescription,
-      images: twitterImage ? [twitterImage] : undefined,
-    },
-  };
+    image: post.ogImage ?? post.coverImage,
+    type: "article",
+    publishedTime: post.publishDate,
+    modifiedTime: post.updatedDate,
+    seo: post.seo,
+  });
 }
 
 export default async function BlogPostPage({
@@ -67,8 +50,14 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
-  if (!post || post.isStub) notFound();
+  const [post, allPublished, locations, allServices, settings] = await Promise.all([
+    getPost(slug),
+    getPosts(),
+    getLocations(),
+    getServices(),
+    getSiteSettings(),
+  ]);
+  if (!post) return notFoundOrRedirect(`/blog/${slug}/`);
 
   // Rotate the published list to start right after the current post (wrapping
   // around) so every post is surfaced as "related" by the posts preceding it.
@@ -77,7 +66,6 @@ export default async function BlogPostPage({
   // "pages have only one incoming internal link"). Same-category posts are
   // preferred for relevance, then the rotated sequence fills the rest — which
   // guarantees no post is orphaned.
-  const allPublished = posts.filter((p) => !p.isStub);
   const curIdx = allPublished.findIndex((p) => p.slug === slug);
   const rotated =
     curIdx >= 0
@@ -118,7 +106,9 @@ export default async function BlogPostPage({
         post={post}
         schema={pageSchema}
         related={related}
-        servingAreas={servingAreas}
+        servingAreas={servingAreas.map(({ slug, name }) => ({ slug, name }))}
+        allServices={allServices}
+        contact={{ whatsappLink: settings.whatsappLink, phone: settings.phone }}
       />
     );
   }

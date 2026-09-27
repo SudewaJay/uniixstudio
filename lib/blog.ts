@@ -1812,10 +1812,4 @@ export function getPostsByCategory(category: string): BlogPost[] {
   return posts.filter((p) => p.category.toLowerCase() === category.toLowerCase());
 }
 
-export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
+export { formatDate } from "./format";

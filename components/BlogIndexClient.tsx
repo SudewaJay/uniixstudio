@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { type BlogPost, formatDate } from "@/lib/blog";
+import type { BlogPost } from "@/lib/blog";
+import { formatDate } from "@/lib/format";
 
 const TABS = [
   { id: "all", label: "View all" },

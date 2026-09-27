@@ -43,6 +43,7 @@ export type Location = {
    * pulled live from the posts, so only the slug lives here.
    */
   relatedPosts: string[];
+  seo?: import("./cms/seo").SeoFields;
 };
 
 const WEB = { pillar: "technology", slug: "web-design", label: "Web Design" };

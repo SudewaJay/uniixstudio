@@ -1,171 +1,165 @@
 import type { CollectionConfig } from 'payload'
+import { isAdmin, isEditor, publishedOrStaff } from '../access'
+import {
+  faqsField,
+  featuredField,
+  hrefField,
+  imageField,
+  orderField,
+  seoField,
+  slugField,
+  videosField,
+} from '../fields'
+import { auditFields, stampAudit } from '../hooks/audit'
+import { revalidateHooks } from '../hooks/revalidate'
+import { draftVersions, previewUrl } from '../utilities/preview'
 
-/**
- * Service detail page — one document per /services/[pillar]/[service]/.
- * UX is grouped into Tabs so the editor never sees a wall of fields:
- *   1. Content     — what the page actually says
- *   2. SEO         — title, meta, OG, FAQs (PAA box targeting)
- *   3. Settings    — pillar, ordering, related, CTA
- */
+type PillarRef = { slug?: string } | number | string | null | undefined
+
+/** Service detail pages — /services/<pillar>/<service>/. */
 export const Services: CollectionConfig = {
   slug: 'services',
   labels: { singular: 'Service', plural: 'Services' },
   admin: {
+    group: 'Content',
     useAsTitle: 'name',
-    defaultColumns: ['name', 'pillar', 'pageTitle', 'featured', 'updatedAt'],
+    defaultColumns: ['name', 'pillar', 'featured', '_status', 'updatedAt'],
     listSearchableFields: ['name', 'rawName', 'pageTitle', 'slug'],
-    description: 'The 13 detail pages under /services/[pillar]/[service]/. SEO-aligned with the Masterplan.',
-    group: 'Services',
-    pagination: { defaultLimit: 25 },
+    description: 'Each service has its own page at /services/<pillar>/<service>/.',
+    preview: (doc) => {
+      const pillar = doc.pillar as PillarRef
+      const pillarSlug = typeof pillar === 'object' && pillar ? pillar.slug : undefined
+      return pillarSlug ? previewUrl(`/services/${pillarSlug}/${doc.slug}/`) : null
+    },
   },
-  access: { read: () => true },
+  versions: draftVersions,
+  access: {
+    read: publishedOrStaff,
+    create: isEditor,
+    update: isEditor,
+    delete: isAdmin,
+    readVersions: isEditor,
+  },
+  hooks: { beforeChange: [stampAudit], ...revalidateHooks('services') },
+  defaultSort: 'displayOrder',
   fields: [
     {
       type: 'tabs',
       tabs: [
-        /* ------------------------------ CONTENT ------------------------------ */
         {
           label: 'Content',
-          description: 'The visible page copy — headline, body, pricing, FAQs.',
           fields: [
             {
-              name: 'name',
-              type: 'text',
-              required: true,
-              admin: {
-                description: 'Short display label — e.g., "Brand Identity". Used in nav, breadcrumbs, sibling cards.',
-                width: '50%',
-              },
-            },
-            {
-              name: 'rawName',
-              type: 'text',
-              admin: {
-                description: 'Full marketing name — e.g., "Brand Identity Design". Used inside body copy.',
-                width: '50%',
-              },
+              type: 'row',
+              fields: [
+                {
+                  name: 'name',
+                  type: 'text',
+                  required: true,
+                  admin: { width: '50%', description: 'Short label — nav, breadcrumbs, cards.' },
+                },
+                {
+                  name: 'rawName',
+                  label: 'Full name',
+                  type: 'text',
+                  admin: { width: '50%', description: 'e.g. "Brand Identity Design". Defaults to Name.' },
+                },
+              ],
             },
             {
               name: 'pageTitle',
+              label: 'Page title (browser tab & search results)',
               type: 'text',
               required: true,
               admin: {
-                description: 'The H1 on the page. Per Masterplan §3.1 use the pattern: "[Service] in Sri Lanka | [Value Prop]".',
+                description: 'e.g. "Brand Identity Design in Sri Lanka | Uniix Studio". The on-page H1 is built from the Name.',
               },
             },
+            {
+              name: 'shortDescription',
+              type: 'textarea',
+              admin: { description: 'One or two sentences for cards and listings.' },
+            },
+            imageField('coverImage', { label: 'Hero image' }),
             {
               name: 'body',
               type: 'richText',
               required: true,
-              admin: {
-                description: 'Full page body. Minimum 800 words per Masterplan. Include H2s for: What\'s Included, Process, Why Uniix, Pricing.',
-              },
+              admin: { description: 'Main page copy. Use H2s for sections.' },
+            },
+          ],
+        },
+        {
+          label: 'Process & deliverables',
+          fields: [
+            {
+              name: 'process',
+              type: 'array',
+              admin: { initCollapsed: true },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'title', type: 'text', required: true, admin: { width: '70%' } },
+                    { name: 'duration', type: 'text', admin: { width: '30%' } },
+                  ],
+                },
+                { name: 'detail', type: 'textarea', required: true },
+              ],
+            },
+            {
+              name: 'deliverables',
+              type: 'array',
+              admin: { initCollapsed: true },
+              fields: [
+                { name: 'name', type: 'text', required: true },
+                { name: 'description', type: 'textarea' },
+              ],
             },
             {
               name: 'pricingFromLKR',
+              label: 'Starting price (LKR)',
               type: 'number',
-              admin: {
-                description: 'Starting price in LKR. Optional — leave blank to omit pricing chip.',
-                step: 10000,
-              },
+              min: 0,
+              admin: { step: 10000, description: 'Optional pricing chip.' },
             },
             {
-              name: 'faqs',
+              name: 'pricingTiers',
               type: 'array',
-              labels: { singular: 'FAQ', plural: 'FAQs' },
-              admin: {
-                description: '5 questions max per Masterplan §3.1. Renders visible accordion AND emits FAQPage JSON-LD for People Also Ask boxes.',
-                initCollapsed: true,
-              },
+              admin: { initCollapsed: true },
               fields: [
-                { name: 'question', type: 'text', required: true },
                 {
-                  name: 'answer',
-                  type: 'textarea',
-                  required: true,
-                  admin: { description: '2–3 sentences. Start with the answer directly — no "Great question" preamble.' },
+                  type: 'row',
+                  fields: [
+                    { name: 'name', type: 'text', required: true, admin: { width: '40%' } },
+                    { name: 'price', type: 'text', required: true, admin: { width: '30%' } },
+                    { name: 'highlight', type: 'checkbox', admin: { width: '30%' } },
+                  ],
+                },
+                { name: 'summary', type: 'textarea' },
+                { name: 'includes', type: 'text', hasMany: true },
+              ],
+            },
+            faqsField(8),
+          ],
+        },
+        {
+          label: 'Media & links',
+          fields: [
+            videosField(),
+            {
+              name: 'relatedReading',
+              type: 'array',
+              admin: { initCollapsed: true, description: 'Curated internal links (topic cluster).' },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'label', type: 'text', required: true, admin: { width: '50%' } },
+                    hrefField('href', { required: true, admin: { width: '50%' } }),
+                  ],
                 },
               ],
-              maxRows: 8,
-            },
-          ],
-        },
-
-        /* -------------------------------- SEO -------------------------------- */
-        {
-          label: 'SEO',
-          description: 'Title tag, meta description, OG image. Page already auto-emits Service + Breadcrumb JSON-LD.',
-          fields: [
-            {
-              name: 'metaDescription',
-              type: 'textarea',
-              required: true,
-              maxLength: 160,
-              admin: {
-                description: 'Max 160 chars (warn at 150). Lead with the primary keyword. Soft CTA at the end.',
-              },
-            },
-            {
-              name: 'primaryKeyword',
-              type: 'text',
-              admin: {
-                description: 'Primary keyword for this page (per Masterplan §3.2). Drives JSON-LD keywords + SEO sidebar.',
-              },
-            },
-            {
-              name: 'ogImage',
-              type: 'upload',
-              relationTo: 'media',
-              admin: {
-                description: 'Custom OG image (1200×630). Falls back to dynamic /opengraph-image if blank.',
-              },
-            },
-          ],
-        },
-
-        /* ------------------------------ SETTINGS ----------------------------- */
-        {
-          label: 'Settings',
-          description: 'Routing, hierarchy, and what shows in lists.',
-          fields: [
-            {
-              name: 'slug',
-              type: 'text',
-              unique: true,
-              required: true,
-              admin: {
-                description: 'URL slug. Unique site-wide. Lowercase, hyphens. e.g., "brand-identity".',
-                width: '50%',
-              },
-            },
-            {
-              name: 'pillar',
-              type: 'relationship',
-              relationTo: 'pillars',
-              required: true,
-              admin: {
-                description: 'Parent pillar (Design / Technology / Growth). Determines the URL prefix.',
-                width: '50%',
-              },
-            },
-            {
-              name: 'displayOrder',
-              type: 'number',
-              defaultValue: 0,
-              admin: {
-                description: 'Lower numbers appear first inside the pillar.',
-                width: '50%',
-                step: 1,
-              },
-            },
-            {
-              name: 'featured',
-              type: 'checkbox',
-              defaultValue: false,
-              admin: {
-                description: 'Pin this service to the top of its pillar page.',
-                width: '50%',
-              },
             },
             {
               name: 'relatedServices',
@@ -173,22 +167,47 @@ export const Services: CollectionConfig = {
               relationTo: 'services',
               hasMany: true,
               maxRows: 3,
-              admin: {
-                description: 'Up to 3 related services shown at the bottom of the page.',
-              },
+              filterOptions: ({ id }) => ({ id: { not_equals: id } }),
             },
+            { name: 'relatedProjects', type: 'relationship', relationTo: 'projects', hasMany: true, maxRows: 6 },
+            { name: 'testimonials', type: 'relationship', relationTo: 'testimonials', hasMany: true },
+            { name: 'industries', type: 'relationship', relationTo: 'industries', hasMany: true },
             {
               name: 'cta',
+              label: 'Call to action',
               type: 'group',
-              admin: { description: 'Custom CTA button. Falls back to "Get a free consultation" if blank.' },
+              admin: { description: 'Defaults to "Get a free consultation" → /contact.' },
               fields: [
-                { name: 'label', type: 'text', admin: { width: '50%' } },
-                { name: 'href', type: 'text', admin: { width: '50%' } },
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'label', type: 'text', admin: { width: '50%' } },
+                    hrefField('href', { admin: { width: '50%' } }),
+                  ],
+                },
               ],
             },
           ],
         },
+        {
+          label: 'SEO',
+          fields: [
+            { name: 'primaryKeyword', type: 'text' },
+            seoField(),
+          ],
+        },
       ],
     },
+    slugField('name'),
+    {
+      name: 'pillar',
+      type: 'relationship',
+      relationTo: 'pillars',
+      required: true,
+      admin: { position: 'sidebar', description: 'Determines the URL prefix.' },
+    },
+    featuredField(),
+    orderField('Order within the pillar.'),
+    ...auditFields,
   ],
 }

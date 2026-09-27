@@ -5,6 +5,14 @@ export type Industry = {
   image: string;
   accent: string; // hex used for the eyebrow label tint inside the card
   bg: string; // tailwind-compatible gradient classes — used as fallback if the image is slow
+  /* ---- CMS-only (optional) ---- */
+  imageAlt?: string;
+  body?: string;
+  challenges?: Array<{ title: string; body: string }>;
+  solutions?: Array<{ title: string; body: string }>;
+  projectSlugs?: string[];
+  serviceLinks?: Array<{ label: string; href: string }>;
+  seo?: import("./cms/seo").SeoFields;
 };
 
 export const industries: Industry[] = [

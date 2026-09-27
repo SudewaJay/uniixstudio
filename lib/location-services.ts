@@ -26,6 +26,7 @@ export type LocationService = {
   intro: string[];
   benefits: Array<{ title: string; body: string }>;
   faqs: Array<{ question: string; answer: string }>;
+  seo?: import("./cms/seo").SeoFields;
 };
 
 export const locationServices: LocationService[] = [

@@ -3,30 +3,30 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { site } from "@/lib/content";
+import type { PromoBarData, SocialLink } from "@/lib/cms/site";
 
 export const PROMO_BAR_HEIGHT = 36;
 
-const TAGLINES = [
-  "Creative Digital Agency · Colombo · Working globally",
-  "Brand identities · Performance websites · Growth systems",
-  "50+ projects shipped · 3× average traffic lift in 90 days",
-  "Available for Q3 2026 — 2 slots left",
-];
+const socialHref = (socials: SocialLink[], label: string) => socials.find((s) => s.label === label)?.href;
 
-const ROTATE_MS = 3800;
-
-export default function PromoBar() {
+/**
+ * The bar keeps its fixed height even when disabled in the CMS: the header
+ * and every hero are offset by PROMO_BAR_HEIGHT, so removing it would shift
+ * the layout. Disabled = empty ink strip with the social icons only.
+ */
+export default function PromoBar({ promo, socials }: { promo: PromoBarData; socials: SocialLink[] }) {
+  const TAGLINES = promo.enabled ? promo.taglines : [];
+  const ROTATE_MS = promo.interval;
   const reduce = useReducedMotion();
   const [i, setI] = useState(0);
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || TAGLINES.length < 2) return;
     const t = setInterval(() => {
       setI((prev) => (prev + 1) % TAGLINES.length);
     }, ROTATE_MS);
     return () => clearInterval(t);
-  }, [reduce]);
+  }, [reduce, TAGLINES.length, ROTATE_MS]);
 
   return (
     <div
@@ -37,6 +37,7 @@ export default function PromoBar() {
         {/* Rotating tagline — fixed-height clip with vertical slide */}
         <div className="relative flex-1 min-w-0 overflow-hidden" style={{ height: 16 }}>
           <AnimatePresence mode="wait" initial={false}>
+            {TAGLINES.length > 0 && (
             <motion.span
               key={i}
               initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
@@ -46,14 +47,16 @@ export default function PromoBar() {
               className="absolute inset-0 flex items-center font-mono tracking-[0.06em] sm:tracking-[0.12em] uppercase text-white/85 whitespace-nowrap"
             >
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-brand-4 mr-2.5 flex-shrink-0" />
-              <span className="truncate">{TAGLINES[i]}</span>
+              <span className="truncate">{TAGLINES[i % Math.max(TAGLINES.length, 1)]}</span>
             </motion.span>
+            )}
           </AnimatePresence>
         </div>
 
         <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
+          {socialHref(socials, "Instagram") && (
           <Link
-            href={site.socials.instagram}
+            href={socialHref(socials, "Instagram")!}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -65,8 +68,10 @@ export default function PromoBar() {
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
             </svg>
           </Link>
+          )}
+          {socialHref(socials, "LinkedIn") && (
           <Link
-            href={site.socials.linkedin}
+            href={socialHref(socials, "LinkedIn")!}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
@@ -78,8 +83,10 @@ export default function PromoBar() {
               <circle cx="4" cy="4" r="2" />
             </svg>
           </Link>
+          )}
+          {socialHref(socials, "Facebook") && (
           <Link
-            href={site.socials.facebook}
+            href={socialHref(socials, "Facebook")!}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
@@ -89,6 +96,7 @@ export default function PromoBar() {
               <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
             </svg>
           </Link>
+          )}
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@ import {
   useReducedMotion,
   type MotionValue,
 } from "framer-motion";
+import type { SectionCopy } from "@/lib/cms/site";
 import SmartImage from "../ui/SmartImage";
 import Reveal from "../Reveal";
 
@@ -163,7 +164,7 @@ function TextLayer({
  * scroll-driven crossfade is a desktop affordance; on a phone it fights the
  * user's own scrolling.
  */
-export default function WorkShowcase({ items }: { items: ShowcaseProject[] }) {
+export default function WorkShowcase({ items, copy }: { items: ShowcaseProject[]; copy?: SectionCopy }) {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const total = items.length;
@@ -183,11 +184,11 @@ export default function WorkShowcase({ items }: { items: ShowcaseProject[] }) {
       <div className="wrap">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <Reveal>
-            <span className="eyebrow">Selected work</span>
+            <span className="eyebrow">{copy?.eyebrow ?? "Selected work"}</span>
             <h2 className="t-h2 mt-5">
-              Brands we&apos;re
+              {copy?.heading ?? "Brands we're"}
               <br />
-              <span className="t-italic accent-grad-text">proud of.</span>
+              <span className="t-italic accent-grad-text">{copy?.headingAccent ?? "proud of."}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>

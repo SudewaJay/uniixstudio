@@ -1,34 +1,28 @@
 import type { GlobalConfig } from 'payload'
+import { anyone, isEditor } from '../access'
+import { revalidateGlobal } from '../hooks/revalidate'
 
 export const PromoBar: GlobalConfig = {
   slug: 'promo-bar',
   label: 'Promo Bar',
-  admin: {
-    group: 'Globals',
-    description: 'The thin dark bar at the very top of every page. Rotates through taglines.',
-  },
-  access: { read: () => true },
+  admin: { group: 'Site', description: 'The thin rotating bar at the very top of every page.' },
+  access: { read: anyone, update: isEditor },
+  hooks: { afterChange: [revalidateGlobal('promo-bar')] },
   fields: [
-    {
-      name: 'enabled',
-      type: 'checkbox',
-      defaultValue: false,
-    },
+    { name: 'enabled', type: 'checkbox', defaultValue: true },
     {
       name: 'taglines',
       type: 'array',
-      fields: [
-        { name: 'text', type: 'text', required: true },
-      ],
+      maxRows: 8,
+      fields: [{ name: 'text', type: 'text', required: true, maxLength: 90 }],
     },
     {
       name: 'rotateInterval',
       type: 'number',
       defaultValue: 3800,
-      admin: {
-        description: 'Rotation interval in milliseconds (default: 3800)',
-        step: 100,
-      },
+      min: 1500,
+      max: 20000,
+      admin: { step: 100, description: 'Milliseconds between taglines.' },
     },
   ],
 }

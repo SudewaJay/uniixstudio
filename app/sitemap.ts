@@ -1,18 +1,42 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/content";
-import { pillars } from "@/lib/services";
-import { allServices as services } from "@/lib/services-fs";
-import { allPosts as posts } from "@/lib/blog-fs";
-import { getDetailedProjects } from "@/lib/projects-fs";
-import { locations } from "@/lib/locations";
-import { locationServices } from "@/lib/location-services";
 import { finlandHasPlaceholders } from "@/lib/finland";
+import { getPillars, getServices } from "@/lib/cms/services";
+import { getPosts } from "@/lib/cms/blog";
+import { getDetailedProjects } from "@/lib/cms/projects";
+import { getIndustries } from "@/lib/cms/industries";
+import { getLocations, getLocationServices } from "@/lib/cms/locations";
+import { getPageSummaries } from "@/lib/cms/pages";
+import type { SeoFields } from "@/lib/cms/seo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+/**
+ * Built from the CMS: only published documents are ever returned by the
+ * queries (drafts are filtered by access control), and anything an editor
+ * marked noindex — or pointed at another canonical — is left out.
+ * Refreshed on demand through the same cache tags as the pages.
+ */
+export const revalidate = 3600;
+
+type Entry = { path: string; priority: number; freq: "monthly" | "weekly"; lastModified?: Date; seo?: SeoFields | null };
+
+const indexable = (e: Entry) => !e.seo?.noIndex && !e.seo?.canonicalURL;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const baseUrl = (path: string) => `${site.url}${path}/`.replace(/\/+$/, "/");
 
-  const staticRoutes: { path: string; priority: number; freq: "monthly" | "weekly" }[] = [
+  const [pillars, services, posts, projects, industries, locations, locationServices, pages] = await Promise.all([
+    getPillars(),
+    getServices(),
+    getPosts(),
+    getDetailedProjects(),
+    getIndustries(),
+    getLocations(),
+    getLocationServices(),
+    getPageSummaries(),
+  ]);
+
+  const staticRoutes: Entry[] = [
     { path: "", priority: 1.0, freq: "weekly" },
     { path: "/services", priority: 0.9, freq: "monthly" },
     { path: "/portfolio", priority: 0.8, freq: "monthly" },
@@ -31,58 +55,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ]),
   ];
 
-  const locationRoutes = locations.map((l) => ({
-    path: `/locations/${l.slug}`,
-    priority: 0.85,
-    freq: "monthly" as const,
-  }));
-
-  const locationServiceRoutes = locationServices.map((ls) => ({
-    path: `/locations/${ls.area}/${ls.service}`,
-    priority: 0.8,
-    freq: "monthly" as const,
-  }));
-
-  const pillarRoutes = pillars.map((p) => ({
-    path: `/services/${p.slug}`,
-    priority: 0.85,
-    freq: "monthly" as const,
-  }));
-
-  const serviceRoutes = services.map((s) => ({
-    path: `/services/${s.pillar}/${s.slug}`,
-    priority: 0.8,
-    freq: "monthly" as const,
-  }));
-
-  const blogRoutes = posts
-    .filter((p) => !p.isStub)
-    .map((p) => ({
+  const entries: Entry[] = [
+    ...staticRoutes,
+    ...pillars.map((p) => ({ path: `/services/${p.slug}`, priority: 0.85, freq: "monthly" as const, seo: p.seo })),
+    ...locations.map((l) => ({ path: `/locations/${l.slug}`, priority: 0.85, freq: "monthly" as const, seo: l.seo })),
+    ...locationServices.map((ls) => ({
+      path: `/locations/${ls.area}/${ls.service}`,
+      priority: 0.8,
+      freq: "monthly" as const,
+      seo: ls.seo,
+    })),
+    ...services.map((s) => ({ path: `/services/${s.pillar}/${s.slug}`, priority: 0.8, freq: "monthly" as const, seo: s.seo })),
+    ...industries.map((i) => ({ path: `/industries/${i.slug}`, priority: 0.7, freq: "monthly" as const, seo: i.seo })),
+    ...projects.map((p) => ({ path: `/portfolio/${p.slug}`, priority: 0.85, freq: "monthly" as const, seo: p.seo })),
+    ...posts.map((p) => ({
       path: `/blog/${p.slug}`,
       priority: 0.7,
       freq: "monthly" as const,
-      lastModified: new Date(p.publishDate),
-    }));
-
-  const portfolioRoutes = getDetailedProjects().map((p) => ({
-    path: `/portfolio/${p.slug}`,
-    priority: 0.85,
-    freq: "monthly" as const,
-  }));
-
-  const all = [
-    ...staticRoutes.map((r) => ({ ...r, lastModified: now })),
-    ...pillarRoutes.map((r) => ({ ...r, lastModified: now })),
-    ...locationRoutes.map((r) => ({ ...r, lastModified: now })),
-    ...locationServiceRoutes.map((r) => ({ ...r, lastModified: now })),
-    ...serviceRoutes.map((r) => ({ ...r, lastModified: now })),
-    ...portfolioRoutes.map((r) => ({ ...r, lastModified: now })),
-    ...blogRoutes,
+      lastModified: new Date(p.updatedDate ?? p.publishDate),
+      seo: p.seo,
+    })),
+    ...pages
+      .filter((p) => !p.noIndex)
+      .map((p) => ({
+        path: `/${p.slug}`,
+        priority: p.kind === "legal" ? 0.3 : 0.6,
+        freq: "monthly" as const,
+        lastModified: new Date(p.updatedAt),
+      })),
   ];
 
-  return all.map((r) => ({
+  return entries.filter(indexable).map((r) => ({
     url: baseUrl(r.path),
-    lastModified: r.lastModified,
+    lastModified: r.lastModified ?? now,
     changeFrequency: r.freq,
     priority: r.priority,
   }));

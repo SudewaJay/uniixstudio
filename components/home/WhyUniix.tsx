@@ -3,7 +3,8 @@
 import { useRef } from "react";
 import clsx from "clsx";
 import { useInView } from "framer-motion";
-import { whyPoints } from "@/lib/content";
+import type { WhyPoint } from "@/lib/cms/content";
+import type { SectionCopy } from "@/lib/cms/site";
 import Reveal from "../Reveal";
 
 /**
@@ -18,23 +19,23 @@ import Reveal from "../Reveal";
  * strike is a decorative pseudo-element. With reduced motion the rows render
  * in their finished state.
  */
-export default function WhyUniix() {
+export default function WhyUniix({ whyPoints, copy }: { whyPoints: WhyPoint[]; copy?: SectionCopy }) {
   return (
     <section id="about" className="section bg-bg">
       <div className="wrap">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,38%)] lg:items-end lg:gap-20">
           <Reveal>
-            <span className="eyebrow">Why Uniix</span>
+            <span className="eyebrow">{copy?.eyebrow ?? "Why Uniix"}</span>
             <h2 className="t-h2 mt-5">
-              A studio built
+              {copy?.heading ?? "A studio built"}
               <br />
-              <span className="t-italic accent-grad-text">for serious work.</span>
+              <span className="t-italic accent-grad-text">{copy?.headingAccent ?? "for serious work."}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-lead text-ink-2">
-              A small, senior team in Colombo working with clients across South Asia,
-              Australia and the UK.
+              {copy?.support ??
+                "A small, senior team in Colombo working with clients across South Asia, Australia and the UK."}
             </p>
           </Reveal>
         </div>
@@ -59,7 +60,7 @@ export default function WhyUniix() {
   );
 }
 
-function WhyRow({ point }: { point: (typeof whyPoints)[number] }) {
+function WhyRow({ point }: { point: WhyPoint }) {
   const ref = useRef<HTMLLIElement>(null);
   const seen = useInView(ref, { once: true, margin: "0px 0px -18% 0px" });
 

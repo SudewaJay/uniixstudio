@@ -13,16 +13,14 @@ export const site = {
    * Real, physical business address — MUST match your Google Business Profile
    * character-for-character (same street line, same phone). This is the single
    * NAP used across every location page's LocalBusiness schema.
-   * TODO(uniix): replace the placeholders below with your verified GBP details.
    */
   businessAddress: {
-    streetAddress: "", // TODO e.g. "123 Galle Road"
-    addressLocality: "Colombo", // TODO the town your GBP is registered in
+    streetAddress: "241/Z, Batagama, North Ganemulla Road",
+    addressLocality: "Ja-Ela",
     addressRegion: "Western Province",
-    postalCode: "", // TODO e.g. "11500"
+    postalCode: "11350",
     addressCountry: "LK",
-    // TODO set to your office's real coordinates (drop a pin in Google Maps).
-    geo: { lat: 6.9271, lng: 79.8612 },
+    geo: { lat: 7.0744, lng: 79.8919 },
   },
   /** Build an absolute canonical URL for a page path. */
   canonical: (path: string = "/") => {

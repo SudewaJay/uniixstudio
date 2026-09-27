@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
-import { getPillar } from "@/lib/services";
-import {
-  allServices as services,
-  getServiceFs as getService,
-  getServicesForPillarFs as getServicesForPillar,
-} from "@/lib/services-fs";
+import { getPillar, getService, getServices, getServicesForPillar } from "@/lib/cms/services";
+import { buildMetadata } from "@/lib/cms/seo";
+import { notFoundOrRedirect } from "@/lib/cms/redirects";
 import {
   ServiceProcessTimeline,
   ServiceDeliverablesGrid,
@@ -24,14 +20,10 @@ import {
   schemaGraph,
 } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
-import { site } from "@/lib/content";
 
-export function generateStaticParams() {
-  return services.map((s) => ({ pillar: s.pillar, service: s.slug }));
+export async function generateStaticParams() {
+  return (await getServices()).map((s) => ({ pillar: s.pillar, service: s.slug }));
 }
-
-export const dynamic = "force-static";
-export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -39,20 +31,15 @@ export async function generateMetadata({
   params: Promise<{ pillar: string; service: string }>;
 }): Promise<Metadata> {
   const { pillar, service: serviceSlug } = await params;
-  const service = getService(pillar, serviceSlug);
+  const service = await getService(pillar, serviceSlug);
   if (!service) return { title: "Service" };
-  const canonical = site.canonical(`/services/${pillar}/${serviceSlug}/`);
-  return {
-    metadataBase: new URL(site.url),
+  // The dynamic opengraph-image route supplies the social image by default.
+  return buildMetadata({
+    path: `/services/${pillar}/${serviceSlug}/`,
     title: service.pageTitle,
     description: service.metaDescription,
-    alternates: { canonical },
-    openGraph: {
-      title: service.pageTitle,
-      description: service.metaDescription,
-      url: canonical,
-    },
-  };
+    seo: service.seo,
+  });
 }
 
 export default async function ServiceDetailPage({
@@ -61,13 +48,19 @@ export default async function ServiceDetailPage({
   params: Promise<{ pillar: string; service: string }>;
 }) {
   const { pillar: pillarSlug, service: serviceSlug } = await params;
-  const service = getService(pillarSlug, serviceSlug);
-  const pillar = getPillar(pillarSlug);
-  if (!service || !pillar) notFound();
+  const [service, pillar, pillarServices] = await Promise.all([
+    getService(pillarSlug, serviceSlug),
+    getPillar(pillarSlug),
+    getServicesForPillar(pillarSlug),
+  ]);
+  if (!service || !pillar) return notFoundOrRedirect(`/services/${pillarSlug}/${serviceSlug}/`);
 
-  const sibling = getServicesForPillar(pillarSlug)
-    .filter((s) => s.slug !== serviceSlug)
-    .slice(0, 3);
+  // Editor-picked related services first, then siblings in the same pillar.
+  const picked = (service.relatedServiceKeys ?? []).map((k) => pillarServices.find((s) => s.slug === k.slug)).filter(
+    (s): s is NonNullable<typeof s> => Boolean(s),
+  );
+  const sibling = [...picked, ...pillarServices.filter((s) => s.slug !== serviceSlug && !picked.includes(s))].slice(0, 3);
+  const cta = service.cta ?? { label: "Start a conversation ↗", href: "/contact/" };
 
   // Strip the leading H1 from the markdown body if present (we render our own H1)
   const bodyWithoutH1 = service.body.replace(/^#\s+.*\n/, "").trim();
@@ -125,7 +118,7 @@ export default async function ServiceDetailPage({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={service.coverImage}
-                  alt={`${service.name} in Sri Lanka — Uniix Studio`}
+                  alt={service.coverAlt ?? `${service.name} in Sri Lanka — Uniix Studio`}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -239,10 +232,10 @@ export default async function ServiceDetailPage({
                     hours.
                   </p>
                   <Link
-                    href="/contact/"
+                    href={cta.href}
                     className="inline-flex items-center justify-center w-full py-2.5 rounded-full bg-white text-ink text-[13px] font-semibold hover:bg-bg-warm transition-colors"
                   >
-                    Start a conversation ↗
+                    {cta.label}
                   </Link>
                 </div>
               </div>

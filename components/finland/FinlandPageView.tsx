@@ -12,8 +12,10 @@ import FinlandPresence from "./FinlandPresence";
 import FinlandCTA from "./FinlandCTA";
 import type { FiProject, FiProjects } from "./types";
 import JsonLd from "../JsonLd";
-import { site, testimonials } from "@/lib/content";
-import { allProjects } from "@/lib/projects-fs";
+import { site } from "@/lib/content";
+import type { Project } from "@/lib/projects";
+import { getProjects } from "@/lib/cms/projects";
+import { getFeaturedTestimonials, type TestimonialItem } from "@/lib/cms/content";
 import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import {
   cld,
@@ -63,7 +65,7 @@ export function finlandMetadata(lang: FiLang): Metadata {
 }
 
 /** Every project the page references, reduced to what it renders, localized. */
-function collectProjects(lang: FiLang): FiProjects {
+function collectProjects(lang: FiLang, allProjects: Project[]): FiProjects {
   const slugs = new Set<string>([
     finlandWorkLayout.lead,
     ...finlandWorkLayout.pair,
@@ -101,7 +103,11 @@ function collectProjects(lang: FiLang): FiProjects {
  * Testimonials that already exist in the codebase — project MDX first, then
  * the site-wide list the homepage publishes. Quotes are never translated.
  */
-function collectTestimonials(projects: FiProjects): FiTestimonial[] {
+function collectTestimonials(
+  projects: FiProjects,
+  allProjects: Project[],
+  testimonials: TestimonialItem[],
+): FiTestimonial[] {
   const fromProjects: FiTestimonial[] = allProjects.flatMap((p) =>
     p.testimonial && projects[p.slug]
       ? [
@@ -165,11 +171,12 @@ function finlandSchema(lang: FiLang, projects: FiProject[]) {
   );
 }
 
-export default function FinlandPageView({ lang }: { lang: FiLang }) {
+export default async function FinlandPageView({ lang }: { lang: FiLang }) {
   const c = getFinlandContent(lang);
-  const projects = collectProjects(lang);
+  const [allProjects, testimonials] = await Promise.all([getProjects(), getFeaturedTestimonials()]);
+  const projects = collectProjects(lang, allProjects);
   const caseStudies = finlandCaseStudies.map((s) => projects[s]).filter(Boolean) as FiProject[];
-  const reviews = collectTestimonials(projects);
+  const reviews = collectTestimonials(projects, allProjects, testimonials);
 
   const industries: IndustryTile[] = c.industries.map((ind) => {
     const p = ind.proofProject ? projects[ind.proofProject] : undefined;

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import JsonLd from "@/components/JsonLd";
-import { locations, getLocation } from "@/lib/locations";
-import { locationServicesFor } from "@/lib/location-services";
-import { getPost } from "@/lib/blog-fs";
-import { site } from "@/lib/content";
+import { getLocations, locationServicesFor } from "@/lib/cms/locations";
+import { getPosts } from "@/lib/cms/blog";
+import { getSiteSettings } from "@/lib/cms/site";
+import { buildMetadata } from "@/lib/cms/seo";
+import { notFoundOrRedirect } from "@/lib/cms/redirects";
 import {
   localBusinessAreaSchema,
   breadcrumbSchema,
@@ -15,12 +15,9 @@ import {
   schemaGraph,
 } from "@/lib/schema";
 
-export function generateStaticParams() {
-  return locations.map((l) => ({ area: l.slug }));
+export async function generateStaticParams() {
+  return (await getLocations()).map((l) => ({ area: l.slug }));
 }
-
-export const dynamic = "force-static";
-export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -28,20 +25,14 @@ export async function generateMetadata({
   params: Promise<{ area: string }>;
 }): Promise<Metadata> {
   const { area } = await params;
-  const loc = getLocation(area);
+  const loc = (await getLocations()).find((l) => l.slug === area);
   if (!loc) return { title: "Location" };
-  const canonical = site.canonical(`/locations/${loc.slug}/`);
-  return {
-    metadataBase: new URL(site.url),
+  return buildMetadata({
+    path: `/locations/${loc.slug}/`,
     title: `Web Design & Development in ${loc.name} | Uniix Studio`,
     description: loc.metaDescription,
-    alternates: { canonical },
-    openGraph: {
-      title: `Web Design & Development in ${loc.name} | Uniix Studio`,
-      description: loc.metaDescription,
-      url: canonical,
-    },
-  };
+    seo: loc.seo,
+  });
 }
 
 export default async function LocationDetailPage({
@@ -50,26 +41,32 @@ export default async function LocationDetailPage({
   params: Promise<{ area: string }>;
 }) {
   const { area } = await params;
-  const loc = getLocation(area);
-  if (!loc) notFound();
+  const [locations, posts, combos, site] = await Promise.all([
+    getLocations(),
+    getPosts(),
+    locationServicesFor(area),
+    getSiteSettings(),
+  ]);
+  const loc = locations.find((l) => l.slug === area);
+  if (!loc) return notFoundOrRedirect(`/locations/${area}/`);
 
   const schema = schemaGraph(
-    localBusinessAreaSchema(loc),
+    localBusinessAreaSchema(loc, site),
     breadcrumbSchema([
       { name: "Home", url: "/" },
       { name: "Locations", url: "/locations/" },
       { name: loc.name, url: `/locations/${loc.slug}/` },
     ]),
-    faqPageSchema(loc.faqs)
+    ...(loc.faqs.length ? [faqPageSchema(loc.faqs)] : []),
   );
 
   const others = locations.filter((l) => l.slug !== loc.slug);
   const guides = loc.relatedPosts
-    .map((slug) => getPost(slug))
+    .map((slug) => posts.find((p) => p.slug === slug))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
   // Service slugs that have a dedicated combo page for this town — those cards
   // link to the deeper local page instead of the generic service page.
-  const comboSlugs = new Set(locationServicesFor(loc.slug).map((c) => c.service));
+  const comboSlugs = new Set(combos.map((c) => c.service));
 
   return (
     <>
@@ -257,14 +254,16 @@ export default async function LocationDetailPage({
               >
                 Start a project
               </Link>
-              <a
-                href={site.whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-7 py-3.5 rounded-full border border-white/30 text-white font-medium text-[15px] hover:bg-white/10 transition-colors"
-              >
-                WhatsApp us
-              </a>
+              {site.whatsappLink && (
+                <a
+                  href={site.whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-7 py-3.5 rounded-full border border-white/30 text-white font-medium text-[15px] hover:bg-white/10 transition-colors"
+                >
+                  WhatsApp us
+                </a>
+              )}
             </div>
           </div>
         </div>

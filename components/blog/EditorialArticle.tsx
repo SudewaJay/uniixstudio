@@ -6,10 +6,10 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import Reveal from "@/components/Reveal";
 import JsonLd from "@/components/JsonLd";
-import { formatDate, type BlogPost } from "@/lib/blog-fs";
-import { getServiceFs } from "@/lib/services-fs";
+import type { BlogPost } from "@/lib/blog-fs";
+import { formatDate } from "@/lib/format";
+import type { Service } from "@/lib/services";
 import type { Location } from "@/lib/locations";
-import { site } from "@/lib/content";
 
 /**
  * Long-form "editorial" article template, opted into per post with
@@ -22,7 +22,10 @@ type Props = {
   post: BlogPost;
   schema: object;
   related: BlogPost[];
-  servingAreas: Location[];
+  servingAreas: Pick<Location, "slug" | "name">[];
+  /** Published services, used to resolve post.relatedServices ("pillar/slug"). */
+  allServices: Service[];
+  contact: { whatsappLink?: string; phone?: string };
 };
 
 /** Same slug for the TOC entry (from markdown) and the rendered heading. */
@@ -194,12 +197,14 @@ export default function EditorialArticle({
   schema,
   related,
   servingAreas,
+  allServices,
+  contact,
 }: Props) {
   const toc = tocFrom(post.body);
   const services = (post.relatedServices ?? [])
     .map((key) => {
       const [pillar, slug] = key.split("/");
-      const s = getServiceFs(pillar, slug);
+      const s = allServices.find((x) => x.pillar === pillar && x.slug === slug);
       return s
         ? {
             href: `/services/${pillar}/${slug}/`,
@@ -516,14 +521,16 @@ export default function EditorialArticle({
                 <Link href={ctaHref} className="btn btn-accent">
                   {post.ctaLabel ?? "Start a project"} <span aria-hidden="true">↗</span>
                 </Link>
-                <a
-                  href={site.whatsappLink}
-                  className="btn btn-outline-light"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  WhatsApp {site.phone}
-                </a>
+                {contact.whatsappLink && (
+                  <a
+                    href={contact.whatsappLink}
+                    className="btn btn-outline-light"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    WhatsApp {contact.phone}
+                  </a>
+                )}
               </div>
             </div>
           </Reveal>

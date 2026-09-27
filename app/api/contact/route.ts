@@ -1,5 +1,10 @@
 /**
- * Contact form handler — wired to Resend.
+ * Contact form handler.
+ *
+ * 1. Validates + rate-limits (honeypot, per-IP window).
+ * 2. Stores the enquiry in the CMS (Enquiries — admin-only, never public).
+ * 3. Emails the team via Resend, recording whether delivery succeeded.
+ * The visitor sees success if the enquiry was captured by either channel.
  *
  * Requires env vars:
  *   RESEND_API_KEY   — get from https://resend.com (free 3,000/mo)
@@ -11,6 +16,7 @@
 
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { getPayloadClient } from "@/lib/cms/payload";
 
 export const runtime = "nodejs";
 
@@ -21,9 +27,51 @@ type Payload = {
   service?: string;
   budget?: string;
   message?: string;
+  /** Page or campaign the form was submitted from. */
+  source?: string;
   /** Honeypot — must be empty. Real users won't see this field. */
   website?: string;
 };
+
+/** Stores the enquiry; returns its id, or null if the CMS is unavailable. */
+async function storeSubmission(data: {
+  name: string;
+  email: string;
+  company: string;
+  service: string;
+  budget: string;
+  message: string;
+  source: string;
+}): Promise<number | null> {
+  try {
+    const payload = await getPayloadClient();
+    // Server-side write: the collection's `create` access is closed to the API.
+    const doc = await payload.create({
+      collection: "contact-submissions",
+      data: { ...data, status: "new" },
+      overrideAccess: true,
+    });
+    return doc.id;
+  } catch (err) {
+    console.error("[contact] could not store submission", err);
+    return null;
+  }
+}
+
+async function markDelivered(id: number | null, delivered: boolean) {
+  if (id === null) return;
+  try {
+    const payload = await getPayloadClient();
+    await payload.update({
+      collection: "contact-submissions",
+      id,
+      data: { emailDelivered: delivered },
+      overrideAccess: true,
+    });
+  } catch (err) {
+    console.error("[contact] could not update delivery flag", err);
+  }
+}
 
 function escapeHtml(s: string): string {
   return s
@@ -93,6 +141,7 @@ export async function POST(req: Request) {
   const company = (data.company ?? "").trim();
   const service = (data.service ?? "").trim();
   const budget = (data.budget ?? "").trim();
+  const source = (data.source ?? "").trim().slice(0, 200);
 
   if (!name || !email || !message) {
     return NextResponse.json(
@@ -120,9 +169,16 @@ export async function POST(req: Request) {
     );
   }
 
+  if ([name, company, service, budget].some((v) => v.length > 300)) {
+    return NextResponse.json({ ok: false, error: "One of the fields is too long." }, { status: 400 });
+  }
+
+  const submissionId = await storeSubmission({ name, email, company, service, budget, message, source });
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("[contact] RESEND_API_KEY not set");
+    if (submissionId !== null) return NextResponse.json({ ok: true });
     return NextResponse.json(
       { ok: false, error: "Email service not configured." },
       { status: 500 },
@@ -181,8 +237,11 @@ export async function POST(req: Request) {
       html,
       replyTo: email, // hitting "reply" goes straight to the sender
     });
+    await markDelivered(submissionId, !error);
     if (error) {
       console.error("[contact] resend error", error);
+      // Captured in the CMS — the team will still see it.
+      if (submissionId !== null) return NextResponse.json({ ok: true });
       return NextResponse.json(
         { ok: false, error: "Could not send right now. Please email us directly." },
         { status: 502 },
@@ -191,6 +250,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[contact] exception", err);
+    await markDelivered(submissionId, false);
+    if (submissionId !== null) return NextResponse.json({ ok: true });
     return NextResponse.json(
       { ok: false, error: "Something went wrong. Please try again." },
       { status: 500 },

@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import JsonLd from "@/components/JsonLd";
-import {
-  locationServices,
-  getLocationService,
-  locationServicesFor,
-} from "@/lib/location-services";
-import { getLocation } from "@/lib/locations";
-import { site } from "@/lib/content";
+import { getLocationServices, getLocationService, locationServicesFor, getLocation } from "@/lib/cms/locations";
+import { getSiteSettings } from "@/lib/cms/site";
+import { buildMetadata } from "@/lib/cms/seo";
+import { notFoundOrRedirect } from "@/lib/cms/redirects";
+
 import {
   locationServiceSchema,
   breadcrumbSchema,
@@ -18,15 +15,13 @@ import {
   schemaGraph,
 } from "@/lib/schema";
 
-export function generateStaticParams() {
-  return locationServices.map((ls) => ({
+export async function generateStaticParams() {
+  return (await getLocationServices()).map((ls) => ({
     area: ls.area,
     service: ls.service,
   }));
 }
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -34,20 +29,14 @@ export async function generateMetadata({
   params: Promise<{ area: string; service: string }>;
 }): Promise<Metadata> {
   const { area, service } = await params;
-  const ls = getLocationService(area, service);
+  const ls = await getLocationService(area, service);
   if (!ls) return { title: "Service" };
-  const canonical = site.canonical(`/locations/${area}/${service}/`);
-  return {
-    metadataBase: new URL(site.url),
+  return buildMetadata({
+    path: `/locations/${area}/${service}/`,
     title: ls.metaTitle,
     description: ls.metaDescription,
-    alternates: { canonical },
-    openGraph: {
-      title: ls.metaTitle,
-      description: ls.metaDescription,
-      url: canonical,
-    },
-  };
+    seo: ls.seo,
+  });
 }
 
 export default async function LocationServicePage({
@@ -56,9 +45,13 @@ export default async function LocationServicePage({
   params: Promise<{ area: string; service: string }>;
 }) {
   const { area, service } = await params;
-  const ls = getLocationService(area, service);
-  const loc = getLocation(area);
-  if (!ls || !loc) notFound();
+  const [ls, loc, siblings, site] = await Promise.all([
+    getLocationService(area, service),
+    getLocation(area),
+    locationServicesFor(area),
+    getSiteSettings(),
+  ]);
+  if (!ls || !loc) return notFoundOrRedirect(`/locations/${area}/${service}/`);
 
   const schema = schemaGraph(
     locationServiceSchema(ls, loc),
@@ -68,10 +61,10 @@ export default async function LocationServicePage({
       { name: loc.name, url: `/locations/${loc.slug}/` },
       { name: ls.serviceLabel, url: `/locations/${area}/${service}/` },
     ]),
-    faqPageSchema(ls.faqs)
+    ...(ls.faqs.length ? [faqPageSchema(ls.faqs)] : []),
   );
 
-  const otherCombos = locationServicesFor(area).filter(
+  const otherCombos = siblings.filter(
     (c) => c.service !== service
   );
 
@@ -165,14 +158,16 @@ export default async function LocationServicePage({
               >
                 Start a project
               </Link>
-              <a
-                href={site.whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-7 py-3.5 rounded-full border border-white/30 text-white font-medium text-[15px] hover:bg-white/10 transition-colors"
-              >
-                WhatsApp us
-              </a>
+              {site.whatsappLink && (
+                <a
+                  href={site.whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-7 py-3.5 rounded-full border border-white/30 text-white font-medium text-[15px] hover:bg-white/10 transition-colors"
+                >
+                  WhatsApp us
+                </a>
+              )}
             </div>
           </div>
         </div>

@@ -12,21 +12,26 @@ import { site } from "@/lib/content";
 import type { BlogPost } from "@/lib/blog";
 import type { Service, Pillar } from "@/lib/services";
 import type { Project } from "@/lib/projects";
-import { locations, type Location } from "@/lib/locations";
+import type { Location } from "@/lib/locations";
+import type { SiteSettings } from "@/lib/cms/site";
 import type { LocationService } from "@/lib/location-services";
 
 const SITE_URL = site.url.replace(/\/$/, "");
 const LOGO_URL = `${SITE_URL}/uniix-logo.svg`;
 
-/** True once real geo coordinates are configured in site.businessAddress. */
-function hasGeo(): boolean {
-  const { lat, lng } = site.businessAddress.geo;
-  return typeof lat === "number" && typeof lng === "number";
-}
+/**
+ * The business identity (NAP + socials) used by Organization / LocalBusiness
+ * nodes. Comes from CMS Site Settings, which must match the Google Business
+ * Profile character-for-character.
+ */
+export type Business = Pick<
+  SiteSettings,
+  "name" | "description" | "email" | "phone" | "whatsapp" | "address" | "socials"
+>;
 
 /** The single real business PostalAddress, omitting empty placeholder fields. */
-function postalAddress() {
-  const a = site.businessAddress;
+function postalAddress(biz: Business) {
+  const a = biz.address;
   return {
     "@type": "PostalAddress",
     ...(a.streetAddress && { streetAddress: a.streetAddress }),
@@ -37,26 +42,32 @@ function postalAddress() {
   };
 }
 
+function geo(biz: Business) {
+  const { lat, lng } = biz.address.geo;
+  return typeof lat === "number" && typeof lng === "number"
+    ? { geo: { "@type": "GeoCoordinates", latitude: lat, longitude: lng } }
+    : {};
+}
+
+const sameAs = (biz: Business) => biz.socials.map((s) => s.href);
+const telephone = (biz: Business) => biz.whatsapp || biz.phone;
+
 // ---------- Site-wide ----------
 
 /** Used in root layout — identifies the org to all engines. */
-export function organizationSchema() {
+export function organizationSchema(biz: Business) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": `${SITE_URL}/#organization`,
-    name: site.name,
+    name: biz.name,
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
       url: LOGO_URL,
     },
-    description: site.description,
-    sameAs: [
-      site.socials.facebook,
-      site.socials.instagram,
-      site.socials.linkedin,
-    ],
+    description: biz.description,
+    sameAs: sameAs(biz),
   };
 }
 
@@ -64,29 +75,23 @@ export function organizationSchema() {
  * Combined LocalBusiness + ProfessionalService — Google reads this
  * for the Maps pack and Knowledge Panel.
  */
-export function localBusinessSchema() {
+export function localBusinessSchema(biz: Business, areas: Array<{ name: string }>) {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${SITE_URL}/#localbusiness`,
-    name: site.name,
+    name: biz.name,
     url: SITE_URL,
     image: LOGO_URL,
     logo: LOGO_URL,
-    telephone: site.whatsapp,
-    email: site.email,
-    description: site.description,
-    address: postalAddress(),
-    ...(hasGeo() && {
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: site.businessAddress.geo.lat,
-        longitude: site.businessAddress.geo.lng,
-      },
-    }),
+    telephone: telephone(biz),
+    email: biz.email,
+    description: biz.description,
+    address: postalAddress(biz),
+    ...geo(biz),
     areaServed: [
       // Towns we actively serve — town-level signals for local ranking.
-      ...locations.map((l) => ({
+      ...areas.map((l) => ({
         "@type": "City" as const,
         name: l.name,
       })),
@@ -94,11 +99,7 @@ export function localBusinessSchema() {
       { "@type": "Country", name: "Australia" },
       { "@type": "Country", name: "United Kingdom" },
     ],
-    sameAs: [
-      site.socials.facebook,
-      site.socials.instagram,
-      site.socials.linkedin,
-    ],
+    sameAs: sameAs(biz),
     priceRange: "$$",
   };
 }
@@ -108,28 +109,22 @@ export function localBusinessSchema() {
  * Uses the ONE real business address + a GeoCircle around the town, so Google
  * reads it as "this business serves {town}" — not a fake second location.
  */
-export function localBusinessAreaSchema(loc: Location) {
+export function localBusinessAreaSchema(loc: Location, biz: Business) {
   const pageUrl = `${SITE_URL}/locations/${loc.slug}/`;
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${pageUrl}#localbusiness`,
-    name: `${site.name} — ${loc.name}`,
+    name: `${biz.name} — ${loc.name}`,
     url: pageUrl,
     image: LOGO_URL,
     logo: LOGO_URL,
-    telephone: site.whatsapp,
-    email: site.email,
+    telephone: telephone(biz),
+    email: biz.email,
     description: loc.metaDescription,
     parentOrganization: { "@id": `${SITE_URL}/#organization` },
-    address: postalAddress(),
-    ...(hasGeo() && {
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: site.businessAddress.geo.lat,
-        longitude: site.businessAddress.geo.lng,
-      },
-    }),
+    address: postalAddress(biz),
+    ...geo(biz),
     areaServed: {
       "@type": "City",
       name: loc.name,
@@ -145,11 +140,7 @@ export function localBusinessAreaSchema(loc: Location) {
         },
       }),
     },
-    sameAs: [
-      site.socials.facebook,
-      site.socials.instagram,
-      site.socials.linkedin,
-    ],
+    sameAs: sameAs(biz),
     priceRange: "$$",
   };
 }
@@ -183,24 +174,19 @@ export function locationServiceSchema(ls: LocationService, loc: Location) {
   };
 }
 
-/** Enables sitelinks search box in Google. */
-export function webSiteSchema() {
+/**
+ * WebSite node. (A SearchAction used to be declared here pointing at
+ * /search/, which does not exist — removed: it advertised a 404.)
+ */
+export function webSiteSchema(biz: Pick<Business, "name" | "description">) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${SITE_URL}/#website`,
     url: SITE_URL,
-    name: site.name,
-    description: site.description,
+    name: biz.name,
+    description: biz.description,
     publisher: { "@id": `${SITE_URL}/#organization` },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/search/?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 

@@ -4,7 +4,8 @@ import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
-import { industries } from "@/lib/industries";
+import type { Industry } from "@/lib/industries";
+import type { SectionCopy } from "@/lib/cms/site";
 import SmartImage from "../ui/SmartImage";
 import Reveal from "../Reveal";
 
@@ -14,18 +15,6 @@ import Reveal from "../Reveal";
  * stock photo standing in for work we'd be implying we did.
  */
 export type IndustryProof = { image: string; label: string };
-
-/** Homepage reading order. Slugs, so industry pages and URLs are untouched. */
-const ORDER = [
-  "education",
-  "healthcare",
-  "real-estate",
-  "ecommerce",
-  "corporate",
-  "travel",
-  "finance",
-  "startups",
-];
 
 const PREVIEW_W = 300;
 const PREVIEW_H = 375;
@@ -40,16 +29,17 @@ const PREVIEW_H = 375;
  * inside the preview, so nothing is lost for SEO.
  */
 export default function IndustryIndex({
+  industries,
   proof = {},
+  copy,
 }: {
+  /** In CMS order (Industries → Order). */
+  industries: Pick<Industry, "slug" | "name" | "description" | "accent">[];
   proof?: Record<string, IndustryProof>;
+  copy?: SectionCopy;
 }) {
   const reduce = useReducedMotion();
-  const list = ORDER.map((slug) => industries.find((i) => i.slug === slug)).filter(
-    (i): i is NonNullable<typeof i> => Boolean(i),
-  );
-  // Include any industry added to the data later but not yet in ORDER.
-  list.push(...industries.filter((i) => !ORDER.includes(i.slug)));
+  const list = industries;
 
   const [active, setActive] = useState<number | null>(null);
   // Touch default: open on the first industry with real work behind it.
@@ -93,12 +83,13 @@ export default function IndustryIndex({
         {/* ------------------------------------------------------ Header */}
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal>
-            <span className="eyebrow">Industries</span>
+            <span className="eyebrow">{copy?.eyebrow ?? "Industries"}</span>
             <h2
               id="industries-heading"
               className="t-h2 mt-4 text-[clamp(30px,3.8vw,52px)]"
             >
-              Built for <span className="t-italic accent-grad-text">different worlds.</span>
+              {copy?.heading ?? "Built for"}{" "}
+              <span className="t-italic accent-grad-text">{copy?.headingAccent ?? "different worlds."}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>

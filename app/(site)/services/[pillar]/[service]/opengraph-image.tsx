@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
-import { getService, getPillar } from "@/lib/services";
+import { getService, getPillar } from "@/lib/cms/services";
 
-export const runtime = "edge";
+// Node runtime: the CMS (Payload Local API) cannot run on the edge.
 export const alt = "Service — Uniix Studio";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -12,8 +12,7 @@ export default async function ServiceOG({
   params: Promise<{ pillar: string; service: string }>;
 }) {
   const { pillar: pillarSlug, service: serviceSlug } = await params;
-  const service = getService(pillarSlug, serviceSlug);
-  const pillar = getPillar(pillarSlug);
+  const [service, pillar] = await Promise.all([getService(pillarSlug, serviceSlug), getPillar(pillarSlug)]);
 
   const accent = pillar?.accent ?? "#F07B20";
   const serviceName = service?.name ?? "Service";

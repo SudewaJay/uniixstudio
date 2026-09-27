@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-// Aliased: a client module must not bind the name `process` — it collides
-// with the bundler's `process.env` macro transform and breaks prerendering.
-import { process as stages } from "@/lib/content";
+import type { ProcessStage } from "@/lib/cms/content";
+import type { SectionCopy } from "@/lib/cms/site";
 import SectionHeader from "../ui/SectionHeader";
 import Reveal from "../Reveal";
 
@@ -22,22 +21,22 @@ import Reveal from "../Reveal";
  *
  * Replaces the sticky rail + long text blocks (~1,470px on a 670px viewport).
  */
-export default function ProcessJourney() {
+export default function ProcessJourney({ stages, copy }: { stages: ProcessStage[]; copy?: SectionCopy }) {
   const [active, setActive] = useState(0);
 
   return (
     <section id="process" className="section bg-bg-paper border-y border-line-soft">
       <div className="wrap">
         <SectionHeader
-          eyebrow="How we work"
+          eyebrow={copy?.eyebrow ?? "How we work"}
           title={
             <>
-              Four stages.
+              {copy?.heading ?? "Four stages."}
               <br />
-              <span className="t-italic accent-grad-text">No surprises.</span>
+              <span className="t-italic accent-grad-text">{copy?.headingAccent ?? "No surprises."}</span>
             </>
           }
-          support="Clear deliverables at every stage, fixed milestones and honest dates."
+          support={copy?.support ?? "Clear deliverables at every stage, fixed milestones and honest dates."}
         />
 
         <Reveal>

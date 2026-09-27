@@ -3,7 +3,7 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import JsonLd from "@/components/JsonLd";
-import { locations } from "@/lib/locations";
+import { getLocations } from "@/lib/cms/locations";
 import { site } from "@/lib/content";
 import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 
@@ -21,7 +21,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LocationsIndexPage() {
+export default async function LocationsIndexPage() {
+  const locations = await getLocations();
   const schema = schemaGraph(
     breadcrumbSchema([
       { name: "Home", url: "/" },

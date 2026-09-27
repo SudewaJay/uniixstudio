@@ -8,6 +8,7 @@
  */
 
 import type { ServiceVideo } from "./services";
+import type { SeoFields } from "./cms/seo";
 
 export type ProjectStat = { label: string; value: string };
 
@@ -170,6 +171,12 @@ export type Project = {
   heroOverlay?: boolean;
   /** Long-form Markdown body from MDX. Only set for projects with a content/projects/*.mdx file. */
   body?: string;
-  /** True when an MDX file exists and the detail page should be reachable. */
+  /** True when the project has a case-study page at /portfolio/<slug>/. */
   hasDetail: boolean;
+  /** CMS SEO overrides (title, description, canonical, robots, social). */
+  seo?: SeoFields;
+  /** Alt text for the cover image. */
+  coverAlt?: string;
+  /** Editor-picked related projects, by slug. */
+  relatedSlugs?: string[];
 };
