@@ -25,7 +25,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Listed only once its placeholders are replaced (it's noindex until then).
     ...(finlandHasPlaceholders
       ? []
-      : [{ path: "/finland", priority: 0.85, freq: "monthly" as const }]),
+      : [
+          { path: "/finland", priority: 0.85, freq: "monthly" as const },
+          { path: "/finland/fi", priority: 0.85, freq: "monthly" as const },
+        ]),
   ];
 
   const locationRoutes = locations.map((l) => ({

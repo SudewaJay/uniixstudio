@@ -7,6 +7,7 @@ import Reveal from "../Reveal";
 import SmartImage from "../ui/SmartImage";
 import type { FiProject } from "./types";
 import { firstSentence, shortIndustry } from "./types";
+import type { FinlandUI } from "@/lib/finland-i18n";
 import styles from "./finland.module.css";
 
 /**
@@ -19,7 +20,7 @@ import styles from "./finland.module.css";
  *
  * WAI-ARIA tabs: arrow keys move between projects, Home/End jump.
  */
-export default function FinlandCaseStudies({ items }: { items: FiProject[] }) {
+export default function FinlandCaseStudies({ items, t }: { items: FiProject[]; t: FinlandUI["cases"] }) {
   const [active, setActive] = useState(0);
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   if (!items.length) return null;
@@ -39,23 +40,23 @@ export default function FinlandCaseStudies({ items }: { items: FiProject[] }) {
 
   const p = items[active];
   const steps = [
-    { k: "The challenge", v: firstSentence(p.problem) },
-    { k: "The approach", v: firstSentence(p.solution) },
-    { k: "The result", v: firstSentence(p.result) },
+    { k: t.steps[0], v: firstSentence(p.problem, 260) },
+    { k: t.steps[1], v: firstSentence(p.solution, 260) },
+    { k: t.steps[2], v: firstSentence(p.result, 260) },
   ].filter((s) => s.v);
 
   return (
     <section id="case-studies" aria-labelledby="fi-cases-heading" className="section bg-bg">
       <div className="wrap">
         <Reveal>
-          <span className="eyebrow">Case studies</span>
+          <span className="eyebrow">{t.eyebrow}</span>
           <h2 id="fi-cases-heading" className="t-h2 mt-5 max-w-[18ch]">
-            Good design looks better.{" "}
-            <span className="t-italic accent-grad-text">Great design works better.</span>
+            {t.title[0]}{" "}
+            <span className="t-italic accent-grad-text">{t.title[1]}</span>
           </h2>
         </Reveal>
 
-        <div role="tablist" aria-label="Case studies" onKeyDown={onKey} className={clsx(styles.caseTabs, "mt-12")}>
+        <div role="tablist" aria-label={t.tabsAria} onKeyDown={onKey} className={clsx(styles.caseTabs, "mt-12")}>
           {items.map((it, i) => (
             <button
               key={it.slug}
@@ -112,7 +113,7 @@ export default function FinlandCaseStudies({ items }: { items: FiProject[] }) {
               ))}
             </ol>
             <Link href={`/portfolio/${p.slug}/`} className="link-cta group mt-8">
-              Read the full case study <span className="cta-arrow">↗</span>
+              {t.read} <span className="cta-arrow">↗</span>
             </Link>
           </div>
         </div>

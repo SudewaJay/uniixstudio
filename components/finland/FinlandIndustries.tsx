@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Reveal from "../Reveal";
 import SmartImage from "../ui/SmartImage";
 import type { FinlandIndustry } from "@/lib/finland";
+import type { FinlandUI } from "@/lib/finland-i18n";
 import styles from "./finland.module.css";
 
 export type IndustryTile = FinlandIndustry & {
@@ -19,22 +20,21 @@ export type IndustryTile = FinlandIndustry & {
  * Touch / small screens: a horizontal swipe rail where every tile is already
  * open, so nothing is hover-only. All of this is CSS; the section ships no JS.
  */
-export default function FinlandIndustries({ items }: { items: IndustryTile[] }) {
+export default function FinlandIndustries({ items, t }: { items: IndustryTile[]; t: FinlandUI["industries"] }) {
   return (
     <section id="industries" aria-labelledby="fi-ind-heading" className="section bg-bg">
       <div className="wrap">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal>
-            <span className="eyebrow">Industries</span>
+            <span className="eyebrow">{t.eyebrow}</span>
             <h2 id="fi-ind-heading" className="t-h2 mt-5 max-w-[18ch]">
-              Built for businesses with{" "}
-              <span className="t-italic accent-grad-text">something to move forward.</span>
+              {t.title[0]}{" "}
+              <span className="t-italic accent-grad-text">{t.title[1]}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-body max-w-[38ch] text-ink-mute">
-              Where our work has taken us, and where it naturally fits next.
-              Tiles marked “Related work” link to a real case study.
+              {t.lead}
             </p>
           </Reveal>
         </div>
@@ -49,7 +49,7 @@ export default function FinlandIndustries({ items }: { items: IndustryTile[] }) 
                   <SmartImage
                     src={ind.proof.image}
                     alt=""
-                    sizes="(min-width:1024px) 33vw, 80vw"
+                    sizes="(min-width:1024px) 25vw, 80vw"
                     quality={60}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/80 to-ink/35" />
@@ -60,7 +60,7 @@ export default function FinlandIndustries({ items }: { items: IndustryTile[] }) 
                 <div className="flex items-start justify-between gap-4">
                   <span className={clsx(styles.indNum, "t-meta tabular-nums")}>{ind.num}</span>
                   {ind.proof && (
-                    <span className={clsx(styles.indProofTag, "t-meta text-[9px]")}>Related work</span>
+                    <span className={clsx(styles.indProofTag, "t-meta text-[9px]")}>{t.related}</span>
                   )}
                 </div>
 
@@ -79,7 +79,7 @@ export default function FinlandIndustries({ items }: { items: IndustryTile[] }) 
                       </Link>
                     ) : (
                       <Link href="/contact/" className={clsx(styles.indLink, "mt-5")}>
-                        Discuss a {ind.name.toLowerCase()} project <span aria-hidden="true">↗</span>
+                        {t.discuss} <span aria-hidden="true">↗</span>
                       </Link>
                     )}
                   </div>

@@ -3,15 +3,18 @@ import clsx from "clsx";
 import Reveal from "../Reveal";
 import SmartImage from "../ui/SmartImage";
 import type { FiProjects } from "./types";
-import { cld, finlandFounder, finlandStudioFrames, isFinlandPlaceholder } from "@/lib/finland";
+import { cld, isFinlandPlaceholder } from "@/lib/finland";
+import type { FinlandContent } from "@/lib/finland-i18n";
 
 /**
  * 09 — About Uniix. Introduced only after the work has made the case.
  * No headcount, client counts or superlatives — just what the studio does,
  * who leads it, and frames from real projects (captioned with the project).
  */
-export default function FinlandAbout({ projects }: { projects: FiProjects }) {
-  const f = finlandFounder;
+export default function FinlandAbout({ projects, c }: { projects: FiProjects; c: FinlandContent }) {
+  const f = c.founder;
+  const t = c.t.about;
+  const finlandStudioFrames = c.studioFrames;
   const initial = isFinlandPlaceholder(f.name) ? "U" : f.name.charAt(0).toUpperCase();
 
   return (
@@ -19,19 +22,16 @@ export default function FinlandAbout({ projects }: { projects: FiProjects }) {
       <div className="wrap grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-20">
         <div>
           <Reveal>
-            <span className="eyebrow">About Uniix</span>
+            <span className="eyebrow">{t.eyebrow}</span>
             <h2 id="fi-about-heading" className="t-h2 mt-5">
-              Small enough to care.
+              {t.title[0]}
               <br />
-              <span className="t-italic accent-grad-text">Experienced enough to build.</span>
+              <span className="t-italic accent-grad-text">{t.title[1]}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-lead mt-7 max-w-[48ch] text-ink-2">
-              Uniix Studio is a multidisciplinary digital studio working across
-              design, technology and growth. We help businesses turn ideas,
-              outdated digital experiences and ambitious products into modern
-              digital experiences.
+              {t.lead}
             </p>
           </Reveal>
 
@@ -55,17 +55,17 @@ export default function FinlandAbout({ projects }: { projects: FiProjects }) {
 
             <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-sm2 border border-line bg-line">
               <div className="bg-bg-paper p-4">
-                <dt className="t-meta text-[10px] text-ink-mute">Disciplines</dt>
-                <dd className="mt-1 text-[14.5px] font-medium">Design · Technology · Growth</dd>
+                <dt className="t-meta text-[10px] text-ink-mute">{t.disciplines}</dt>
+                <dd className="mt-1 text-[14.5px] font-medium">{t.disciplinesValue}</dd>
               </div>
               <div className="bg-bg-paper p-4">
-                <dt className="t-meta text-[10px] text-ink-mute">Working with</dt>
-                <dd className="mt-1 text-[14.5px] font-medium">Sri Lanka · Australia · UK · Finland</dd>
+                <dt className="t-meta text-[10px] text-ink-mute">{t.workingWith}</dt>
+                <dd className="mt-1 text-[14.5px] font-medium">{t.workingWithValue}</dd>
               </div>
             </dl>
 
             <Link href="/about/" className="link-cta group mt-8">
-              More about the studio <span className="cta-arrow">↗</span>
+              {t.more} <span className="cta-arrow">↗</span>
             </Link>
           </Reveal>
         </div>

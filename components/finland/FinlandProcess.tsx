@@ -10,7 +10,7 @@ import {
   useSpring,
 } from "framer-motion";
 import Reveal from "../Reveal";
-import { finlandProcess as steps } from "@/lib/finland";
+import type { FinlandContent, FinlandUI } from "@/lib/finland-i18n";
 
 /**
  * 08 — How we work.
@@ -20,7 +20,7 @@ import { finlandProcess as steps } from "@/lib/finland";
  * element (scaleX / scaleY), and the active step is derived from the same
  * progress value. Under reduced motion the line is simply full.
  */
-export default function FinlandProcess() {
+export default function FinlandProcess({ steps, t }: { steps: FinlandContent["process"]; t: FinlandUI["process"] }) {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLOListElement>(null);
   const [reached, setReached] = useState(reduce ? steps.length - 1 : -1);
@@ -42,16 +42,16 @@ export default function FinlandProcess() {
       <div className="wrap">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,38%)] lg:items-end lg:gap-16">
           <Reveal>
-            <span className="eyebrow">How we work</span>
+            <span className="eyebrow">{t.eyebrow}</span>
             <h2 id="fi-process-heading" className="t-h2 mt-5">
-              From idea
+              {t.title[0]}
               <br />
-              <span className="t-italic accent-grad-text">to impact.</span>
+              <span className="t-italic accent-grad-text">{t.title[1]}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-lead max-w-[42ch] text-ink-2">
-              Five clear stages, one accountable team.
+              {t.lead}
             </p>
           </Reveal>
         </div>

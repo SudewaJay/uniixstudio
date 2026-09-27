@@ -42,6 +42,16 @@
   background-size: 160px 160px;
 }
 
+/* Almost imperceptible camera drift for the hero photograph. */
+.kenBurns {
+  animation: kenBurns 40s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes kenBurns {
+  from { transform: scale(1.04) translate3d(0, 0, 0); }
+  to { transform: scale(1.12) translate3d(-1.5%, -1%, 0); }
+}
+
 /* ==========================================================================
    01 Hero — living portfolio
    ========================================================================== */
@@ -530,7 +540,8 @@
 @media (prefers-reduced-motion: reduce) {
   .heroColTrack,
   .heroRowTrack,
-  .bridgePulse { animation: none; }
+  .bridgePulse,
+  .kenBurns { animation: none; }
   .bridgePulse { display: none; }
   .snow { display: none; }
   .heroRow { overflow-x: auto; }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import clsx from "clsx";
 import Reveal from "../Reveal";
-import { finlandCapabilities } from "@/lib/finland";
+import type { FinlandContent, FinlandUI } from "@/lib/finland-i18n";
 import styles from "./finland.module.css";
 
 /**
@@ -19,7 +19,13 @@ import styles from "./finland.module.css";
  * Every list stays in the DOM for crawlers; collapsed ones are hidden from
  * assistive tech via aria-hidden and the button's aria-expanded.
  */
-export default function FinlandCapabilities() {
+export default function FinlandCapabilities({
+  items: finlandCapabilities,
+  t,
+}: {
+  items: FinlandContent["capabilities"];
+  t: FinlandUI["capabilities"];
+}) {
   const [active, setActive] = useState(0);
 
   return (
@@ -27,16 +33,16 @@ export default function FinlandCapabilities() {
       <div className="wrap">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal>
-            <span className="eyebrow">Capabilities</span>
+            <span className="eyebrow">{t.eyebrow}</span>
             <h2 id="fi-cap-heading" className="t-h2 mt-5">
-              Design meets
+              {t.title[0]}
               <br />
-              <span className="t-italic accent-grad-text">engineering.</span>
+              <span className="t-italic accent-grad-text">{t.title[1]}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-body max-w-[36ch] text-ink-mute">
-              Designers and engineers on one team — so what gets designed is what gets built. Select a stage to see what sits inside it.
+              {t.lead}
             </p>
           </Reveal>
         </div>

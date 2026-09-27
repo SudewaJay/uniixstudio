@@ -322,10 +322,16 @@ export const finlandPresence = {
 
 // ---------------------------------------------------------------------------
 // Atmosphere photography (Unsplash License; placeholders for commissioned
-// photography). Used only in the Finland presence section and the final CTA.
+// photography). Used in the hero, the Finland presence section and the final CTA.
 // ---------------------------------------------------------------------------
 
 export const finlandImages = {
+  heroForest: {
+    src: "/finland/forest-mist.jpg",
+    alt: "Mist settling over a snow-dusted pine forest in the early morning",
+    credit: "Julian Zwengel / Unsplash",
+    position: "center 35%",
+  },
   frozenLake: {
     src: "/finland/frozen-lake.jpg",
     alt: "A lone pine on the shore of a frozen lake at blue hour",

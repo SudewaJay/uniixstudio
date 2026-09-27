@@ -6,7 +6,7 @@ import clsx from "clsx";
 import Reveal from "../Reveal";
 import SmartImage from "../ui/SmartImage";
 import type { FiProjects } from "./types";
-import { finlandServices } from "@/lib/finland";
+import type { FinlandContent } from "@/lib/finland-i18n";
 import styles from "./finland.module.css";
 
 /**
@@ -17,23 +17,24 @@ import styles from "./finland.module.css";
  * real project. Mobile: the same rows as an accordion, with the related
  * project shown inside the open row. Nothing depends on hover alone.
  */
-export default function FinlandServices({ projects }: { projects: FiProjects }) {
+export default function FinlandServices({ projects, c }: { projects: FiProjects; c: FinlandContent }) {
   const [active, setActive] = useState(0);
+  const finlandServices = c.services;
+  const t = c.t.services;
 
   return (
     <section id="services" aria-labelledby="fi-services-heading" className="section bg-bg-paper border-y border-line-soft">
       <div className="wrap">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,38%)] lg:items-end lg:gap-16">
           <Reveal>
-            <span className="eyebrow">Services</span>
+            <span className="eyebrow">{t.eyebrow}</span>
             <h2 id="fi-services-heading" className="t-h2 mt-5">
-              What we <span className="t-italic accent-grad-text">do.</span>
+              {t.title[0]} <span className="t-italic accent-grad-text">{t.title[1]}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-lead max-w-[42ch] text-ink-2">
-              Web design, development, product and growth — for businesses in
-              Helsinki, across Finland and internationally.
+              {t.lead}
             </p>
           </Reveal>
         </div>
@@ -78,7 +79,7 @@ export default function FinlandServices({ projects }: { projects: FiProjects }) 
                     <div className="min-h-0">
                       <div className="pb-7 pl-11 md:pl-14">
                         <p className="max-w-[44ch] text-[15px] leading-[1.55] text-ink-2">{s.desc}</p>
-                        <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2" aria-label={`${s.title} capabilities`}>
+                        <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2" aria-label={`${s.title} – ${t.capsAria}`}>
                           {s.capabilities.map((c) => (
                             <li key={c} className="flex items-center gap-2 text-[14px] text-ink">
                               <span aria-hidden="true" className="text-brand-ink">→</span>
@@ -88,7 +89,7 @@ export default function FinlandServices({ projects }: { projects: FiProjects }) 
                         </ul>
                         <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
                           <Link href={s.href} tabIndex={on ? undefined : -1} className="link-cta group">
-                            About this service <span className="cta-arrow">↗</span>
+                            {t.about} <span className="cta-arrow">↗</span>
                           </Link>
                           {p && (
                             <Link
@@ -100,7 +101,7 @@ export default function FinlandServices({ projects }: { projects: FiProjects }) 
                                 <SmartImage src={p.coverImage} alt="" sizes="64px" quality={55} />
                               </span>
                               <span className="text-[13px] text-ink-mute">
-                                Related work · <span className="text-ink">{p.title}</span>
+                                {t.related} · <span className="text-ink">{p.title}</span>
                               </span>
                             </Link>
                           )}
@@ -131,7 +132,7 @@ export default function FinlandServices({ projects }: { projects: FiProjects }) 
                       <SmartImage src={p.coverImage} alt="" sizes="36vw" quality={70} />
                       <span className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
                       <span className="on-dark absolute inset-x-0 bottom-0 p-6 text-white">
-                        <span className="t-meta block text-[10px] text-white/70">Related work</span>
+                        <span className="t-meta block text-[10px] text-white/70">{t.related}</span>
                         <span className="mt-2 block font-display text-[26px] font-medium tracking-[-0.02em]">{p.title}</span>
                         <span className="mt-1 block text-[13px] text-white/75">{p.services}</span>
                       </span>

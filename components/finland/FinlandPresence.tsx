@@ -3,12 +3,8 @@ import clsx from "clsx";
 import Reveal from "../Reveal";
 import SmartImage from "../ui/SmartImage";
 import LocalClock from "./LocalClock";
-import {
-  finlandImages,
-  finlandPartner as partner,
-  finlandPresence,
-  isFinlandPlaceholder,
-} from "@/lib/finland";
+import { finlandImages, isFinlandPlaceholder } from "@/lib/finland";
+import type { FinlandContent } from "@/lib/finland-i18n";
 import styles from "./finland.module.css";
 
 /**
@@ -17,16 +13,19 @@ import styles from "./finland.module.css";
  * joined by a hairline, and the technical partner. Copy makes no claim of a
  * Finnish office, company, employee or legal entity.
  */
-export default function FinlandPresence() {
-  const { finland, team } = finlandPresence;
+export default function FinlandPresence({ c }: { c: FinlandContent }) {
+  const { finland, team } = c.presence;
+  const partner = c.partner;
+  const t = c.t.presence;
   const initials = isFinlandPlaceholder(partner.name)
     ? "FI"
     : partner.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
   return (
     <section id="finland" aria-labelledby="fi-presence-heading" className="on-dark relative overflow-hidden bg-bg-ink text-white">
-      {/* Atmospheric frame — cold daylight, a lot of quiet. */}
-      <div className="relative h-[34svh] min-h-[240px] md:h-[42svh]">
+      {/* Atmospheric frame — clipped so the parallax layer never spills
+          behind the heading below it. */}
+      <div className="relative h-[34svh] min-h-[240px] overflow-hidden md:h-[42svh]">
         <div aria-hidden="true" className={clsx(styles.parallax, "absolute inset-x-0 -top-[10%] h-[120%]")}>
           <SmartImage src={finlandImages.frozenLake.src} alt="" sizes="100vw" quality={60} position={finlandImages.frozenLake.position} className={styles.photoCold} />
         </div>
@@ -37,22 +36,17 @@ export default function FinlandPresence() {
       <div className="wrap relative -mt-20 pb-20 md:-mt-28 md:pb-28">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,40%)] lg:items-end lg:gap-16">
           <Reveal>
-            <span className="eyebrow">Finland</span>
-            <h2 id="fi-presence-heading" className="t-h2 mt-5 max-w-[16ch]">
-              Now working with ambitious{" "}
-              <span className="t-italic accent-grad-text">businesses in Finland.</span>
+            <span className="eyebrow">{t.eyebrow}</span>
+            <h2 id="fi-presence-heading" className="t-h2 mt-5 lg:max-w-[16ch]">
+              {t.title[0]}{" "}
+              <span className="t-italic accent-grad-text">{t.title[1]}</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
-            <p className="t-lead max-w-[46ch] text-white/75">
-              Uniix is extending its international client work into Finland,
-              bringing together strong design, product and engineering
-              capabilities with Finland-side technical collaboration.
-            </p>
+            <p className="t-lead max-w-[46ch] text-white/75">{t.lead}</p>
           </Reveal>
         </div>
 
-        {/* Two lists, one hairline between them */}
         <Reveal delay={1}>
           <div className="mt-14 grid gap-8 md:grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] md:items-start md:gap-0">
             <PlaceList label={finland.label} tz={finland.timeZone} items={finland.items} tone="fi" />
@@ -77,7 +71,7 @@ export default function FinlandPresence() {
                 </span>
               )}
               <span className={clsx("absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-bg-ink/70 px-2.5 py-1 t-meta text-[9px] backdrop-blur-sm", styles.iceText)}>
-                <span aria-hidden="true" className={styles.iceDot} /> Finland
+                <span aria-hidden="true" className={styles.iceDot} /> {t.tag}
               </span>
             </div>
             <div>
@@ -85,20 +79,20 @@ export default function FinlandPresence() {
               <h3 className="t-h3 mt-2">{partner.name}</h3>
               <p className="mt-1 text-[14px] text-white/65">{partner.title}</p>
               <p className="t-body mt-4 max-w-[60ch] text-white/75">{partner.bio}</p>
-              <ul className="mt-5 flex flex-wrap gap-2" aria-label="Areas of expertise">
-                {partner.capabilities.map((c) => (
-                  <li key={c} className="rounded-full border border-line-dark px-3 py-1 text-[12.5px] text-white/80">
-                    {c}
+              <ul className="mt-5 flex flex-wrap gap-2" aria-label={t.expertiseAria}>
+                {partner.capabilities.map((cap) => (
+                  <li key={cap} className="rounded-full border border-line-dark px-3 py-1 text-[12.5px] text-white/80">
+                    {cap}
                   </li>
                 ))}
               </ul>
               <div className="mt-7 flex flex-wrap items-center gap-4">
                 <Link href="/contact/" className="btn btn-light btn-sm group">
-                  Talk to our team <span className="cta-arrow">↗</span>
+                  {t.talk} <span className="cta-arrow">↗</span>
                 </Link>
                 {partner.profileUrl && (
                   <a href={partner.profileUrl} target="_blank" rel="noopener noreferrer" className="link-cta">
-                    View profile <span className="cta-arrow">↗</span>
+                    {t.profile} <span className="cta-arrow">↗</span>
                   </a>
                 )}
               </div>
