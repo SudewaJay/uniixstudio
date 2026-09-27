@@ -6,9 +6,14 @@ import { imageSrc, resolveImage, str, type ResolvedImage } from './helpers'
 import { getPayloadClient } from './payload'
 import { collectionTag, globalTag } from './tags'
 
-async function readGlobal<T>(slug: 'settings' | 'nav' | 'footer' | 'promo-bar' | 'stats' | 'homepage' | 'about', draft: boolean) {
-  const payload = await getPayloadClient()
-  return (await payload.findGlobal({ slug, depth: 2, draft, overrideAccess: draft })) as T
+async function readGlobal<T>(slug: 'settings' | 'nav' | 'footer' | 'promo-bar' | 'stats' | 'homepage' | 'about', draft: boolean): Promise<T> {
+  try {
+    const payload = await getPayloadClient()
+    return (await payload.findGlobal({ slug, depth: 2, draft, overrideAccess: draft })) as T
+  } catch (err) {
+    console.warn(`readGlobal(${slug}) failed:`, err)
+    return {} as T
+  }
 }
 
 /* -------------------------------- settings -------------------------------- */
