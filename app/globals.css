@@ -712,3 +712,73 @@
   transform: none;
   filter: none;
 }
+
+/* ==========================================================================
+   How we work (components/home/ProcessJourney)
+   ========================================================================== */
+.proc-panel {
+  transition: flex-grow 700ms var(--ease), background-color var(--dur-std) var(--ease),
+    color var(--dur-std) var(--ease), border-color var(--dur-std) var(--ease);
+}
+.proc-panel:not(.is-on):hover {
+  border-color: rgba(18, 16, 14, 0.28);
+}
+/* Strokes draw in when their stage opens; resting stages show them static. */
+.proc-glyph .proc-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.proc-glyph.is-on .proc-line {
+  animation: proc-draw 1400ms var(--ease) both;
+}
+.proc-glyph.is-on g > :nth-child(2) { animation-delay: 90ms; }
+.proc-glyph.is-on g > :nth-child(3) { animation-delay: 180ms; }
+.proc-glyph.is-on g > :nth-child(4) { animation-delay: 270ms; }
+.proc-glyph.is-on g > :nth-child(5) { animation-delay: 360ms; }
+.proc-glyph.is-on g > :nth-child(n + 6) { animation-delay: 450ms; }
+@keyframes proc-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+.proc-chip {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur-std) var(--ease), transform var(--dur-std) var(--ease);
+}
+.proc-chip.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   Why Uniix (components/home/WhyUniix)
+   ========================================================================== */
+.why-strike {
+  position: relative;
+  display: inline;
+  background-image: linear-gradient(#bf4508, #bf4508);
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  /* Width animates from 0 → 100%; a background rule wraps with the text,
+     unlike a pseudo-element, so multi-line phrases strike correctly. */
+  background-size: 0% 1.5px;
+  transition: background-size 700ms var(--ease) 150ms, color 700ms var(--ease) 150ms;
+}
+.why-row.is-in .why-strike {
+  background-size: 100% 1.5px;
+  color: rgba(92, 85, 77, 0.7);
+}
+.why-claim {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity var(--dur-reveal) var(--ease) 420ms, transform var(--dur-reveal) var(--ease) 420ms;
+}
+.why-row.is-in .why-claim {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .why-strike { background-size: 100% 1.5px; }
+  .why-claim,
+  .proc-chip { opacity: 1; transform: none; }
+}
