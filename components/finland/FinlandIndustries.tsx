@@ -10,9 +10,9 @@ export type IndustryTile = FinlandIndustry & {
 };
 
 /**
- * 06 — Industries.
+ * 07 — Industries.
  *
- * A 3×2 hairline grid. On devices that can hover, each tile is typographic
+ * A 4×2 hairline grid. On devices that can hover, each tile is typographic
  * until hovered or focused, then reveals its statement, capability and — only
  * where a real Uniix project exists — that project's cover. No stock photos.
  *
@@ -26,16 +26,15 @@ export default function FinlandIndustries({ items }: { items: IndustryTile[] }) 
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal>
             <span className="eyebrow">Industries</span>
-            <h2 id="fi-ind-heading" className="t-h2 mt-5">
-              Sectors where
-              <br />
-              <span className="t-italic accent-grad-text">digital decides.</span>
+            <h2 id="fi-ind-heading" className="t-h2 mt-5 max-w-[18ch]">
+              Built for businesses with{" "}
+              <span className="t-italic accent-grad-text">something to move forward.</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-body max-w-[38ch] text-ink-mute">
-              Industries that matter in the Finnish market — and the
-              capabilities each one tends to need first.
+              Where our work has taken us, and where it naturally fits next.
+              Tiles marked “Related work” link to a real case study.
             </p>
           </Reveal>
         </div>

@@ -7,7 +7,7 @@ import { finlandCapabilities } from "@/lib/finland";
 import styles from "./finland.module.css";
 
 /**
- * 03 — What Uniix does.
+ * 06 — Capabilities: design → experience → engineering → growth.
  *
  * Desktop: four slim columns in a row; the active one widens (flex-grow, CSS
  * transition) to reveal its capability list. Hover, focus or click all set
@@ -27,16 +27,16 @@ export default function FinlandCapabilities() {
       <div className="wrap">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal>
-            <span className="eyebrow">What Uniix does</span>
+            <span className="eyebrow">Capabilities</span>
             <h2 id="fi-cap-heading" className="t-h2 mt-5">
-              From first idea
+              Design meets
               <br />
-              <span className="t-italic accent-grad-text">to digital growth.</span>
+              <span className="t-italic accent-grad-text">engineering.</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-body max-w-[36ch] text-ink-mute">
-              Four disciplines, one team. Most projects draw on all of them.
+              Designers and engineers on one team — so what gets designed is what gets built. Select a stage to see what sits inside it.
             </p>
           </Reveal>
         </div>
@@ -96,6 +96,10 @@ export default function FinlandCapabilities() {
                       </ul>
                     </div>
                   </div>
+
+                  {i < finlandCapabilities.length - 1 && (
+                    <span aria-hidden="true" className={styles.capArrow}>→</span>
+                  )}
 
                   {/* Oversized numeral — a quiet texture that only shows on the open column. */}
                   <span aria-hidden="true" className={styles.capNumeral}>

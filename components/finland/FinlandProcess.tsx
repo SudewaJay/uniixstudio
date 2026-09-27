@@ -44,15 +44,14 @@ export default function FinlandProcess() {
           <Reveal>
             <span className="eyebrow">How we work</span>
             <h2 id="fi-process-heading" className="t-h2 mt-5">
-              Five stages.
+              From idea
               <br />
-              <span className="t-italic accent-grad-text">One connected line.</span>
+              <span className="t-italic accent-grad-text">to impact.</span>
             </h2>
           </Reveal>
           <Reveal delay={1}>
             <p className="t-lead max-w-[42ch] text-ink-2">
-              Clear deliverables at every stage, with one team accountable from
-              discovery to growth.
+              Five clear stages, one accountable team.
             </p>
           </Reveal>
         </div>

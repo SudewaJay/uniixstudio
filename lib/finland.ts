@@ -1,17 +1,17 @@
 /**
- * Content for the /finland landing page.
+ * Content for the /finland landing page — client-first.
  *
- * Everything authored for that page lives here, so copy changes never touch
- * component code. Nothing in this file is a claim about Finnish clients,
- * offices, statistics or credentials — see the PLACEHOLDERS block below for
- * the values that still need real information before launch.
+ * The page sells the work; the Finland presence is a credibility detail near
+ * the end. Nothing here is a claim about Finnish clients, offices, results or
+ * credentials. Project facts (names, industries, services, challenge /
+ * approach / result, testimonials) are NOT authored here — the page reads
+ * them from each project's MDX in content/projects/.
  */
 
 // ---------------------------------------------------------------------------
 // PLACEHOLDERS — search the repo for "FINLAND_PLACEHOLDER" to find them all.
-// Replace each string with verified information. While any of these still
-// starts with "[" the page renders with `noindex` and stays out of the
-// sitemap (see `finlandHasPlaceholders`), so an unfinished page never ranks.
+// While any required value still starts with "[" the page renders `noindex`
+// and stays out of the sitemap (see `finlandHasPlaceholders`).
 // ---------------------------------------------------------------------------
 
 export const finlandPartner = {
@@ -19,223 +19,195 @@ export const finlandPartner = {
   /* FINLAND_PLACEHOLDER */ bio: "[FRIEND_BIO]",
   role: "Technical Partner — Finland",
   title: "Senior Software Engineer",
-  /**
-   * Path under /public (e.g. "/finland/partner.jpg") or a Cloudinary URL.
-   * Portrait ratio 4:5, at least 1200px tall. `null` renders a neutral
-   * monogram card instead of a stock face.
-   */
+  /** "/finland/partner.jpg" or a Cloudinary URL, 4:5. `null` → monogram card. */
   portrait: null as string | null,
-  /** Optional public profile, e.g. LinkedIn. `null` hides the link. */
+  /** Optional public profile (e.g. LinkedIn). `null` hides the link. */
   profileUrl: null as string | null,
-  /**
-   * VERIFY against the partner's CV before launch — keep only the areas the
-   * CV actually supports. Do not add certifications or employers here.
-   */
+  /** VERIFY against the partner's CV — keep only what it supports. */
   capabilities: [
-    "Software Architecture",
-    "Full-Stack Engineering",
+    "Software Engineering",
+    "Architecture",
+    "Product Development",
     "Cloud",
     "APIs",
     "AI",
-    "Technical Strategy",
-    "Product Development",
   ],
+};
+
+export const finlandFounder = {
+  /* FINLAND_PLACEHOLDER */ name: "[FOUNDER_NAME]",
+  role: "Founder · Creative Director",
+  /** Taken from the existing /about page copy. */
+  bio: "Leads creative direction across brand identity, web and digital strategy. Works directly with every client from kickoff through launch.",
+  /** Portrait path, 4:5. `null` → monogram card. */
+  portrait: null as string | null,
 };
 
 export const finlandContact = {
   /* FINLAND_PLACEHOLDER */ email: "[FINLAND_EMAIL]",
   /* FINLAND_PLACEHOLDER */ phone: "[PHONE]",
-  /**
-   * Discovery-call destination. Point this at a real scheduler (Cal.com,
-   * Calendly, HubSpot) when one exists; until then it lands on /contact.
-   */
-  bookingUrl: "/contact/",
 };
+
+/**
+ * Ask Cloudinary for a pre-sized JPEG so the Next image optimizer never has
+ * to pull a multi-megabyte original (some gallery PNGs are 5–8 MB). Non-
+ * Cloudinary URLs pass through unchanged.
+ */
+export function cld(src: string, width = 1400): string {
+  const marker = "/image/upload/";
+  if (!src.includes("res.cloudinary.com") || !src.includes(marker)) return src;
+  const [head, tail] = src.split(marker);
+  // Leave URLs that already carry a transform segment alone.
+  if (/^[a-z]_[^/]*,/.test(tail) || /^[a-z]_[^/]*\//.test(tail)) return src;
+  return `${head}${marker}c_limit,w_${width},q_auto,f_jpg/${tail}`;
+}
 
 const isPlaceholder = (v: string) => v.trim().startsWith("[");
 
-/** True while any required Finland value is still a placeholder. */
+/** True while any required value is still a placeholder. */
 export const finlandHasPlaceholders = [
   finlandPartner.name,
   finlandPartner.bio,
+  finlandFounder.name,
   finlandContact.email,
 ].some(isPlaceholder);
 
-/** Render helper: hide optional placeholder fields (phone) instead of showing brackets. */
+/** Hide optional placeholder fields (phone) instead of showing brackets. */
 export const isFinlandPlaceholder = isPlaceholder;
 
 // ---------------------------------------------------------------------------
-// 02 — The model
+// 01 Hero — the living portfolio. Every tile is real Uniix work and links to
+// that project's case study; name / industry / services come from its MDX.
 // ---------------------------------------------------------------------------
 
-export const finlandModel = {
-  finland: {
-    code: "FI",
-    country: "Finland",
-    label: "Local presence",
-    timeZone: "Europe/Helsinki",
-    items: [
-      "Technical consultation",
-      "Discovery",
-      "Client communication",
-      "Architecture",
-      "Project coordination",
-    ],
-  },
-  sriLanka: {
-    code: "LK",
-    country: "Sri Lanka",
-    label: "Digital delivery",
-    timeZone: "Asia/Colombo",
-    items: [
-      "UX/UI",
-      "Branding",
-      "Development",
-      "Product engineering",
-      "SEO & growth",
-      "QA & support",
-    ],
-  },
+export const finlandHeroTiles: { project: string; image: string; ratio: "tall" | "wide" | "square" }[] = [
+  { project: "rentmycar-lk", image: "cover", ratio: "wide" },
+  { project: "ecowave-energy", image: "cover", ratio: "square" },
+  { project: "sierra-energy-solutions", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1781699871/sierra-energy/sierra-post-01.jpg", ratio: "tall" },
+  { project: "st-lukes-medilab", image: "cover", ratio: "wide" },
+  { project: "rentmycar-lk", image: "/portfolio/rentmycar/social/suv.webp", ratio: "square" },
+  { project: "st-lukes-medilab", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1780539838/Lab-Test-Price-List-LKR-_-Ja-Ela-St-Luke-s-Medical-Laboratory-06-04-2026_07_52_AM_jj9eq9.png", ratio: "tall" },
+  { project: "st-lukes-medilab", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1781701708/st-lukes/stlukes-social-avurudu.png", ratio: "square" },
+  { project: "sierra-energy-solutions", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1781699879/sierra-energy/sierra-post-04.jpg", ratio: "tall" },
+  { project: "sierra-energy-solutions", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1781699875/sierra-energy/sierra-post-02.jpg", ratio: "wide" },
+  { project: "rentmycar-lk", image: "/portfolio/rentmycar/social/car.webp", ratio: "square" },
+];
+
+// ---------------------------------------------------------------------------
+// 02 Selected work — editorial order. Only projects with real imagery.
+// Pattern: large → two-up → large → horizontal strip.
+// ---------------------------------------------------------------------------
+
+export const finlandWorkLayout = {
+  lead: "rentmycar-lk",
+  pair: ["st-lukes-medilab", "ecowave-energy"],
+  feature: "sierra-energy-solutions",
+  /** Horizontal strip of detail frames, each linking to its case study. */
+  strip: [
+    { project: "rentmycar-lk", image: "/portfolio/rentmycar/social/van.webp", caption: "Social system" },
+    { project: "sierra-energy-solutions", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1781699883/sierra-energy/sierra-post-05.jpg", caption: "Occasion post" },
+    { project: "st-lukes-medilab", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1781701713/st-lukes/stlukes-social-new-year-2025.jpg", caption: "Social design" },
+    { project: "sierra-energy-solutions", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1781699888/sierra-energy/sierra-post-07.jpg", caption: "Campaign post" },
+    { project: "st-lukes-medilab", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1780539840/St-Luke-s-Medical-Laboratory-_-Ja-Ela-Blood-Tests-ECG-06-04-2026_07_50_AM_bwm3ic.png", caption: "Service pages" },
+    { project: "rentmycar-lk", image: "/portfolio/rentmycar/social/tuktuk.webp", caption: "Category campaign" },
+  ],
 };
 
 // ---------------------------------------------------------------------------
-// 03 — Capabilities
+// 03 Services
+// ---------------------------------------------------------------------------
+
+export const finlandServices = [
+  {
+    num: "01",
+    title: "Web design & development",
+    desc: "High-performance websites designed around users, brands and business goals.",
+    capabilities: ["UX strategy", "UI design", "Next.js", "CMS", "Performance", "Accessibility"],
+    project: "st-lukes-medilab",
+    href: "/services/technology/web-development/",
+  },
+  {
+    num: "02",
+    title: "UI/UX & product design",
+    desc: "Digital experiences, interfaces and product systems designed for real people.",
+    capabilities: ["UX research", "User journeys", "Wireframes", "Prototyping", "Design systems"],
+    project: "rentmycar-lk",
+    href: "/services/design/ui-ux-design/",
+  },
+  {
+    num: "03",
+    title: "Branding",
+    desc: "Visual identities that create recognition and consistency across digital touchpoints.",
+    capabilities: ["Brand strategy", "Logo systems", "Typography & colour", "Guidelines", "Motion"],
+    project: "ecowave-energy",
+    href: "/services/design/brand-identity/",
+  },
+  {
+    num: "04",
+    title: "Digital products",
+    desc: "Web applications, SaaS platforms and digital products from idea to production.",
+    capabilities: ["Product strategy", "MVPs", "Web applications", "SaaS", "APIs", "Cloud"],
+    project: "rentmycar-lk",
+    href: "/services/technology/",
+  },
+  {
+    num: "05",
+    title: "SEO & digital growth",
+    desc: "Search visibility, content, conversion and continuous digital improvement.",
+    capabilities: ["Technical SEO", "Local SEO", "AEO", "Content", "Conversion", "Analytics"],
+    project: "st-lukes-medilab",
+    href: "/services/growth/seo/",
+  },
+  {
+    num: "06",
+    title: "AI & automation",
+    desc: "Practical AI systems, automation and intelligent digital workflows.",
+    capabilities: ["Workflow automation", "Content pipelines", "Integrations", "AI features"],
+    project: "rentmycar-lk",
+    href: "/services/technology/",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// 04 Case studies — challenge / approach / result come from MDX
+// (`problem`, `solution`, `result`). Only real stats from MDX are shown.
+// ---------------------------------------------------------------------------
+
+export const finlandCaseStudies = ["rentmycar-lk", "st-lukes-medilab", "ecowave-energy", "sierra-energy-solutions"];
+
+// ---------------------------------------------------------------------------
+// 06 Capabilities — design → experience → engineering → growth
 // ---------------------------------------------------------------------------
 
 export const finlandCapabilities = [
   {
     num: "01",
     title: "Design",
-    line: "Brands and interfaces people trust on first contact.",
-    items: ["Brand identity", "UX strategy", "UI design", "Design systems", "Digital experiences"],
+    line: "Understanding people, then shaping what they see.",
+    items: ["Strategy", "UX Research", "UI Design", "Design Systems"],
   },
   {
     num: "02",
-    title: "Technology",
-    line: "Production-grade engineering, from marketing sites to platforms.",
-    items: ["Web development", "Web applications", "SaaS", "APIs", "Cloud", "AI & automation"],
+    title: "Experience",
+    line: "Interfaces that are fast, inclusive and easy to run.",
+    items: ["Frontend", "CMS", "Performance", "Accessibility"],
   },
   {
     num: "03",
+    title: "Engineering",
+    line: "The systems underneath — built for production.",
+    items: ["Backend", "APIs", "Cloud", "SaaS"],
+  },
+  {
+    num: "04",
     title: "Growth",
-    line: "Visibility and conversion that compound after launch.",
-    items: ["SEO", "AEO", "Content", "Conversion optimization", "Analytics"],
-  },
-  {
-    num: "04",
-    title: "Product",
-    line: "From a first hypothesis to a product that keeps evolving.",
-    items: ["Product strategy", "UX research", "Prototyping", "MVP development", "Product evolution"],
+    line: "Visibility and intelligence that compound after launch.",
+    items: ["SEO", "Analytics", "AI", "Automation"],
   },
 ];
 
 // ---------------------------------------------------------------------------
-// 04 — Services
-// ---------------------------------------------------------------------------
-
-export type FinlandServiceVisual =
-  | "presence"
-  | "product"
-  | "engineering"
-  | "ai"
-  | "growth"
-  | "brand";
-
-export const finlandServices: {
-  num: string;
-  title: string;
-  desc: string;
-  visual: FinlandServiceVisual;
-  href: string;
-}[] = [
-  {
-    num: "01",
-    title: "Digital presence",
-    desc: "High-performance websites built around UX, brand and conversion.",
-    visual: "presence",
-    href: "/services/technology/web-design/",
-  },
-  {
-    num: "02",
-    title: "Digital products",
-    desc: "Web applications, SaaS platforms and customer-facing products.",
-    visual: "product",
-    href: "/services/technology/web-development/",
-  },
-  {
-    num: "03",
-    title: "Product engineering",
-    desc: "From architecture and MVPs to scalable production systems.",
-    visual: "engineering",
-    href: "/services/technology/",
-  },
-  {
-    num: "04",
-    title: "AI & automation",
-    desc: "Practical AI systems, automation and intelligent workflows.",
-    visual: "ai",
-    href: "/services/technology/",
-  },
-  {
-    num: "05",
-    title: "Digital growth",
-    desc: "SEO, AEO, content and conversion systems.",
-    visual: "growth",
-    href: "/services/growth/seo/",
-  },
-  {
-    num: "06",
-    title: "Brand & experience",
-    desc: "Identity, visual systems and digital brand experiences.",
-    visual: "brand",
-    href: "/services/design/brand-identity/",
-  },
-];
-
-// ---------------------------------------------------------------------------
-// 05 — Transformation
-// ---------------------------------------------------------------------------
-
-export const finlandTransformation = [
-  {
-    key: "old",
-    label: "Old website",
-    title: "An outdated digital presence",
-    desc: "Where many companies start: a site that no longer reflects the business, the offer or the customer.",
-    disciplines: ["Audit"],
-  },
-  {
-    key: "structure",
-    label: "Structure",
-    title: "Strategy and structure",
-    desc: "Audience, content and journeys are mapped before anything is designed — so every page has a job.",
-    disciplines: ["Strategy", "UX"],
-  },
-  {
-    key: "experience",
-    label: "New experience",
-    title: "A designed experience",
-    desc: "Brand, interface and a reusable design system, shaped around how your customers decide.",
-    disciplines: ["Design"],
-  },
-  {
-    key: "product",
-    label: "Product",
-    title: "Engineered as a product",
-    desc: "Fast, accessible and integrated — CMS, APIs and the tools your team already uses.",
-    disciplines: ["Engineering"],
-  },
-  {
-    key: "growth",
-    label: "Growth",
-    title: "Built to keep growing",
-    desc: "Search visibility, content and conversion are measured and improved long after launch day.",
-    disciplines: ["Growth"],
-  },
-] as const;
-
-// ---------------------------------------------------------------------------
-// 06 — Industries
+// 07 Industries — a real project stands behind a tile only where one exists.
 // ---------------------------------------------------------------------------
 
 export type FinlandIndustry = {
@@ -244,7 +216,6 @@ export type FinlandIndustry = {
   sectors: string[];
   statement: string;
   capability: string;
-  /** Slug of a real Uniix project whose cover can stand behind the tile. */
   proofProject?: string;
 };
 
@@ -252,168 +223,114 @@ export const finlandIndustries: FinlandIndustry[] = [
   {
     num: "01",
     name: "Hospitality",
-    sectors: ["Hotels", "Resorts", "Restaurants", "Tourism"],
+    sectors: ["Hotels", "Restaurants", "Tourism", "Travel"],
     statement: "Booking journeys that feel as considered as the stay itself.",
-    capability: "Booking UX · Multilingual sites · Local search",
+    capability: "Web design · Booking UX · Local search",
     proofProject: "rentmycar-lk",
   },
   {
     num: "02",
-    name: "Property",
-    sectors: ["Real estate", "Construction", "Architecture", "Interior"],
+    name: "Property & construction",
+    sectors: ["Real estate", "Construction", "Architecture", "Interiors"],
     statement: "Portfolios and listings that let the work carry the sale.",
     capability: "Listing platforms · Visual portfolios · Lead capture",
   },
   {
     num: "03",
-    name: "Professional services",
-    sectors: ["Consulting", "Recruitment", "Finance", "Engineering"],
-    statement: "Clear positioning for firms that sell expertise, not products.",
-    capability: "Brand positioning · Content systems · CRM integration",
-  },
-  {
-    num: "04",
-    name: "Health & wellness",
-    sectors: ["Clinics", "Dental", "Fitness", "Wellness"],
+    name: "Healthcare & wellness",
+    sectors: ["Clinics", "Laboratories", "Dental", "Wellness"],
     statement: "Digital experiences that earn trust before the first appointment.",
     capability: "Accessible UX · Booking flows · Local SEO",
     proofProject: "st-lukes-medilab",
   },
   {
+    num: "04",
+    name: "Professional services",
+    sectors: ["Consulting", "Recruitment", "Finance", "Legal"],
+    statement: "Clear positioning for firms that sell expertise.",
+    capability: "Brand positioning · Content · CRM integration",
+  },
+  {
     num: "05",
     name: "Technology",
-    sectors: ["SaaS", "Startups", "AI", "Software"],
+    sectors: ["SaaS", "Software", "AI", "Platforms"],
     statement: "Product sites and platforms that explain complex things simply.",
-    capability: "SaaS platforms · Product design · MVP engineering",
+    capability: "Product design · SaaS platforms · Engineering",
   },
   {
     num: "06",
     name: "Manufacturing",
-    sectors: ["Industrial", "Engineering", "B2B", "Manufacturing"],
+    sectors: ["Industrial", "Engineering", "B2B", "Energy"],
     statement: "Turning technical capability into a brand buyers remember.",
-    capability: "B2B websites · Brand identity · Product catalogues",
+    capability: "B2B websites · Brand identity · Catalogues",
+  },
+  {
+    num: "07",
+    name: "Retail & e-commerce",
+    sectors: ["Online stores", "D2C brands", "Marketplaces"],
+    statement: "Stores that are easy to browse and easier to buy from.",
+    capability: "E-commerce · Product pages · Conversion",
+  },
+  {
+    num: "08",
+    name: "Startups",
+    sectors: ["Launch", "MVP", "Rebrand", "Scale-up"],
+    statement: "From a first identity to a product ready for market.",
+    capability: "Brand identity · MVPs · Launch sites",
     proofProject: "ecowave-energy",
   },
 ];
 
 // ---------------------------------------------------------------------------
-// 07 — Selected work (existing case studies only — no Finnish clients)
-// ---------------------------------------------------------------------------
-
-export const finlandWorkOrder = [
-  "rentmycar-lk",
-  "st-lukes-medilab",
-  "ecowave-energy",
-  "sierra-energy-solutions",
-];
-
-// ---------------------------------------------------------------------------
-// 08 — Process
+// 08 Process
 // ---------------------------------------------------------------------------
 
 export const finlandProcess = [
-  { num: "01", title: "Discover", desc: "Understand the business, audience and opportunity." },
-  { num: "02", title: "Define", desc: "Turn the opportunity into a clear strategy." },
-  { num: "03", title: "Design", desc: "Create the experience, brand and product system." },
-  { num: "04", title: "Build", desc: "Engineer the digital experience for production." },
-  { num: "05", title: "Grow", desc: "Improve performance, visibility and conversion." },
+  { num: "01", title: "Discover", desc: "Understand the business, users and opportunity." },
+  { num: "02", title: "Strategize", desc: "Define what needs to be built and why." },
+  { num: "03", title: "Design", desc: "Create the experience and visual system." },
+  { num: "04", title: "Build", desc: "Develop the product for production." },
+  { num: "05", title: "Grow", desc: "Improve, measure and evolve." },
 ];
 
 // ---------------------------------------------------------------------------
-// 10 — Why Uniix (factual, editable)
+// 09 About — "from the studio" frames are real project details, captioned.
 // ---------------------------------------------------------------------------
 
-export const finlandWhy = [
-  {
-    num: "01",
-    title: "Design + engineering",
-    desc: "Design and development are part of the same team, working from the same brief.",
-  },
-  {
-    num: "02",
-    title: "Local + international",
-    desc: "Finland-side technical presence, with an established delivery team in Sri Lanka.",
-  },
-  {
-    num: "03",
-    title: "Product thinking",
-    desc: "We design around business outcomes, not just screens.",
-  },
-  {
-    num: "04",
-    title: "Long-term partnership",
-    desc: "We can stay involved after launch through growth, iteration and support.",
-  },
-  {
-    num: "05",
-    title: "Modern technology",
-    desc: "Modern web architecture, performance, accessibility and AI-ready systems.",
-  },
+export const finlandStudioFrames = [
+  { project: "ecowave-energy", image: "cover", caption: "Brand identity" },
+  { project: "rentmycar-lk", image: "/portfolio/rentmycar/social/bus.webp", caption: "Campaign system" },
+  { project: "sierra-energy-solutions", image: "https://res.cloudinary.com/dfh2tmn3p/image/upload/v1781699892/sierra-energy/sierra-post-09.jpg", caption: "Bilingual layouts" },
 ];
 
 // ---------------------------------------------------------------------------
-// 11 — Engagement models (no pricing)
+// 10 Finland presence
 // ---------------------------------------------------------------------------
 
-export const finlandEngagements = [
-  {
-    num: "01",
-    title: "Digital presence",
-    forWho: "For companies that need a modern website and digital foundation.",
-    includes: ["Strategy", "UX/UI", "Development", "SEO foundation", "Analytics"],
+export const finlandPresence = {
+  finland: {
+    label: "Finland",
+    timeZone: "Europe/Helsinki",
+    items: ["Technical collaboration", "Client communication", "Local meetings", "Product & engineering discussions"],
   },
-  {
-    num: "02",
-    title: "Digital product",
-    forWho: "For businesses building a platform, application or SaaS product.",
-    includes: ["Product strategy", "UX research", "UI", "Architecture", "Development", "Launch"],
+  team: {
+    label: "Uniix international team",
+    timeZone: "Asia/Colombo",
+    items: ["Design", "UX/UI", "Development", "Branding", "Growth", "Product delivery"],
   },
-  {
-    num: "03",
-    title: "Growth partnership",
-    forWho: "For businesses that want ongoing digital improvement.",
-    includes: ["SEO", "AEO", "Content", "Conversion", "Analytics", "Continuous UX improvements"],
-  },
-];
+};
 
 // ---------------------------------------------------------------------------
-// Atmosphere photography
-//
-// Self-hosted under /public/finland (Unsplash License — free for commercial
-// use, no attribution required; credited here anyway). These are placeholders
-// for commissioned photography: swap `src` for your own shoot and keep the
-// same crop intent (`position` is the object-position used on mobile crops).
+// Atmosphere photography (Unsplash License; placeholders for commissioned
+// photography). Used only in the Finland presence section and the final CTA.
 // ---------------------------------------------------------------------------
 
 export const finlandImages = {
-  heroForest: {
-    src: "/finland/forest-mist.jpg",
-    alt: "Mist settling over a snow-dusted pine forest in the early morning",
-    credit: "Julian Zwengel / Unsplash",
-  },
-  windowStudio: {
-    src: "/finland/window-studio.jpg",
-    alt: "A designer working on a laptop at a warmly lit table beside a large window on a cold blue evening",
-    credit: "Kounotori / Unsplash",
-    position: "62% center",
-  },
   frozenLake: {
     src: "/finland/frozen-lake.jpg",
     alt: "A lone pine on the shore of a frozen lake at blue hour",
     credit: "Anastasia Zolotukhina / Unsplash",
     position: "56% center",
-  },
-  snowWalk: {
-    src: "/finland/snow-walk.jpg",
-    alt: "A person walking alone along a snow-covered forest path",
-    credit: "Hanna Lazar / Unsplash",
-    position: "40% center",
-  },
-  warmTable: {
-    src: "/finland/warm-table.jpg",
-    alt: "People talking at a lamp-lit table inside, with snowy hills beyond the window",
-    credit: "Olya P / Unsplash",
-    position: "50% center",
   },
   cabinDusk: {
     src: "/finland/cabin-dusk.jpg",
@@ -422,10 +339,3 @@ export const finlandImages = {
     position: "64% 70%",
   },
 };
-
-/** Outside → Inside → Screen: the page's signature scroll story. */
-export const finlandJourney = [
-  { key: "outside", label: "Nature", line: "It starts outside — with the people you want to reach." },
-  { key: "inside", label: "Human", line: "Then a conversation — understanding what they need." },
-  { key: "screen", label: "Technology", line: "And finally the product — built for how they live." },
-] as const;

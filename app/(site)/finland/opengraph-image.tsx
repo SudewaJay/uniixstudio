@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Uniix Studio — digital design, technology and growth for Finnish businesses";
+export const alt = "Uniix Studio — digital experiences built to move businesses forward";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -52,22 +52,21 @@ export default function FinlandOG() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em" }}>UNIIX STUDIO</div>
           <div style={{ display: "flex", gap: 18, fontSize: 16, letterSpacing: "0.22em", textTransform: "uppercase" }}>
-            <span style={{ color: "#A9C3D9" }}>Finland</span>
-            <span style={{ opacity: 0.4 }}>×</span>
-            <span style={{ color: "#F5A623" }}>Sri Lanka</span>
+            <span>Design</span>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span>Technology</span>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span style={{ color: "#F5A623" }}>Growth</span>
           </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", fontSize: 76, lineHeight: 1.02, letterSpacing: "-0.04em", fontWeight: 500 }}>
-          <span>Digital experiences built</span>
-          <span>
-            for ambitious{" "}
-            <span style={{ color: "#F5A623", marginLeft: 18 }}>Finnish businesses.</span>
-          </span>
+          <span>Digital experiences built to move</span>
+          <span style={{ color: "#F5A623" }}>businesses forward.</span>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 18, opacity: 0.7 }}>
-          <span>Strategy · Design · Technology · Growth</span>
+          <span>Websites · Digital products · Brands · Growth</span>
           <span>uniixstudio.com/finland</span>
         </div>
       </div>

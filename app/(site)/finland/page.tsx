@@ -1,43 +1,42 @@
 import type { Metadata } from "next";
 import FinlandHero from "@/components/finland/FinlandHero";
-import FinlandBridge from "@/components/finland/FinlandBridge";
-import FinlandCapabilities from "@/components/finland/FinlandCapabilities";
+import FinlandWork from "@/components/finland/FinlandWork";
 import FinlandServices from "@/components/finland/FinlandServices";
-import FinlandTransformation from "@/components/finland/FinlandTransformation";
+import FinlandCaseStudies from "@/components/finland/FinlandCaseStudies";
+import FinlandTestimonials, { type FiTestimonial } from "@/components/finland/FinlandTestimonials";
+import FinlandCapabilities from "@/components/finland/FinlandCapabilities";
 import FinlandIndustries, { type IndustryTile } from "@/components/finland/FinlandIndustries";
-import FinlandPortfolio, { type FinlandWorkItem } from "@/components/finland/FinlandPortfolio";
 import FinlandProcess from "@/components/finland/FinlandProcess";
-import FinlandPartner from "@/components/finland/FinlandPartner";
-import FinlandWhy from "@/components/finland/FinlandWhy";
-import FinlandEngagement from "@/components/finland/FinlandEngagement";
+import FinlandAbout from "@/components/finland/FinlandAbout";
+import FinlandPresence from "@/components/finland/FinlandPresence";
 import FinlandCTA from "@/components/finland/FinlandCTA";
-import FinlandHuman from "@/components/finland/FinlandHuman";
-import FinlandBreak from "@/components/finland/FinlandBreak";
-import FinlandJourney, { type JourneyScreen } from "@/components/finland/FinlandJourney";
+import type { FiProject, FiProjects } from "@/components/finland/types";
 import JsonLd from "@/components/JsonLd";
-import { site } from "@/lib/content";
+import { site, testimonials } from "@/lib/content";
 import { allProjects } from "@/lib/projects-fs";
 import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import {
+  cld,
+  finlandCaseStudies,
   finlandHasPlaceholders,
   finlandIndustries,
   finlandServices,
-  finlandWorkOrder,
+  finlandWorkLayout,
 } from "@/lib/finland";
 
 const PATH = "/finland/";
 const URL_ = site.canonical(PATH);
-const TITLE = "Digital Agency in Finland | Uniix Studio";
+const TITLE = "Digital Agency Finland | Uniix Studio";
 const DESCRIPTION =
-  "Uniix is an international digital studio combining UX, design, technology and growth for ambitious businesses in Finland and beyond.";
+  "Uniix Studio creates websites, digital products, brands and growth experiences for ambitious businesses in Finland and internationally.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: URL_ },
-  // Kept out of the index until the partner / contact placeholders in
-  // lib/finland.ts are replaced — see `finlandHasPlaceholders`.
+  // Kept out of the index until the placeholders in lib/finland.ts are
+  // replaced — see `finlandHasPlaceholders`.
   robots: finlandHasPlaceholders ? { index: false, follow: true } : { index: true, follow: true },
   openGraph: {
     type: "website",
@@ -47,19 +46,74 @@ export const metadata: Metadata = {
     siteName: site.name,
     locale: "en_US",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: TITLE,
-    description: DESCRIPTION,
-  },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
+/** Every project the page references, reduced to what it renders. */
+function collectProjects(): FiProjects {
+  const slugs = new Set<string>([
+    finlandWorkLayout.lead,
+    ...finlandWorkLayout.pair,
+    finlandWorkLayout.feature,
+    ...finlandCaseStudies,
+    ...finlandServices.map((s) => s.project),
+    ...finlandIndustries.flatMap((i) => (i.proofProject ? [i.proofProject] : [])),
+    "rentmycar-lk",
+    "st-lukes-medilab",
+    "ecowave-energy",
+    "sierra-energy-solutions",
+  ]);
+  const out: FiProjects = {};
+  for (const slug of slugs) {
+    const p = allProjects.find((x) => x.slug === slug && x.hasDetail);
+    if (!p) continue;
+    out[slug] = {
+      slug: p.slug,
+      title: p.title,
+      client: p.client,
+      industry: p.industry,
+      services: p.overline,
+      headline: p.headline,
+      summary: p.summary,
+      coverImage: cld(p.coverImage, 1800),
+      year: p.year,
+      problem: p.problem,
+      solution: p.solution,
+      result: p.result,
+      stats: p.stats,
+    };
+  }
+  return out;
+}
+
 /**
- * Structured data. Deliberately a WebPage + Service with `areaServed:
- * Finland`, provided by the existing Organization node — NOT a second
- * LocalBusiness with a Finnish address, because no Finnish office exists.
+ * Testimonials that already exist in the codebase: project-linked ones from
+ * MDX first (they carry a case study), then the site-wide list the homepage
+ * already publishes. Nothing is written here.
  */
-function finlandSchema() {
+function collectTestimonials(projects: FiProjects): FiTestimonial[] {
+  const fromProjects: FiTestimonial[] = allProjects.flatMap((p) =>
+    p.testimonial && projects[p.slug]
+      ? [
+          {
+            quote: p.testimonial.quote,
+            name: p.testimonial.name,
+            role: p.testimonial.role,
+            project: { slug: p.slug, title: p.title, image: projects[p.slug].coverImage },
+          },
+        ]
+      : [],
+  );
+  const sitewide: FiTestimonial[] = testimonials.map((t) => ({
+    quote: t.quote,
+    name: t.name,
+    role: t.role,
+    context: [t.project, t.year].filter(Boolean).join(" · ") || undefined,
+  }));
+  return [...fromProjects, ...sitewide];
+}
+
+function finlandSchema(projects: FiProject[]) {
   const base = site.url.replace(/\/$/, "");
   return schemaGraph(
     {
@@ -71,31 +125,27 @@ function finlandSchema() {
       inLanguage: "en",
       isPartOf: { "@id": `${base}/#website` },
       about: { "@id": `${URL_}#service` },
+      mainEntity: {
+        "@type": "ItemList",
+        name: "Selected work",
+        itemListElement: projects.map((p, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          url: `${base}/portfolio/${p.slug}/`,
+          name: p.title,
+        })),
+      },
     },
     {
+      // Area served, provided by the existing Organization — deliberately not
+      // a LocalBusiness with a Finnish address (no Finnish office exists).
       "@type": "Service",
       "@id": `${URL_}#service`,
-      name: "Digital design, development and growth for businesses in Finland",
-      serviceType: [
-        "Web design",
-        "Web development",
-        "UX/UI design",
-        "Digital product development",
-        "Software development",
-        "SEO and growth",
-        "AI and automation",
-      ],
+      name: "Web design, development, product design and digital growth",
+      serviceType: finlandServices.map((s) => s.title),
       description: DESCRIPTION,
       provider: { "@id": `${base}/#organization` },
       areaServed: { "@type": "Country", name: "Finland" },
-      hasOfferCatalog: {
-        "@type": "OfferCatalog",
-        name: "Services",
-        itemListElement: finlandServices.map((s) => ({
-          "@type": "Offer",
-          itemOffered: { "@type": "Service", name: s.title, description: s.desc },
-        })),
-      },
     },
     breadcrumbSchema([
       { name: "Home", url: "/" },
@@ -105,55 +155,40 @@ function finlandSchema() {
 }
 
 export default function FinlandPage() {
-  // Selected work: existing case studies, content straight from their MDX.
-  const work: FinlandWorkItem[] = finlandWorkOrder.flatMap((slug) => {
-    const p = allProjects.find((x) => x.slug === slug);
-    if (!p) return [];
-    return [
-      {
-        slug: p.slug,
-        title: p.title,
-        industry: p.industry,
-        services: p.overline,
-        impact: p.headline,
-        stat: p.stats?.[0],
-        coverImage: p.coverImage,
-        year: p.year,
-      },
-    ];
-  });
+  const projects = collectProjects();
+  const caseStudies = finlandCaseStudies.map((s) => projects[s]).filter(Boolean) as FiProject[];
+  const reviews = collectTestimonials(projects);
 
   const industries: IndustryTile[] = finlandIndustries.map((ind) => {
-    const p = ind.proofProject ? allProjects.find((x) => x.slug === ind.proofProject) : undefined;
-    return p
-      ? { ...ind, proof: { image: p.coverImage, label: p.client ?? p.title, slug: p.slug } }
-      : ind;
+    const p = ind.proofProject ? projects[ind.proofProject] : undefined;
+    return p ? { ...ind, proof: { image: p.coverImage, label: p.title, slug: p.slug } } : ind;
   });
 
-  const lead = work[0];
-  const journeyScreen: JourneyScreen | null = lead
-    ? { src: lead.coverImage, title: lead.title, slug: lead.slug }
-    : null;
+  const workList = [finlandWorkLayout.lead, ...finlandWorkLayout.pair, finlandWorkLayout.feature]
+    .map((s) => projects[s])
+    .filter(Boolean) as FiProject[];
 
   return (
     <>
-      <JsonLd data={finlandSchema()} />
-      {/* Rhythm: digital → human → digital → nature → work → human → cinematic close */}
-      {/* 01 */} <FinlandHero />
-      {/* 02 */} <FinlandBridge />
-      {/* 02b human */} <FinlandHuman />
-      {/* 03 */} <FinlandCapabilities />
-      {/* 04 */} <FinlandServices />
-      {/* 04b nature */} <FinlandBreak />
-      {/* 05 */} <FinlandTransformation />
-      {/* 06 */} <FinlandIndustries items={industries} />
-      {/* 07 */} <FinlandPortfolio items={work} />
-      {/* 07b signature */} {journeyScreen && <FinlandJourney screen={journeyScreen} />}
-      {/* 08 */} <FinlandProcess />
-      {/* 09 */} <FinlandPartner />
-      {/* 10 */} <FinlandWhy />
-      {/* 11 */} <FinlandEngagement />
-      {/* 12 */} <FinlandCTA />
+      <JsonLd data={finlandSchema(workList)} />
+      {/*
+        Client-first journey: discover → see the work → services → proof →
+        capabilities → trust → contact. On mobile, reviews move above the case
+        studies (CSS order only; both are self-contained sections).
+      */}
+      <div className="flex flex-col">
+        <div className="order-1"><FinlandHero projects={projects} /></div>
+        <div className="order-2"><FinlandWork projects={projects} /></div>
+        <div className="order-3"><FinlandServices projects={projects} /></div>
+        <div className="order-5 md:order-4"><FinlandCaseStudies items={caseStudies} /></div>
+        <div className="order-4 md:order-5"><FinlandTestimonials items={reviews} /></div>
+        <div className="order-6"><FinlandCapabilities /></div>
+        <div className="order-7"><FinlandIndustries items={industries} /></div>
+        <div className="order-8"><FinlandProcess /></div>
+        <div className="order-9"><FinlandAbout projects={projects} /></div>
+        <div className="order-10"><FinlandPresence /></div>
+        <div className="order-11"><FinlandCTA /></div>
+      </div>
     </>
   );
 }

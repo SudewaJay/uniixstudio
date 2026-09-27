@@ -8,7 +8,7 @@ import { finlandContact, finlandImages, isFinlandPlaceholder } from "@/lib/finla
 import styles from "./finland.module.css";
 
 /**
- * 12 — Final CTA. A cinematic last frame rather than a return to generic dark
+ * 11 — Final CTA. A cinematic last frame rather than a return to generic dark
  * UI: footprints in the snow leading to a warm-lit cabin at dusk, a few
  * flakes, and the headline. Overlays weight the left/top where the type sits,
  * leaving the warm window light visible on the right.
@@ -58,18 +58,17 @@ export default function FinlandCTA() {
             id="fi-cta-heading"
             className="t-display text-[clamp(44px,8vw,128px)] leading-[0.92] tracking-[-0.055em]"
           >
-            Have a digital idea?
+            Have something
             <br />
-            <span className="t-italic accent-grad-text">Let&apos;s build what comes next.</span>
+            <span className="t-italic accent-grad-text">worth building?</span>
           </h2>
         </Reveal>
 
         <div className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <Reveal delay={1}>
             <p className="t-lead max-w-[54ch] text-white/70">
-              Whether you&apos;re redesigning an existing digital presence,
-              launching a product or looking for a long-term technology partner,
-              let&apos;s talk.
+              Tell us what you&apos;re working on. We&apos;ll help you figure
+              out what comes next.
             </p>
           </Reveal>
           <Reveal delay={2}>
@@ -77,8 +76,8 @@ export default function FinlandCTA() {
               <Link href="/contact/" className="btn btn-light group w-full sm:w-auto">
                 Start a project <span className="cta-arrow">↗</span>
               </Link>
-              <Link href={finlandContact.bookingUrl} className="btn btn-outline-light w-full sm:w-auto">
-                Book a discovery call
+              <Link href="#work" className="btn btn-outline-light w-full sm:w-auto">
+                View our work
               </Link>
             </div>
           </Reveal>
