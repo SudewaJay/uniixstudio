@@ -40,6 +40,7 @@ const mdxSlugs = new Set(mdxProjects.map((p) => p.slug));
  * the grid.
  */
 const CURATED_ORDER = [
+  "cricbook",
   "rentmycar-lk",
   "st-lukes-medilab",
   "ecowave-energy",

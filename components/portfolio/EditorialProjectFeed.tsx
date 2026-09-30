@@ -28,6 +28,15 @@ export default function EditorialProjectFeed({ projects }: Props) {
       {projects.map((project, index) => {
         // Map projects to their unique visual composition
         switch (project.slug) {
+          case "cricbook":
+            return (
+              <FlagshipProductStory
+                key={project.slug}
+                project={project}
+                index={index}
+                total={projects.length}
+              />
+            );
           case "rentmycar-lk":
             return (
               <FullBleedLeadStory
@@ -42,6 +51,7 @@ export default function EditorialProjectFeed({ projects }: Props) {
                 key={project.slug}
                 project={project}
                 index={index}
+                total={projects.length}
               />
             );
           case "ecowave-energy":
@@ -50,6 +60,7 @@ export default function EditorialProjectFeed({ projects }: Props) {
                 key={project.slug}
                 project={project}
                 index={index}
+                total={projects.length}
               />
             );
           case "sierra-energy-solutions":
@@ -58,6 +69,7 @@ export default function EditorialProjectFeed({ projects }: Props) {
                 key={project.slug}
                 project={project}
                 index={index}
+                total={projects.length}
               />
             );
           case "zerro":
@@ -172,6 +184,84 @@ function ProjectCardShell({
 }
 
 /* -------------------------------------------------------------------------- */
+/* 00. FLAGSHIP PRODUCT STORY (CricBook)                                      */
+/* -------------------------------------------------------------------------- */
+
+function FlagshipProductStory({
+  project,
+  index,
+  total,
+}: {
+  project: Project;
+  index: number;
+  total: number;
+}) {
+  return (
+    <section className="wrap">
+      <Reveal>
+        <ProjectCardShell href={`/portfolio/${project.slug}/`}>
+          <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-[#15103F] text-white border border-white/10 shadow-lift">
+            <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)]">
+              {/* Narrative */}
+              <div className="order-2 lg:order-1 flex flex-col justify-between gap-10 p-6 sm:p-10 lg:p-12">
+                <div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="px-3 py-1 rounded-full bg-[#22E0A0] text-[#06302A] font-mono text-[10px] tracking-[0.18em] uppercase">
+                      Flagship
+                    </span>
+                    <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-white/60">
+                      {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")} · {project.year}
+                    </span>
+                  </div>
+                  <h2 className="t-h2 mt-6 text-white group-hover:translate-x-1 transition-transform duration-micro ease-uniix text-[clamp(38px,4.6vw,64px)]">
+                    {project.title}
+                  </h2>
+                  <p className="mt-3 font-mono text-[11px] tracking-[0.2em] uppercase text-[#22E0A0]">
+                    {project.overline}
+                  </p>
+                  <p className="t-lead mt-6 text-white/80 max-w-[46ch]">{project.summary}</p>
+                </div>
+
+                <div>
+                  {project.tags && project.tags.length > 0 && (
+                    <ul className="flex flex-wrap gap-2" aria-label="Services">
+                      {project.tags.map((t) => (
+                        <li
+                          key={t}
+                          className="px-3 py-1 rounded-full bg-white/[.07] text-white/85 text-[12px] font-medium border border-white/10"
+                        >
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <span className="mt-8 inline-flex items-center gap-2 font-display text-[16px] font-medium text-[#22E0A0] group-hover:gap-3 transition-all duration-micro">
+                    Explore the product case study <span className="cta-arrow">↗</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Visual */}
+              <div className="order-1 lg:order-2 relative aspect-[16/10] lg:aspect-auto lg:min-h-[520px] overflow-hidden">
+                <div className="absolute inset-0 transition-transform duration-reveal ease-uniix group-hover:scale-[1.03]">
+                  <SmartImage
+                    src={project.coverImage}
+                    alt={`${project.title} — sports booking platform on desktop and mobile`}
+                    sizes="(min-width:1280px) 760px, (min-width:1024px) 60vw, 100vw"
+                    priority={index === 0}
+                    position="left center"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </ProjectCardShell>
+      </Reveal>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /* 01. FULL-WIDTH CINEMATIC LEAD STORY (RentMyCar.lk)                        */
 /* -------------------------------------------------------------------------- */
 
@@ -205,7 +295,7 @@ function FullBleedLeadStory({
               {/* Top Floating Badge */}
               <div className="absolute top-6 left-6 md:top-8 md:left-8 z-10 flex items-center gap-3">
                 <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 font-mono text-[11px] tracking-[0.18em] uppercase text-brand-2">
-                  Featured Case 01
+                  Featured Case {String(index + 1).padStart(2, "0")}
                 </span>
                 <span className="hidden sm:inline-block font-mono text-[11px] tracking-[0.18em] uppercase text-white/70">
                   {project.year} · Sri Lanka
@@ -261,9 +351,11 @@ function FullBleedLeadStory({
 function SplitDossierStory({
   project,
   index,
+  total,
 }: {
   project: Project;
   index: number;
+  total: number;
 }) {
   return (
     <section className="wrap">
@@ -274,7 +366,7 @@ function SplitDossierStory({
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
                 <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
-                  {String(index + 1).padStart(2, "0")} / 08
+                  {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
                 </span>
                 <span className="text-ink-mute/40">·</span>
                 <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
@@ -340,9 +432,11 @@ function SplitDossierStory({
 function BrandSystemStory({
   project,
   index,
+  total,
 }: {
   project: Project;
   index: number;
+  total: number;
 }) {
   return (
     <section className="wrap">
@@ -381,7 +475,7 @@ function BrandSystemStory({
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
                 <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
-                  {String(index + 1).padStart(2, "0")} / 08
+                  {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
                 </span>
                 <span className="text-ink-mute/40">·</span>
                 <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
@@ -431,9 +525,11 @@ function BrandSystemStory({
 function CampaignGridStory({
   project,
   index,
+  total,
 }: {
   project: Project;
   index: number;
+  total: number;
 }) {
   return (
     <section className="wrap">
@@ -444,7 +540,7 @@ function CampaignGridStory({
               <div>
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
-                    {String(index + 1).padStart(2, "0")} / 08
+                    {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
                   </span>
                   <span className="text-ink-mute/40">·</span>
                   <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">

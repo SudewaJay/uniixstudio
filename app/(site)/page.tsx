@@ -17,13 +17,14 @@ import { getShowreelFilms } from "@/lib/showreel-fs";
 
 /**
  * Curated order for the homepage work showcase. Each of these has an MDX case
- * study, so every card links to a real page.
+ * study, so every card links to a real page. Held at four: CricBook (flagship
+ * product) replaced Sierra Energy, which stays in the full archive.
  */
 const HOME_WORK_ORDER = [
+  "cricbook",
   "rentmycar-lk",
   "st-lukes-medilab",
   "ecowave-energy",
-  "sierra-energy-solutions",
 ];
 
 /**

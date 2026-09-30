@@ -813,3 +813,31 @@
   .why-claim,
   .proc-chip { opacity: 1; transform: none; }
 }
+
+/* ==========================================================================
+   CricBook case study (components/portfolio/cricbook)
+   ========================================================================== */
+.cb-pulse {
+  top: -16px;
+  animation: cb-pulse 2.4s var(--ease) infinite;
+}
+.cb-pulse-rev {
+  animation-direction: reverse;
+}
+@keyframes cb-pulse {
+  from { transform: translate(-50%, 0); }
+  to { transform: translate(-50%, 88px); }
+}
+.cb-orbit {
+  animation: cb-orbit 40s linear infinite;
+}
+@keyframes cb-orbit {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cb-pulse,
+  .cb-orbit {
+    animation: none;
+  }
+  .cb-pulse { top: 20px; }
+}
