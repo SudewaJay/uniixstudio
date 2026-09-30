@@ -17,7 +17,21 @@ export const metadata: Metadata = {
 };
 
 export default function BlogIndexPage() {
-  const published = posts.filter((p) => !p.isStub);
+  // Only the fields the index cards render cross to the client. Passing the
+  // full posts serialized every Markdown body into the RSC payload (~280KB,
+  // prefetched from the nav on every page).
+  const published = posts
+    .filter((p) => !p.isStub)
+    .map(({ slug, title, excerpt, category, publishDate, readTime, coverImage, author }) => ({
+      slug,
+      title,
+      excerpt,
+      category,
+      publishDate,
+      readTime,
+      coverImage,
+      author,
+    }));
 
   const crumbs = breadcrumbSchema([
     { name: "Home", url: "/" },

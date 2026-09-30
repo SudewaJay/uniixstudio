@@ -5,7 +5,9 @@
  *   - NEXT_PUBLIC_GA_ID            → e.g. G-XXXXXXXXXX
  *   - NEXT_PUBLIC_CLARITY_ID       → e.g. abcdefghij
  *
- * Loaded with strategy="afterInteractive" so they don't block first paint.
+ * Loaded with strategy="lazyOnload" (after the load event, during idle time).
+ * gtag.js alone is ~190KB and was the largest long task on mobile when it ran
+ * afterInteractive; deferring it keeps it out of TBT/LCP.
  */
 import Script from "next/script";
 
@@ -19,9 +21,9 @@ export default function ThirdPartyScripts() {
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
-          <Script id="ga4-init" strategy="afterInteractive">
+          <Script id="ga4-init" strategy="lazyOnload">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
@@ -36,7 +38,7 @@ export default function ThirdPartyScripts() {
       )}
 
       {CLARITY_ID && (
-        <Script id="clarity-init" strategy="afterInteractive">
+        <Script id="clarity-init" strategy="lazyOnload">
           {`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};

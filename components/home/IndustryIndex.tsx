@@ -228,7 +228,7 @@ export default function IndustryIndex({
                   <span
                     className={clsx(
                       "text-[15px] font-medium leading-tight tracking-[-0.01em] transition-colors duration-micro",
-                      tapped === i ? "text-ink" : "text-ink/55",
+                      tapped === i ? "text-ink" : "text-ink/65",
                     )}
                   >
                     {ind.name}

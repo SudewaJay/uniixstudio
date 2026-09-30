@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import {
   motion,
@@ -8,6 +8,7 @@ import {
   useSpring,
   useTransform,
   useReducedMotion,
+  useMotionValueEvent,
   type MotionValue,
 } from "framer-motion";
 import SmartImage from "../ui/SmartImage";
@@ -49,12 +50,14 @@ function VisualLayer({
   total,
   progress,
   reduce,
+  active,
 }: {
   project: ShowcaseProject;
   index: number;
   total: number;
   progress: MotionValue<number>;
   reduce: boolean | null;
+  active: number;
 }) {
   const opacity = useLayerOpacity(progress, index, total);
   const slice = 1 / total;
@@ -70,7 +73,10 @@ function VisualLayer({
     <motion.div
       style={{ opacity: reduce ? (index === 0 ? 1 : 0) : opacity }}
       className="absolute inset-0"
-      aria-hidden={index !== 0 ? "true" : undefined}
+      // Only the layer currently on screen is exposed: the stacked, faded-out
+      // layers must be neither announced nor reachable by Tab.
+      aria-hidden={index !== active || undefined}
+      inert={index !== active || undefined}
     >
       <div className="frame h-full w-full shadow-lift ring-1 ring-black/5">
         <motion.div style={{ scale }} className="absolute inset-0">
@@ -92,12 +98,14 @@ function TextLayer({
   total,
   progress,
   reduce,
+  active,
 }: {
   project: ShowcaseProject;
   index: number;
   total: number;
   progress: MotionValue<number>;
   reduce: boolean | null;
+  active: number;
 }) {
   const opacity = useLayerOpacity(progress, index, total);
   const slice = 1 / total;
@@ -112,7 +120,10 @@ function TextLayer({
     <motion.div
       style={{ opacity: reduce ? (index === 0 ? 1 : 0) : opacity, y }}
       className={index === 0 ? "relative" : "absolute inset-0"}
-      aria-hidden={index !== 0 ? "true" : undefined}
+      // Only the layer currently on screen is exposed: the stacked, faded-out
+      // layers must be neither announced nor reachable by Tab.
+      aria-hidden={index !== active || undefined}
+      inert={index !== active || undefined}
     >
       <p className="t-meta text-ink-mute">
         <span className="accent">{String(index + 1).padStart(2, "0")}</span>
@@ -178,6 +189,13 @@ export default function WorkShowcase({ items }: { items: ShowcaseProject[] }) {
     mass: 0.35,
   });
 
+  // Which project layer is on screen — drives aria-hidden/inert on the rest.
+  const [active, setActive] = useState(0);
+  useMotionValueEvent(progress, "change", (v) => {
+    const i = Math.min(total - 1, Math.max(0, Math.floor(v * total)));
+    setActive((prev) => (prev === i ? prev : i));
+  });
+
   return (
     <section id="work" className="section bg-bg">
       <div className="wrap">
@@ -221,6 +239,7 @@ export default function WorkShowcase({ items }: { items: ShowcaseProject[] }) {
                   total={total}
                   progress={progress}
                   reduce={reduce}
+                  active={active}
                 />
               ))}
             </div>
@@ -235,6 +254,7 @@ export default function WorkShowcase({ items }: { items: ShowcaseProject[] }) {
                   total={total}
                   progress={progress}
                   reduce={reduce}
+                  active={active}
                 />
               ))}
 
