@@ -30,7 +30,7 @@ export const reel = {
   poster: `${base}/logo-reel-poster.webp`,
   description:
     "Logo animation for Bilesma Natural by Uniix Studio: the brand mark resolves out of warm light and the Sinhala tagline ඔබව හදවතින්ම ලස්සන කරයි appears beneath it.",
-  uploadDate: "2026-10-01",
+  uploadDate: "2024-01-20",
   duration: "PT9S",
 };
 
@@ -38,7 +38,7 @@ export const projectInfo = [
   { label: "Client", value: "Bilesma Natural (Pvt) Ltd" },
   { label: "Industry", value: "Ayurvedic skin & hair care" },
   { label: "Location", value: "Nugegoda, Sri Lanka" },
-  { label: "Year", value: "2026" },
+  { label: "Year", value: "2024" },
 ];
 
 export const infoServices = ["Packaging design", "Print design", "Brand system", "Logo animation"];
