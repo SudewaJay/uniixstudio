@@ -46,6 +46,15 @@ export default function EditorialProjectFeed({ projects }: Props) {
                 total={projects.length}
               />
             );
+          case "bilesma-natural-social-media":
+            return (
+              <SocialFeedStory
+                key={project.slug}
+                project={project}
+                index={index}
+                total={projects.length}
+              />
+            );
           case "rentmycar-lk":
             return (
               <FullBleedLeadStory
@@ -606,6 +615,90 @@ function PackagingStory({
                 </div>
                 <span className="absolute left-3 top-3 rounded-full bg-[#6A9670] px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase text-white">
                   After
+                </span>
+              </div>
+            </div>
+          </div>
+        </ProjectCardShell>
+      </Reveal>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* SOCIAL FEED FAN (Bilesma Natural Social)                                   */
+/* -------------------------------------------------------------------------- */
+
+const SOCIAL_FAN = [
+  { src: "/portfolio/bilesma-social/saffron-benefits.webp", cls: "-translate-x-[58%] -rotate-[9deg] group-hover:-translate-x-[78%] group-hover:-rotate-[12deg]" },
+  { src: "/portfolio/bilesma-social/curly-ingredients.webp", cls: "translate-x-[58%] rotate-[9deg] group-hover:translate-x-[78%] group-hover:rotate-[12deg]" },
+  { src: "/portfolio/bilesma-social/kasthuri-benefits.webp", cls: "z-10 group-hover:-translate-y-[4%]" },
+];
+
+function SocialFeedStory({
+  project,
+  index,
+  total,
+}: {
+  project: Project;
+  index: number;
+  total: number;
+}) {
+  return (
+    <section className="wrap">
+      <Reveal>
+        <ProjectCardShell href={`/portfolio/${project.slug}/`}>
+          <div className="grid lg:grid-cols-[minmax(0,55%)_minmax(0,45%)] gap-10 lg:gap-14 items-center rounded-2xl md:rounded-3xl border border-line bg-bg-paper p-6 sm:p-10 lg:p-12 hover:shadow-soft transition-all duration-std">
+            <div className="relative flex items-center justify-center overflow-hidden rounded-xl md:rounded-2xl bg-[#1F3A2B] py-12 md:py-16">
+              <div className="relative aspect-[4/5] w-[38%]">
+                {SOCIAL_FAN.map((c, i) => (
+                  <div
+                    key={c.src}
+                    className={`absolute inset-0 overflow-hidden rounded-xl shadow-[0_24px_50px_-18px_rgba(0,0,0,.6)] transition-transform duration-reveal ease-uniix ${c.cls}`}
+                  >
+                    <SmartImage
+                      src={c.src}
+                      alt={i === 2 ? "Bilesma Natural social media posts designed by Uniix Studio" : ""}
+                      sizes="(min-width:1024px) 18vw, 36vw"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
+                  {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                </span>
+                <span className="text-ink-mute/40">·</span>
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
+                  Beauty &amp; Social
+                </span>
+              </div>
+
+              <h2 className="t-h2 mt-4 text-[clamp(30px,3.6vw,50px)] group-hover:translate-x-1 transition-transform duration-micro ease-uniix">
+                {project.title}
+              </h2>
+
+              <p className="t-lead mt-5 text-ink-2 max-w-[46ch]">{project.headline}</p>
+
+              {project.tags && (
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {project.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="px-3 py-1 rounded-full border border-line text-[12px] text-ink-2 bg-bg-warm"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-8">
+                <span className="link-cta group-hover:text-brand-ink">
+                  Take a post apart <span className="cta-arrow">↗</span>
                 </span>
               </div>
             </div>

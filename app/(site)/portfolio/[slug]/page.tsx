@@ -34,6 +34,7 @@ import SocialCampaignCarousel from "@/components/SocialCampaignCarousel";
 import CaseStudyNarrative from "@/components/CaseStudyNarrative";
 import CricBookCaseStudy from "@/components/portfolio/cricbook/CricBookCaseStudy";
 import BilesmaCaseStudy from "@/components/portfolio/bilesma/BilesmaCaseStudy";
+import BilesmaSocialCaseStudy from "@/components/portfolio/bilesma-social/BilesmaSocialCaseStudy";
 
 export function generateStaticParams() {
   return getDetailedProjects().map((p) => ({ slug: p.slug }));
@@ -168,6 +169,19 @@ export default async function ProjectDetailPage({
           hasReel={fs.existsSync(
             path.join(process.cwd(), "public", "portfolio", "bilesma", "logo-reel.mp4"),
           )}
+        />
+      </>
+    );
+  }
+
+  if (project.slug === "bilesma-natural-social-media") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <BilesmaSocialCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
         />
       </>
     );
