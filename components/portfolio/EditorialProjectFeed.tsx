@@ -37,6 +37,15 @@ export default function EditorialProjectFeed({ projects }: Props) {
                 total={projects.length}
               />
             );
+          case "bilesma-natural":
+            return (
+              <PackagingStory
+                key={project.slug}
+                project={project}
+                index={index}
+                total={projects.length}
+              />
+            );
           case "rentmycar-lk":
             return (
               <FullBleedLeadStory
@@ -508,6 +517,95 @@ function BrandSystemStory({
               <div className="mt-8">
                 <span className="link-cta group-hover:text-brand-ink">
                   View identity system &amp; brand films <span className="cta-arrow">↗</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </ProjectCardShell>
+      </Reveal>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* PACKAGING BEFORE / AFTER (Bilesma Natural)                                 */
+/* -------------------------------------------------------------------------- */
+
+function PackagingStory({
+  project,
+  index,
+  total,
+}: {
+  project: Project;
+  index: number;
+  total: number;
+}) {
+  return (
+    <section className="wrap">
+      <Reveal>
+        <ProjectCardShell href={`/portfolio/${project.slug}/`}>
+          <div className="grid lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] gap-10 lg:gap-14 items-center bg-bg-paper border border-line rounded-2xl md:rounded-3xl p-6 sm:p-10 lg:p-12 hover:shadow-soft transition-all duration-std">
+            <div className="flex flex-col lg:order-1 order-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
+                  {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                </span>
+                <span className="text-ink-mute/40">·</span>
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
+                  Beauty &amp; Packaging
+                </span>
+              </div>
+
+              <h2 className="t-h2 mt-4 text-[clamp(30px,3.6vw,50px)] group-hover:translate-x-1 transition-transform duration-micro ease-uniix">
+                {project.title}
+              </h2>
+
+              <p className="t-lead mt-5 text-ink-2 max-w-[46ch]">{project.headline}</p>
+
+              {project.tags && (
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {project.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="px-3 py-1 rounded-full border border-line text-[12px] text-ink-2 bg-bg-warm"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-8">
+                <span className="link-cta group-hover:text-brand-ink">
+                  See the before &amp; after <span className="cta-arrow">↗</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-[0.8fr_1.2fr] gap-3 md:gap-4 lg:order-2 order-1">
+              <div className="relative aspect-[3/4] overflow-hidden rounded-xl md:rounded-2xl bg-white border border-line">
+                <div className="absolute inset-[8%]">
+                  <SmartImage
+                    src="/portfolio/bilesma/old-kraft-bag.webp"
+                    alt="Bilesma Natural kraft bag before the redesign"
+                    sizes="(min-width:1024px) 20vw, 40vw"
+                    fit="contain"
+                  />
+                </div>
+                <span className="absolute left-3 top-3 rounded-full bg-[#7A5A3A] px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase text-white">
+                  Before
+                </span>
+              </div>
+              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl md:rounded-2xl bg-[#1F3A2B]">
+                <div className="absolute inset-0 transition-transform duration-reveal ease-uniix group-hover:scale-[1.04]">
+                  <SmartImage
+                    src="/portfolio/bilesma/bag-tagline-monstera.webp"
+                    alt="Bilesma Natural redesigned botanical carry bag"
+                    sizes="(min-width:1024px) 30vw, 58vw"
+                  />
+                </div>
+                <span className="absolute left-3 top-3 rounded-full bg-[#6A9670] px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase text-white">
+                  After
                 </span>
               </div>
             </div>

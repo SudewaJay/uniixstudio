@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import fs from "node:fs";
+import path from "node:path";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Reveal from "@/components/Reveal";
@@ -31,6 +33,7 @@ import CaseStudyCTA from "@/components/portfolio/case-study/CaseStudyCTA";
 import SocialCampaignCarousel from "@/components/SocialCampaignCarousel";
 import CaseStudyNarrative from "@/components/CaseStudyNarrative";
 import CricBookCaseStudy from "@/components/portfolio/cricbook/CricBookCaseStudy";
+import BilesmaCaseStudy from "@/components/portfolio/bilesma/BilesmaCaseStudy";
 
 export function generateStaticParams() {
   return getDetailedProjects().map((p) => ({ slug: p.slug }));
@@ -149,6 +152,22 @@ export default async function ProjectDetailPage({
           project={project}
           nextProject={nextProject}
           prevProject={prevProject}
+        />
+      </>
+    );
+  }
+
+  if (project.slug === "bilesma-natural") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <BilesmaCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+          hasReel={fs.existsSync(
+            path.join(process.cwd(), "public", "portfolio", "bilesma", "logo-reel.mp4"),
+          )}
         />
       </>
     );

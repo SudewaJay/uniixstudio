@@ -41,6 +41,7 @@ const mdxSlugs = new Set(mdxProjects.map((p) => p.slug));
  */
 const CURATED_ORDER = [
   "cricbook",
+  "bilesma-natural",
   "rentmycar-lk",
   "st-lukes-medilab",
   "ecowave-energy",
