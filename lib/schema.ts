@@ -260,7 +260,10 @@ export function creativeWorkSchema(project: Project) {
     project.coverImage,
     ...(project.gallery ?? []),
     ...((project.wireframes ?? []).map((w) => w.src)),
-  ].filter(Boolean);
+  ]
+    .filter(Boolean)
+    // Local assets (/portfolio/...) must be absolute in structured data.
+    .map((src) => (src.startsWith("/") ? `${SITE_URL}${src}` : src));
   const keywords = [
     ...(project.services ?? []),
     ...((project.techStack ?? []).map((t) => t.name)),
@@ -307,23 +310,33 @@ export function creativeWorkSchema(project: Project) {
 }
 
 /** Blog post — every article gets one. */
-export function articleSchema(post: BlogPost) {
+export function articleSchema(post: BlogPost & { updatedDate?: string }) {
+  const image = post.coverImage.startsWith("http")
+    ? post.coverImage
+    : `${SITE_URL}${post.coverImage}`;
+  // A studio byline is an organisation, not a person — typing it as Person
+  // with the brand name is a structured-data mismatch.
+  const author =
+    post.author.name === site.name
+      ? { "@id": `${SITE_URL}/#organization` }
+      : {
+          "@type": "Person",
+          name: post.author.name,
+          jobTitle: post.author.role,
+        };
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     description: post.metaDescription,
-    image: post.coverImage,
+    image,
     datePublished: post.publishDate,
-    dateModified: post.publishDate,
+    dateModified: post.updatedDate ?? post.publishDate,
     wordCount: post.wordCount,
     keywords: post.primaryKeyword,
     articleSection: post.category,
-    author: {
-      "@type": "Person",
-      name: post.author.name,
-      jobTitle: post.author.role,
-    },
+    inLanguage: "en",
+    author,
     publisher: { "@id": `${SITE_URL}/#organization` },
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -332,7 +345,6 @@ export function articleSchema(post: BlogPost) {
   };
 }
 
-/** VideoObject — eligible for Google Video search rich result. */
 export function videoObjectSchema(v: {
   vimeoId: string;
   title: string;

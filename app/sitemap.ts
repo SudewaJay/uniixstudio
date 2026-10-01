@@ -6,6 +6,7 @@ import { allPosts as posts } from "@/lib/blog-fs";
 import { getDetailedProjects } from "@/lib/projects-fs";
 import { locations } from "@/lib/locations";
 import { locationServices } from "@/lib/location-services";
+import { finlandHasPlaceholders } from "@/lib/finland";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -21,6 +22,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/contact", priority: 0.8, freq: "monthly" },
     { path: "/showreel", priority: 0.75, freq: "monthly" },
     { path: "/locations", priority: 0.8, freq: "monthly" },
+    // Listed only once its placeholders are replaced (it's noindex until then).
+    ...(finlandHasPlaceholders
+      ? []
+      : [
+          { path: "/finland", priority: 0.85, freq: "monthly" as const },
+          { path: "/finland/fi", priority: 0.85, freq: "monthly" as const },
+        ]),
   ];
 
   const locationRoutes = locations.map((l) => ({

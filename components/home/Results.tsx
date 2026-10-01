@@ -60,14 +60,14 @@ export default function Results() {
 
         <dl className="mt-16 md:mt-20 grid gap-x-10 gap-y-12 sm:grid-cols-3 border-t border-line-dark pt-12">
           {RESULTS.map((r, i) => (
-            <Reveal key={r.label} delay={(i % 3) as 0 | 1 | 2}>
-              <div>
-                <dd className="t-numeral accent-grad-text text-[clamp(72px,10vw,148px)]">
-                  {r.value}
-                </dd>
-                <dt className="t-meta mt-7 text-white">{r.label}</dt>
-                <p className="t-body mt-3 max-w-[30ch] text-white/60">{r.detail}</p>
-              </div>
+            // Reveal renders the <div> that groups each dt/dd pair — a dl may
+            // only contain dt/dd directly or wrapped in a single div.
+            <Reveal key={r.label} delay={(i % 3) as 0 | 1 | 2} className="flex flex-col">
+              <dt className="t-meta order-2 mt-7 text-white">{r.label}</dt>
+              <dd className="t-numeral accent-grad-text order-1 text-[clamp(72px,10vw,148px)]">
+                {r.value}
+              </dd>
+              <dd className="t-body order-3 mt-3 max-w-[30ch] text-white/60">{r.detail}</dd>
             </Reveal>
           ))}
         </dl>

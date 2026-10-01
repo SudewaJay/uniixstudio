@@ -16,6 +16,7 @@ import {
 import JsonLd from "@/components/JsonLd";
 import { site } from "@/lib/content";
 import { ogImageUrl, ogImageMeta } from "@/lib/og-image";
+import EditorialArticle from "@/components/blog/EditorialArticle";
 
 export function generateStaticParams() {
   return posts.filter((p) => !p.isStub).map((p) => ({ slug: p.slug }));
@@ -33,24 +34,27 @@ export async function generateMetadata({
   const post = getPost(slug);
   if (!post) return { title: "Article" };
   const canonical = site.canonical(`/blog/${slug}/`);
-  const ogImages = ogImageMeta(post.coverImage);
-  const twitterImage = ogImageUrl(post.coverImage);
+  const socialImage = post.ogImage ?? post.coverImage;
+  const ogImages = ogImageMeta(socialImage);
+  const twitterImage = ogImageUrl(socialImage);
+  const title = post.seoTitle ?? post.title;
   return {
     metadataBase: new URL(site.url),
-    title: post.title,
+    title,
     description: post.metaDescription,
     alternates: { canonical },
     openGraph: {
-      title: post.title,
+      title,
       description: post.metaDescription,
       url: canonical,
       images: ogImages,
       type: "article",
       publishedTime: post.publishDate,
+      ...(post.updatedDate ? { modifiedTime: post.updatedDate } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
+      title,
       description: post.metaDescription,
       images: twitterImage ? [twitterImage] : undefined,
     },
@@ -79,9 +83,16 @@ export default async function BlogPostPage({
     curIdx >= 0
       ? [...allPublished.slice(curIdx + 1), ...allPublished.slice(0, curIdx)]
       : allPublished.filter((p) => p.slug !== slug);
+  // Hand-picked cluster posts (frontmatter `relatedPosts`) lead; the rotation
+  // fills any remaining slots.
+  const picked = (post.relatedPosts ?? [])
+    .map((s) => allPublished.find((p) => p.slug === s))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p) && p!.slug !== slug);
+  const pickedSlugs = new Set(picked.map((p) => p.slug));
   const related = [
-    ...rotated.filter((p) => p.category === post.category),
-    ...rotated.filter((p) => p.category !== post.category),
+    ...picked,
+    ...rotated.filter((p) => p.category === post.category && !pickedSlugs.has(p.slug)),
+    ...rotated.filter((p) => p.category !== post.category && !pickedSlugs.has(p.slug)),
   ].slice(0, 3);
 
   // Location pages that reference this post → reverse internal link, so the
@@ -96,10 +107,21 @@ export default async function BlogPostPage({
       { name: post.title, url: `/blog/${post.slug}/` },
     ]),
   ];
-  if (post.faqs && post.faqs.length > 0) {
+  if (post.faqs && post.faqs.length > 0 && post.faqSchema !== false) {
     schemas.push(faqPageSchema(post.faqs));
   }
   const pageSchema = schemaGraph(...schemas);
+
+  if (post.layout === "editorial") {
+    return (
+      <EditorialArticle
+        post={post}
+        schema={pageSchema}
+        related={related}
+        servingAreas={servingAreas}
+      />
+    );
+  }
 
   return (
     <article>
@@ -155,7 +177,7 @@ export default async function BlogPostPage({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.coverImage}
-                alt=""
+                alt={post.coverAlt ?? ""}
                 className="w-full h-full object-cover"
               />
             </div>

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import fs from "node:fs";
+import path from "node:path";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Reveal from "@/components/Reveal";
@@ -30,6 +32,9 @@ import NextProjectExhibition from "@/components/portfolio/case-study/NextProject
 import CaseStudyCTA from "@/components/portfolio/case-study/CaseStudyCTA";
 import SocialCampaignCarousel from "@/components/SocialCampaignCarousel";
 import CaseStudyNarrative from "@/components/CaseStudyNarrative";
+import CricBookCaseStudy from "@/components/portfolio/cricbook/CricBookCaseStudy";
+import BilesmaCaseStudy from "@/components/portfolio/bilesma/BilesmaCaseStudy";
+import BilesmaSocialCaseStudy from "@/components/portfolio/bilesma-social/BilesmaSocialCaseStudy";
 
 export function generateStaticParams() {
   return getDetailedProjects().map((p) => ({ slug: p.slug }));
@@ -47,25 +52,28 @@ export async function generateMetadata({
   const project = getProject(slug);
   if (!project) return { title: "Project | Uniix Studio" };
   const canonical = site.canonical(`/portfolio/${slug}/`);
-  const ogImages = ogImageMeta(project.coverImage);
-  const twitterImage = ogImageUrl(project.coverImage);
+  const ogSource = project.ogImage ?? project.coverImage;
+  const ogImages = ogImageMeta(ogSource);
+  const twitterImage = ogImageUrl(ogSource);
+  const title = project.seoTitle ?? `${project.title} — Case Study | Uniix Studio`;
+  const description = project.seoDescription ?? project.summary;
 
   return {
     metadataBase: new URL(site.url),
-    title: `${project.title} — Case Study | Uniix Studio`,
-    description: project.summary,
+    title,
+    description,
     alternates: { canonical },
     openGraph: {
-      title: `${project.title} · ${site.name}`,
-      description: project.summary,
+      title: project.seoTitle ?? `${project.title} · ${site.name}`,
+      description,
       url: canonical,
-      images: ogImages,
+      images: ogImages?.map((i) => ({ ...i, alt: `${project.title} case study — Uniix Studio` })),
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${project.title} — Case Study`,
-      description: project.summary,
+      title: project.seoTitle ?? `${project.title} — Case Study`,
+      description,
       images: twitterImage ? [twitterImage] : undefined,
     },
   };
@@ -135,6 +143,49 @@ export default async function ProjectDetailPage({
       ? project.videos.map((v) => videoObjectSchema(v))
       : []),
   );
+
+  // Flagship product case study with its own bespoke composition.
+  if (project.slug === "cricbook") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <CricBookCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+        />
+      </>
+    );
+  }
+
+  if (project.slug === "bilesma-natural") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <BilesmaCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+          hasReel={fs.existsSync(
+            path.join(process.cwd(), "public", "portfolio", "bilesma", "logo-reel.mp4"),
+          )}
+        />
+      </>
+    );
+  }
+
+  if (project.slug === "bilesma-natural-social-media") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <BilesmaSocialCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+        />
+      </>
+    );
+  }
 
   return (
     <>

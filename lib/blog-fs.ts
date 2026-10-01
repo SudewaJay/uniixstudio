@@ -2,7 +2,7 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import { posts as generatedPosts, type BlogPost } from "./blog";
+import { posts as generatedPosts, type BlogPost as BaseBlogPost } from "./blog";
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
 
@@ -18,7 +18,65 @@ type Frontmatter = {
   author?: { name?: string; role?: string; initial?: string };
   ctaBlock?: string;
   faqs?: { question: string; answer: string }[];
+} & EditorialFields;
+
+/**
+ * Optional fields for hand-written MDX posts. All are opt-in: posts that don't
+ * set them render exactly as before. `layout: "editorial"` switches the post
+ * page to the long-form template (sticky contents, related services, contextual
+ * CTA) — see components/blog/EditorialArticle.tsx.
+ */
+export type EditorialFields = {
+  layout?: "editorial";
+  /** <title> / OG title when the H1 is too long for a SERP title. */
+  seoTitle?: string;
+  /** ISO date of the last substantive revision → dateModified. */
+  updatedDate?: string;
+  coverAlt?: string;
+  coverCaption?: string;
+  /** 1200×630 JPG for social cards when the cover isn't suitable. */
+  ogImage?: string;
+  secondaryKeywords?: string[];
+  /** Short "in brief" answers shown beside the intro. */
+  keyTakeaways?: string[];
+  /** Service pages to feature, as "pillar/slug" (validated at render). */
+  relatedServices?: string[];
+  /** Blog slugs to feature first under "Continue reading". */
+  relatedPosts?: string[];
+  ctaHeading?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  /**
+   * Set false to omit FAQPage JSON-LD while still rendering the FAQ. Google
+   * stopped showing FAQ rich results in May 2026, so new posts don't emit it.
+   */
+  faqSchema?: boolean;
 };
+
+export type BlogPost = BaseBlogPost & EditorialFields;
+
+const EDITORIAL_KEYS = [
+  "layout",
+  "seoTitle",
+  "updatedDate",
+  "coverAlt",
+  "coverCaption",
+  "ogImage",
+  "secondaryKeywords",
+  "keyTakeaways",
+  "relatedServices",
+  "relatedPosts",
+  "ctaHeading",
+  "ctaLabel",
+  "ctaHref",
+  "faqSchema",
+] as const satisfies readonly (keyof EditorialFields)[];
+
+function pickEditorial(fm: Frontmatter): EditorialFields {
+  const out: Record<string, unknown> = {};
+  for (const k of EDITORIAL_KEYS) if (fm[k] !== undefined) out[k] = fm[k];
+  return out as EditorialFields;
+}
 
 function readMdxPosts(): BlogPost[] {
   if (!fs.existsSync(CONTENT_DIR)) return [];
@@ -60,6 +118,7 @@ function readMdxPosts(): BlogPost[] {
       ctaBlock: fm.ctaBlock ?? "",
       isStub: words < 200,
       faqs: fm.faqs,
+      ...pickEditorial(fm),
     } satisfies BlogPost;
   });
 }
@@ -91,4 +150,4 @@ export function getPostsByCategory(category: string): BlogPost[] {
   );
 }
 
-export { type BlogPost, formatDate } from "./blog";
+export { formatDate } from "./blog";

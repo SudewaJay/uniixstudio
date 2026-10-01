@@ -3,7 +3,8 @@ import Hero from "@/components/home/Hero";
 import BrandStatement from "@/components/home/BrandStatement";
 import Pillars, { type PillarProof } from "@/components/home/Pillars";
 import WorkShowcase from "@/components/home/WorkShowcase";
-import IndustryIndex from "@/components/home/IndustryIndex";
+import IndustryIndex, { type IndustryProof } from "@/components/home/IndustryIndex";
+import CinematicReel from "@/components/home/reel/CinematicReel";
 import ProcessJourney from "@/components/home/ProcessJourney";
 import WhyUniix from "@/components/home/WhyUniix";
 import Results from "@/components/home/Results";
@@ -16,13 +17,14 @@ import { getShowreelFilms } from "@/lib/showreel-fs";
 
 /**
  * Curated order for the homepage work showcase. Each of these has an MDX case
- * study, so every card links to a real page.
+ * study, so every card links to a real page. Held at four: CricBook (flagship
+ * product) replaced Sierra Energy, which stays in the full archive.
  */
 const HOME_WORK_ORDER = [
+  "cricbook",
   "rentmycar-lk",
   "st-lukes-medilab",
   "ecowave-energy",
-  "sierra-energy-solutions",
 ];
 
 /**
@@ -34,6 +36,18 @@ const PILLAR_PROOF: { pillar: string; slug: string; evidence: string }[] = [
   { pillar: "growth", slug: "st-lukes-medilab", evidence: "Local SEO" },
   { pillar: "technology", slug: "rentmycar-lk", evidence: "Web Development" },
 ];
+
+/**
+ * Real work behind an industry, for the Industries preview. Only industries
+ * with a genuine Uniix project are listed; the rest render a typographic card
+ * instead of a stock photo. `film` entries use a commercial's poster frame.
+ */
+const INDUSTRY_PROOF: Record<string, { project: string } | { film: string }> = {
+  healthcare: { project: "st-lukes-medilab" },
+  travel: { project: "rentmycar-lk" },
+  corporate: { project: "ecowave-energy" },
+  startups: { film: "1201632698" }, // PromptLime Commercial
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -54,13 +68,25 @@ export default async function HomePage() {
       : [];
   });
 
+  const industryProof: Record<string, IndustryProof> = {};
+  for (const [slug, ref] of Object.entries(INDUSTRY_PROOF)) {
+    if ("project" in ref) {
+      const p = allProjects.find((x) => x.slug === ref.project);
+      if (p) industryProof[slug] = { image: p.coverImage, label: p.client ?? p.title };
+    } else {
+      const f = films.find((x) => x.vimeoId === ref.film);
+      if (f) industryProof[slug] = { image: f.poster, label: `${f.client} — Commercial` };
+    }
+  }
+
   return (
     <>
       {/* 01 */} <Hero films={films} />
       {/* 02 */} <BrandStatement />
       {/* 03 */} <Pillars proof={pillarProof} />
       {/* 04 */} <WorkShowcase items={homeWork} />
-      {/* 05 */} <IndustryIndex />
+      {/* 05 */} <IndustryIndex proof={industryProof} />
+      {/* 05b */} <CinematicReel films={films} />
       {/* 06 */} <ProcessJourney />
       {/* 07 */} <WhyUniix />
       {/* 08 */} <Results />

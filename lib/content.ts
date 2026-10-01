@@ -337,26 +337,32 @@ export const whyPoints = [
   {
     num: "01",
     title: "Strategy first, design second.",
+    instead: "Trend-led design",
+    // ↑ `instead`: the industry habit this point answers — drawn struck-through on the homepage.
     desc: "We don't chase trends. Every visual, every layout, every motion exists to move someone closer to becoming your customer.",
   },
   {
     num: "02",
     title: "Senior team, no juniors hidden in the back.",
+    instead: "Juniors behind the pitch",
     desc: "You work directly with the people building your project. No long handoff chains, no dropped context.",
   },
   {
     num: "03",
     title: "Design, growth and tech under one roof.",
+    instead: "Three suppliers, three handoffs",
     desc: "From identity to code to campaigns — everything in-house. No subcontractors, no quality drift between disciplines.",
   },
   {
     num: "04",
     title: "Transparent timelines and pricing.",
+    instead: "Surprise invoices, shifting dates",
     desc: "Clear scope, fixed milestones, honest delivery dates. No surprises mid-project — and no scope creep on our side either.",
   },
   {
     num: "05",
     title: "Built for long-term partnership.",
+    instead: "Launch it and leave",
     desc: "Most clients stay with us beyond their first project. We're optimising for the second engagement, the third, the fifth.",
   },
 ];
