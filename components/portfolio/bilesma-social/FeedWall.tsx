@@ -18,6 +18,9 @@ export default function FeedWall({ posts, formats }: { posts: Post[]; formats: F
   const [filter, setFilter] = useState<Format | "all">("all");
   const [open, setOpen] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const gridRef = useRef<HTMLUListElement>(null);
+  /** The grid thumbnail the browser already has, shown blurred while the full image loads. */
+  const [thumb, setThumb] = useState<string | null>(null);
 
   const shown = filter === "all" ? posts : posts.filter((p) => p.format === filter);
   const info = formats.find((f) => f.id === filter);
@@ -27,6 +30,12 @@ export default function FeedWall({ posts, formats }: { posts: Post[]; formats: F
     (d: number) => setOpen((i) => (i === null ? i : (i + d + shown.length) % shown.length)),
     [shown.length],
   );
+
+  useEffect(() => {
+    if (open === null) return;
+    const img = gridRef.current?.querySelectorAll("img")[open];
+    setThumb(img?.complete && img.naturalWidth > 0 && img.currentSrc ? img.currentSrc : null);
+  }, [open, filter]);
 
   useEffect(() => {
     const dlg = dialogRef.current;
@@ -99,7 +108,7 @@ export default function FeedWall({ posts, formats }: { posts: Post[]; formats: F
       </div>
 
       {/* Grid */}
-      <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 md:gap-4">
+      <ul ref={gridRef} className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 md:gap-4">
         {shown.map((p, i) => (
           <li key={`${filter}-${p.id}`} className="rise-in" style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}>
             <button
@@ -130,7 +139,17 @@ export default function FeedWall({ posts, formats }: { posts: Post[]; formats: F
       >
         {current && (
           <div className="grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-            <div className="relative aspect-[4/5] bg-black">
+            <div className="relative aspect-[4/5] overflow-hidden bg-black">
+              {thumb && (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  key={thumb}
+                  src={thumb}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+                />
+              )}
               <SmartImage key={current.id} src={current.src} alt={current.alt} sizes="(min-width:768px) 560px, 94vw" quality={82} priority />
             </div>
             <div className="flex flex-col p-6 md:p-8">
