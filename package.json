@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "node node_modules/payload/bin.js migrate && next build",
+    "build": "node node_modules/payload/bin.js run scripts/cms/assert-migrated.ts && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",

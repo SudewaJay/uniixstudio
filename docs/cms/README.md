@@ -188,7 +188,9 @@ From a trusted terminal with the production `DATABASE_URL` configured:
 ```bash
 npm run cms:migrate
 ```
-*Note on the push marker*: If prompted interactively about the legacy dev push marker (`payload_migrations` / push status), answer `yes`. The baseline migration removes the marker and establishes clean migration tracking.
+*Note on the push marker*: the first run asks **once, interactively** about the legacy dev push marker — answer `y`. The baseline migration creates nothing on the existing schema; it only removes that marker, so later runs never prompt again.
+
+> **Never run migrations from the Vercel build.** A build has no terminal (the prompt silently cancels with exit code 0) and runs for every preview branch, which would migrate whatever database that environment points at. The build only runs `scripts/cms/assert-migrated.ts`, a read-only check that fails fast with instructions when the database is behind the code. So the order is always: **migrate → then deploy**.
 
 Verify status:
 ```bash

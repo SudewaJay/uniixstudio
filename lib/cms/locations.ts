@@ -72,14 +72,9 @@ export async function getLocation(slug: string): Promise<Location | undefined> {
 
 export function getLocationServices(): Promise<LocationService[]> {
   return cmsQuery(['location-pages'], TAGS, async (draft) => {
-    try {
-      const payload = await getPayloadClient()
-      const res = await payload.find({ collection: 'location-pages', ...readOpts(draft), depth: 2, limit: 500, pagination: false })
-      return res.docs.map(toLocationService).filter((l): l is LocationService => Boolean(l))
-    } catch (err) {
-      console.warn('getLocationServices failed:', err)
-      return []
-    }
+    const payload = await getPayloadClient()
+    const res = await payload.find({ collection: 'location-pages', ...readOpts(draft), depth: 2, limit: 500, pagination: false })
+    return res.docs.map(toLocationService).filter((l): l is LocationService => Boolean(l))
   })
 }
 
