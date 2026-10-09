@@ -1,4 +1,7 @@
+import { createRequire } from 'node:module';
 import { withPayload } from '@payloadcms/next/withPayload';
+
+const require = createRequire(import.meta.url);
 
 /** @type {import('next').NextConfig} */
 const securityHeaders = [
