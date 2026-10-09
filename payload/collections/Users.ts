@@ -3,6 +3,7 @@ import { ROLES, adminOrSelf, isSuperAdmin, superAdminField, superAdminOrSelf } f
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  labels: { singular: 'User', plural: 'Users & Access' },
   auth: {
     tokenExpiration: 60 * 60 * 8, // 8h sessions
     maxLoginAttempts: 5,
@@ -10,7 +11,7 @@ export const Users: CollectionConfig = {
     cookies: { sameSite: 'Lax', secure: process.env.NODE_ENV === 'production' },
   },
   admin: {
-    group: 'Admin',
+    group: 'Administration',
     useAsTitle: 'email',
     defaultColumns: ['email', 'name', 'role', 'updatedAt'],
     description: 'People who can sign in to the CMS. Only super-admins can invite users or change roles.',

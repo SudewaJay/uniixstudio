@@ -11,7 +11,7 @@ export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Media file', plural: 'Media Library' },
   admin: {
-    group: 'Admin',
+    group: 'Administration',
     description: 'Images, video and documents. Always add alt text — it is required.',
     defaultColumns: ['filename', 'alt', 'mimeType', 'filesize', 'updatedAt'],
   },

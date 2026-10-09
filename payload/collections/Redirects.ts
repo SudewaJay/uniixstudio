@@ -45,7 +45,7 @@ const validateRedirect: CollectionBeforeValidateHook = async ({ data, originalDo
 export const Redirects: CollectionConfig = {
   slug: 'redirects',
   admin: {
-    group: 'Admin',
+    group: 'Administration',
     useAsTitle: 'from',
     defaultColumns: ['from', 'to', 'type', 'enabled'],
     description: 'Send old URLs to new ones. Applied to any URL that would otherwise 404.',

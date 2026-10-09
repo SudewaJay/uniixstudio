@@ -1,173 +1,291 @@
-/* ---------- Uniix Studio admin — brand-aligned overrides ---------- */
+/* ==========================================================================
+   Uniix Studio CMS — admin design layer
+   Loaded after Payload's own CSS (app/(payload)/layout.tsx). Restyles
+   Payload through its theme variables and stable class names; no Payload
+   component is replaced, so every built-in flow keeps working.
+   ========================================================================== */
 
-:root,
-[data-theme="light"],
-[data-theme="dark"] {
-  /* Brand palette — keeps admin visually consistent with the site */
-  --color-base-0: #ffffff;
-  --color-base-50: #fbfaf6;
-  --color-base-100: #f5f1e8;
-
-  --color-success-500: #16a34a;
-  --color-error-500: #dc2626;
-  --color-warning-500: #f59e0b;
+/* ---------- 1. Tokens ---------- */
+:root {
+  /* Brand orange (#F07B20) is for icons, markers and accents. White text sits
+     on the deeper --uniix-accent-strong, which passes WCAG AA (5.05:1). */
+  --uniix-brand: #f07b20;
+  --uniix-brand-2: #e8621a;
+  --uniix-radius-s: 6px;
+  --uniix-radius: 10px;
+  --uniix-radius-l: 12px;
+  --uniix-ease: cubic-bezier(0.2, 0, 0, 1);
+  --style-radius-s: var(--uniix-radius-s);
+  --style-radius-m: var(--uniix-radius);
+  --style-radius-l: var(--uniix-radius-l);
 }
 
-[data-theme="light"] {
-  /* Primary action color → brand orange (replaces Payload's default blue) */
-  --theme-success-500: #f07b20;
+[data-theme='light'] {
+  --uniix-bg: #f7f8fa;
+  --uniix-surface: #ffffff;
+  --uniix-text: #202124;
+  --uniix-text-2: #686f7c; /* 4.76:1 on the page background */
+  --uniix-border: #e7e9ed;
+  --uniix-hover: #f0f1f4;
+  --uniix-accent-strong: #b94e0a;
+  --uniix-accent-soft: #fdf0e6;
+  --uniix-accent-text: #a8460a;
+  --uniix-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+
+  --theme-bg: var(--uniix-bg);
+  --theme-text: var(--uniix-text);
+  --theme-input-bg: var(--uniix-surface);
+  --theme-border-color: var(--uniix-border);
   --theme-elevation-0: #ffffff;
-  --theme-elevation-50: #fbfaf6;
-  --theme-elevation-100: #f5f1e8;
-  --color-base-1000: #1a1410;
-
-  --style-radius-s: 8px;
-  --style-radius-m: 12px;
-  --style-radius-l: 18px;
+  --theme-elevation-50: #f7f8fa;
+  --theme-elevation-100: #f0f1f4;
+  --theme-elevation-150: #e7e9ed;
+  --theme-elevation-200: #dcdfe4;
+  --theme-elevation-250: #ced2d8;
+  --theme-elevation-300: #b9bec6;
+  --theme-elevation-400: #9aa0aa;
+  --theme-elevation-500: #686f7c;
+  --theme-elevation-600: #565c68;
+  --theme-elevation-700: #434853;
+  --theme-elevation-800: #2c2f35;
+  --theme-elevation-900: #202124;
+  --theme-elevation-1000: #111214;
 }
 
-/* Brand-orange primary button gradient — same as the site CTAs */
-[data-theme="light"] button.btn--style-primary,
-[data-theme="light"] .btn--style-primary {
-  background: linear-gradient(135deg, #f8c84a 0%, #f5a623 35%, #f07b20 70%, #e8621a 100%) !important;
-  border-color: transparent !important;
-  color: #fff !important;
-  box-shadow: 0 1px 2px rgba(26, 20, 16, 0.04), 0 8px 24px -12px rgba(232, 98, 26, 0.35) !important;
-}
-[data-theme="light"] button.btn--style-primary:hover,
-[data-theme="light"] .btn--style-primary:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-  transition: transform 0.2s ease, filter 0.2s ease;
+[data-theme='dark'] {
+  --uniix-bg: #141518;
+  --uniix-surface: #1b1c20;
+  --uniix-text: #eceef1;
+  --uniix-text-2: #8b909a; /* 5.65:1 on the page background */
+  --uniix-border: #2b2d33;
+  --uniix-hover: #24262b;
+  --uniix-accent-strong: #f07b20; /* dark text on it: 6.5:1 */
+  --uniix-accent-soft: rgba(240, 123, 32, 0.14);
+  --uniix-accent-text: #f59a4f;
+  --uniix-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+
+  --theme-bg: var(--uniix-bg);
+  --theme-text: var(--uniix-text);
+  --theme-input-bg: var(--uniix-surface);
+  --theme-border-color: var(--uniix-border);
 }
 
-/* Login screen — bigger headline, brand accent on the gradient */
-.login__brand {
-  margin-bottom: 28px;
+/* ---------- 2. Base & typography ---------- */
+body,
+.template-default,
+.template-minimal {
+  background: var(--uniix-bg);
 }
-.login__form h1 {
+.list-header__title,
+.doc-header__title,
+.render-title {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  font-weight: 600;
+}
+.view-description,
+.field-description,
+.field-type__description {
+  color: var(--uniix-text-2);
 }
 
-/* Dashboard nav — make the section labels feel premium */
-.nav__label {
-  letter-spacing: 0.16em;
+/* Visible, consistent focus ring for keyboard users. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--uniix-brand-2);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* ---------- 3. Buttons ---------- */
+.btn--style-primary {
+  --bg-color: var(--uniix-accent-strong);
+  --hover-bg: color-mix(in srgb, var(--uniix-accent-strong) 88%, black);
+  --color: #ffffff;
+  --hover-color: #ffffff;
+}
+[data-theme='dark'] .btn--style-primary {
+  --color: #1a1410;
+  --hover-color: #1a1410;
+  --hover-bg: #f59a4f;
+}
+.btn--style-secondary {
+  --hover-bg: var(--uniix-hover);
+}
+.btn {
+  transition: background-color 0.15s var(--uniix-ease), color 0.15s var(--uniix-ease), border-color 0.15s var(--uniix-ease);
+}
+.btn[disabled],
+.btn--disabled {
+  opacity: 0.55;
+}
+
+/* ---------- 4. Sidebar ---------- */
+.nav {
+  background: var(--uniix-surface);
+  border-inline-end: 1px solid var(--uniix-border);
+}
+.nav-group__toggle {
+  color: var(--uniix-text-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 10.5px !important;
+}
+.nav-group__toggle:hover {
+  color: var(--uniix-text);
+}
+.nav__link {
+  gap: 10px;
+  margin-inline: -10px;
+  padding: 5px 10px !important;
+  border-radius: var(--uniix-radius-s);
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--uniix-text);
+  transition: background-color 0.12s var(--uniix-ease), color 0.12s var(--uniix-ease);
+}
+.nav a.nav__link:hover,
+.nav a.nav__link:focus-visible {
+  text-decoration: none;
+  background: var(--uniix-hover);
+}
+/* Current page: Payload renders .nav__link-indicator inside it. */
+.nav__link:has(.nav__link-indicator) {
+  background: var(--uniix-accent-soft);
+  color: var(--uniix-accent-text);
   font-weight: 600;
-  color: #7a6e64 !important;
+}
+.nav__link-indicator {
+  inset-inline-start: 0;
+  width: 3px;
+  height: 18px;
+  border-radius: 0 3px 3px 0;
+  background: var(--uniix-brand-2);
 }
 
-/* Card treatment for collection cards on the dashboard */
-.card {
-  border-radius: 14px !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px -12px rgba(26, 20, 16, 0.18);
-}
-
-/* Field group headings — bigger, more editorial */
-.field-type.group__header {
-  border-top-width: 1px !important;
-  padding-top: 22px !important;
-}
-.group__header h2,
-.collapsible__header,
-.field-type__row__label {
-  font-weight: 600 !important;
-  letter-spacing: -0.01em !important;
-}
-
-/* Subtle accent line under the page title in collection list/edit views */
-.list-header h1,
-.doc-header h1 {
-  position: relative;
-  padding-bottom: 6px;
-  font-weight: 600 !important;
-  letter-spacing: -0.015em !important;
-}
-.list-header h1::after,
-.doc-header h1::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 36px;
-  height: 3px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #f8c84a 0%, #e8621a 100%);
-}
-
-/* Save button → brand gradient */
-[data-theme="light"] .doc-controls .btn--style-primary,
-[data-theme="light"] .form-submit .btn--style-primary {
-  background: linear-gradient(135deg, #f8c84a 0%, #f07b20 70%, #e8621a 100%) !important;
-}
-
-/* Sidebar (status/version panel) — softer */
-.doc-sidebar {
-  border-left: 1px solid rgba(26, 20, 16, 0.08) !important;
-}
-
-/* ---------- Dashboard (payload/admin/Dashboard.tsx) ---------- */
-.uniix-dash { margin-bottom: calc(var(--base) * 2.5); }
-.uniix-dash__head { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; margin-bottom: calc(var(--base) * 1.5); }
-.uniix-dash__title { margin: 0 0 6px; font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; }
-.uniix-dash__lede { margin: 0; color: var(--theme-elevation-600); max-width: 56ch; }
-.uniix-dash__site { white-space: nowrap; font-weight: 600; color: var(--theme-text); text-decoration: none; border: 1px solid var(--theme-elevation-150); border-radius: var(--style-radius-m, 12px); padding: 10px 16px; }
-.uniix-dash__site:hover { border-color: #f07b20; color: #f07b20; }
-
-.uniix-dash__actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: calc(var(--base) * 1.5); }
-.uniix-dash__action { display: flex; flex-direction: column; gap: 4px; padding: 16px 18px; border-radius: var(--style-radius-l, 18px); text-decoration: none; color: #fff; background: linear-gradient(135deg, #f8c84a 0%, #f07b20 55%, #e8621a 100%); box-shadow: 0 6px 18px -10px rgba(232, 98, 26, 0.8); transition: transform 0.15s ease, box-shadow 0.15s ease; }
-.uniix-dash__action:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(232, 98, 26, 0.9); }
-.uniix-dash__action-label { font-weight: 700; font-size: 16px; }
-.uniix-dash__action-hint { font-size: 12px; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.06em; }
-
-.uniix-dash__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-.uniix-dash__card { display: flex; flex-direction: column; padding: 18px 20px; border: 1px solid var(--theme-elevation-150); border-radius: var(--style-radius-l, 18px); background: var(--theme-elevation-0); }
-.uniix-dash__card-title { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 16px; }
-.uniix-dash__count { min-width: 24px; padding: 1px 8px; border-radius: 999px; text-align: center; font-size: 13px; background: var(--theme-elevation-100); color: var(--theme-elevation-800); }
-.uniix-dash__count.is-hot { background: #f07b20; color: #fff; }
-.uniix-dash__list { list-style: none; margin: 0; padding: 0; }
-.uniix-dash__list li { display: flex; flex-direction: column; gap: 2px; padding: 9px 0; border-top: 1px solid var(--theme-elevation-100); }
-.uniix-dash__list li:first-child { border-top: 0; padding-top: 0; }
-.uniix-dash__list a { font-weight: 600; color: var(--theme-text); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.uniix-dash__list a:hover { color: #f07b20; }
-.uniix-dash__list span { font-size: 13px; color: var(--theme-elevation-500); }
-.uniix-dash__empty { margin: 0; color: var(--theme-elevation-500); }
-.uniix-dash__more { margin-top: auto; padding-top: 12px; font-size: 13px; font-weight: 600; color: #f07b20; text-decoration: none; }
-@media (max-width: 600px) {
-  .uniix-dash__title { font-size: 26px; }
-  .uniix-dash__actions { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .uniix-dash__action { padding: 12px 14px; border-radius: var(--style-radius-m, 12px); }
-  .uniix-dash__action-label { font-size: 14px; }
-  .uniix-dash__action-hint { font-size: 11px; }
-}
-
-/* ---------- Sidebar & dashboard-card icons ----------
- * Icons: Lucide (https://lucide.dev, ISC licence). Applied as CSS masks so they
- * take the text colour in light and dark mode. Hooks are Payload's stable ids:
- * #nav-<slug> / #nav-global-<slug> for sidebar links, #card-<slug> for cards. */
-.nav__link { display: flex; align-items: center; gap: 10px; }
+/* Sidebar and card icons (Lucide, ISC licence — https://lucide.dev).
+   Applied as CSS masks on Payload's stable ids (#nav-<slug>,
+   #nav-global-<slug>, #card-<slug>) so they take the text colour. */
 .nav__link::before,
 .card__title::before {
   content: '';
+  display: var(--uniix-icon-display, none);
   flex: none;
   width: 17px;
   height: 17px;
   background-color: currentColor;
-  opacity: 0.7;
+  opacity: 0.75;
   -webkit-mask: var(--uniix-icon) center / contain no-repeat;
   mask: var(--uniix-icon) center / contain no-repeat;
 }
-.nav__link:hover::before { opacity: 1; color: #f07b20; }
-.card__title { display: flex; align-items: center; gap: 10px; }
-.card__title::before { width: 20px; height: 20px; color: #f07b20; opacity: 1; }
-/* Links without a mapped icon get no empty gap. */
-.nav__link::before, .card__title::before { display: var(--uniix-icon-display, none); }
+.nav__link:has(.nav__link-indicator)::before {
+  opacity: 1;
+}
+.card__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card__title::before {
+  width: 18px;
+  height: 18px;
+  opacity: 1;
+  color: var(--uniix-brand-2);
+}
+
+/* ---------- 5. Header & breadcrumbs ---------- */
+.app-header {
+  background: color-mix(in srgb, var(--uniix-bg) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(8px);
+  border-bottom: 1px solid var(--uniix-border);
+}
+.step-nav {
+  font-size: 13px;
+}
+.step-nav a {
+  color: var(--uniix-text-2);
+}
+.step-nav a:hover {
+  color: var(--uniix-text);
+}
+
+/* ---------- 6. Cards, lists & tables ---------- */
+.card {
+  background: var(--uniix-surface);
+  border: 1px solid var(--uniix-border);
+  border-radius: var(--uniix-radius) !important;
+  box-shadow: none;
+  transition: border-color 0.15s var(--uniix-ease), box-shadow 0.15s var(--uniix-ease);
+}
+.card:hover {
+  border-color: var(--theme-elevation-250);
+  box-shadow: var(--uniix-shadow);
+}
+.table {
+  background: var(--uniix-surface);
+  border: 1px solid var(--uniix-border);
+  border-radius: var(--uniix-radius-l);
+  overflow-x: auto;
+}
+.table table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table th {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--uniix-text-2);
+}
+.table tbody tr {
+  transition: background-color 0.12s var(--uniix-ease);
+}
+.table tbody tr:hover td {
+  background: var(--uniix-hover);
+}
+.pill {
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+/* ---------- 7. Forms & editing ---------- */
+.field-type input,
+.field-type textarea,
+.react-select .rs__control {
+  border-radius: var(--uniix-radius-s);
+}
+.tabs-field__tab-button--active {
+  color: var(--uniix-text);
+  box-shadow: inset 0 -2px 0 var(--uniix-brand-2);
+}
+.doc-sidebar {
+  border-inline-start: 1px solid var(--uniix-border) !important;
+}
+.collapsible {
+  border-radius: var(--uniix-radius);
+}
+
+/* ---------- 8. Login ---------- */
+.login__brand {
+  margin-bottom: 28px;
+}
+.login__form h1 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- 9. Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .uniix-dash *,
+  .nav__link,
+  .card,
+  .btn {
+    transition: none !important;
+  }
+}
+
+/* ---------- 10. Per-item icons (generated, one line per section) ---------- */
 #nav-contact-submissions, #card-contact-submissions { --uniix-icon-display: block; --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='22 12 16 12 14 15 10 15 8 12 2 12'/%3E%3Cpath d='M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'/%3E%3C/svg%3E"); }
 #nav-pages, #card-pages { --uniix-icon-display: block; --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3C/svg%3E"); }
 #nav-team, #card-team { --uniix-icon-display: block; --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E"); }
@@ -194,3 +312,364 @@
 #nav-media, #card-media { --uniix-icon-display: block; --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'/%3E%3C/svg%3E"); }
 #nav-users, #card-users { --uniix-icon-display: block; --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E"); }
 #nav-redirects, #card-redirects { --uniix-icon-display: block; --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 14 20 9 15 4'/%3E%3Cpath d='M4 20v-7a4 4 0 0 1 4-4h12'/%3E%3C/svg%3E"); }
+#nav-dashboard { --uniix-icon-display: block; --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='7' height='9' x='3' y='3' rx='1'/%3E%3Crect width='7' height='5' x='14' y='3' rx='1'/%3E%3Crect width='7' height='9' x='14' y='12' rx='1'/%3E%3Crect width='7' height='5' x='3' y='16' rx='1'/%3E%3C/svg%3E"); }
+
+/* ---------- 11. Dashboard (payload/admin/Dashboard.tsx) ---------- */
+
+.uniix-i--inbox { --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='22 12 16 12 14 15 10 15 8 12 2 12'/%3E%3Cpath d='M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'/%3E%3C/svg%3E"); }
+.uniix-i--pen { --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/%3E%3C/svg%3E"); }
+.uniix-i--briefcase { --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16'/%3E%3C/svg%3E"); }
+.uniix-i--draft { --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v9.5'/%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4'/%3E%3Cpath d='M13.378 15.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z'/%3E%3C/svg%3E"); }
+.uniix-i--plus { --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14'/%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E"); }
+.uniix-i--home { --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E"); }
+.uniix-i--image { --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'/%3E%3C/svg%3E"); }
+.uniix-i--check { --uniix-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E"); }
+.uniix-i {
+  display: inline-block;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  -webkit-mask: var(--uniix-icon) center / contain no-repeat;
+  mask: var(--uniix-icon) center / contain no-repeat;
+}
+.uniix-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Header action */
+.uniix-view-site {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--uniix-border);
+  border-radius: var(--uniix-radius-s);
+  background: var(--uniix-surface);
+  color: var(--uniix-text);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.uniix-view-site:hover {
+  border-color: var(--theme-elevation-300);
+  background: var(--uniix-hover);
+}
+
+/* Payload's default dashboard repeats the whole sidebar as cards; the
+   compact "All tools" list in Dashboard.tsx replaces it. */
+.dashboard .collections {
+  display: none;
+}
+
+.uniix-dash {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1200px;
+  padding-bottom: 40px;
+  color: var(--uniix-text);
+}
+.uniix-dash__title {
+  margin: 0 0 4px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.uniix-dash__lede {
+  margin: 0;
+  font-size: 15px;
+  color: var(--uniix-text-2);
+}
+.uniix-section__title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Metrics */
+.uniix-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.uniix-metric {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  align-items: center;
+  padding: 16px;
+  background: var(--uniix-surface);
+  border: 1px solid var(--uniix-border);
+  border-radius: var(--uniix-radius-l);
+  color: var(--uniix-text);
+  text-decoration: none;
+  transition: border-color 0.15s var(--uniix-ease), box-shadow 0.15s var(--uniix-ease);
+}
+.uniix-metric:hover {
+  border-color: var(--theme-elevation-250);
+  box-shadow: var(--uniix-shadow);
+}
+.uniix-metric__icon {
+  grid-row: 1 / span 2;
+  width: 20px;
+  height: 20px;
+  padding: 9px;
+  box-sizing: content-box;
+  border-radius: var(--uniix-radius);
+  background-color: var(--uniix-text-2);
+  -webkit-mask-origin: content-box;
+  mask-origin: content-box;
+  -webkit-mask-clip: content-box;
+  mask-clip: content-box;
+}
+.uniix-metric.is-hot .uniix-metric__icon {
+  background-color: var(--uniix-brand-2);
+}
+.uniix-metric__value {
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.uniix-metric__label {
+  font-size: 13px;
+  color: var(--uniix-text-2);
+}
+
+/* Quick actions: one primary, the rest secondary */
+.uniix-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.uniix-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--uniix-border);
+  border-radius: var(--uniix-radius-s);
+  background: var(--uniix-surface);
+  color: var(--uniix-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s var(--uniix-ease), border-color 0.15s var(--uniix-ease);
+}
+.uniix-btn .uniix-i {
+  width: 16px;
+  height: 16px;
+  color: var(--uniix-text-2);
+}
+.uniix-btn:hover {
+  background: var(--uniix-hover);
+  border-color: var(--theme-elevation-250);
+}
+.uniix-btn--primary {
+  border-color: transparent;
+  background: var(--uniix-accent-strong);
+  color: #fff;
+}
+.uniix-btn--primary .uniix-i {
+  color: currentColor;
+}
+.uniix-btn--primary:hover {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--uniix-accent-strong) 88%, black);
+}
+[data-theme='dark'] .uniix-btn--primary,
+[data-theme='dark'] .uniix-btn--primary:hover {
+  color: #1a1410;
+}
+
+/* Attention + activity */
+.uniix-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.uniix-panel {
+  padding: 18px 18px 10px;
+  background: var(--uniix-surface);
+  border: 1px solid var(--uniix-border);
+  border-radius: var(--uniix-radius-l);
+}
+.uniix-panel .uniix-section__title {
+  margin-bottom: 6px;
+}
+.uniix-rows {
+  margin: 0 -8px;
+  padding: 0;
+  list-style: none;
+}
+.uniix-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: var(--uniix-radius-s);
+  color: var(--uniix-text);
+  text-decoration: none;
+}
+.uniix-row:hover {
+  background: var(--uniix-hover);
+}
+.uniix-row__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.uniix-row__title {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.uniix-row__meta {
+  font-size: 12.5px;
+  color: var(--uniix-text-2);
+}
+.uniix-more {
+  display: inline-block;
+  margin: 4px 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--uniix-accent-text);
+  text-decoration: none;
+}
+.uniix-more:hover {
+  text-decoration: underline;
+}
+
+/* Status badges: text label + tint, never colour alone */
+.uniix-badge {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  background: var(--uniix-hover);
+  color: var(--uniix-text-2);
+}
+.uniix-badge--published {
+  background: color-mix(in srgb, #16a34a 12%, transparent);
+  color: #15803d;
+}
+.uniix-badge--draft {
+  background: color-mix(in srgb, #d97706 14%, transparent);
+  color: #a15c07;
+}
+.uniix-badge--new {
+  background: var(--uniix-accent-soft);
+  color: var(--uniix-accent-text);
+}
+[data-theme='dark'] .uniix-badge--published {
+  color: #4ade80;
+}
+[data-theme='dark'] .uniix-badge--draft {
+  color: #fbbf24;
+}
+
+/* Empty states */
+.uniix-empty {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 0 16px;
+}
+.uniix-empty .uniix-i {
+  width: 22px;
+  height: 22px;
+  color: #16a34a;
+}
+.uniix-empty__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+.uniix-empty__text {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--uniix-text-2);
+}
+
+/* All tools */
+.uniix-tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 20px 24px;
+  padding: 18px;
+  background: var(--uniix-surface);
+  border: 1px solid var(--uniix-border);
+  border-radius: var(--uniix-radius-l);
+}
+.uniix-tools__label {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--uniix-text-2);
+}
+.uniix-tools ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.uniix-tools a {
+  display: block;
+  padding: 3px 0;
+  font-size: 14px;
+  color: var(--uniix-text);
+  text-decoration: none;
+}
+.uniix-tools a:hover {
+  color: var(--uniix-accent-text);
+}
+
+@media (max-width: 1024px) {
+  .uniix-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 768px) {
+  .uniix-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .uniix-dash {
+    gap: 22px;
+  }
+  .uniix-dash__title {
+    font-size: 24px;
+  }
+  .uniix-metric {
+    padding: 12px;
+  }
+  .uniix-metric__value {
+    font-size: 20px;
+  }
+  .uniix-quick .uniix-btn {
+    flex: 1 1 calc(50% - 4px);
+    justify-content: center;
+  }
+  .uniix-quick .uniix-btn--primary {
+    flex-basis: 100%;
+  }
+}
