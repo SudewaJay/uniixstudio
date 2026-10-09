@@ -6,7 +6,7 @@ import { revalidateGlobal } from '../hooks/revalidate'
 export const Nav: GlobalConfig = {
   slug: 'nav',
   label: 'Navigation',
-  admin: { group: 'Site', description: 'Header links (desktop and mobile) and the primary button.' },
+  admin: { group: 'Website', description: 'Header links (desktop and mobile) and the primary button.' },
   access: { read: anyone, update: isEditor },
   hooks: { afterChange: [revalidateGlobal('nav')] },
   fields: [

@@ -10,8 +10,9 @@ export const Industries: CollectionConfig = {
   slug: 'industries',
   labels: { singular: 'Industry', plural: 'Industries' },
   admin: {
-    group: 'Content',
+    group: 'Services',
     useAsTitle: 'name',
+    listSearchableFields: ['name', 'slug'],
     defaultColumns: ['name', 'slug', 'featured', 'displayOrder'],
     preview: (doc) => previewUrl(`/industries/${doc.slug}/`),
   },

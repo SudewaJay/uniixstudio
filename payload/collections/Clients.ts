@@ -9,8 +9,9 @@ export const Clients: CollectionConfig = {
   slug: 'clients',
   labels: { singular: 'Client', plural: 'Clients' },
   admin: {
-    group: 'Content',
+    group: 'Portfolio',
     useAsTitle: 'name',
+    listSearchableFields: ['name'],
     defaultColumns: ['name', 'featured', 'displayOrder'],
     description: 'Featured clients appear in the homepage and site logo strips.',
   },

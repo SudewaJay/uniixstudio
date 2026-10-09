@@ -29,7 +29,7 @@ export const Homepage: GlobalConfig = {
   slug: 'homepage',
   label: 'Homepage',
   admin: {
-    group: 'Site',
+    group: 'Website',
     description: 'Section copy and featured content for the homepage.',
     preview: () => previewUrl('/'),
   },

@@ -9,10 +9,13 @@ import { revalidateHooks } from '../hooks/revalidate'
  */
 export const Media: CollectionConfig = {
   slug: 'media',
+  labels: { singular: 'Media file', plural: 'Media Library' },
   admin: {
-    group: 'System',
-    description: 'Images, video and documents. Always add alt text — it is required.',
+    group: 'Administration',
+    description:
+      'Images (JPG, PNG, WebP, AVIF, SVG), MP4/WebM video and PDF, up to 4.5 MB per file. Always add alt text — it is required.',
     defaultColumns: ['filename', 'alt', 'mimeType', 'filesize', 'updatedAt'],
+    listSearchableFields: ['filename', 'alt'],
   },
   access: { read: anyone, create: isStaff, update: isStaff, delete: isAdmin },
   hooks: revalidateHooks('media'),

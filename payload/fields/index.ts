@@ -299,6 +299,9 @@ export function orderField(description = 'Lower numbers appear first.'): Field {
   }
 }
 
+/** Yes/— badge for checkbox columns in list views (payload/admin/BooleanCell.tsx). */
+export const BOOLEAN_CELL = '/payload/admin/BooleanCell#BooleanCell'
+
 export function featuredField(name = 'featured', description?: string): Field {
   return {
     name,
@@ -306,6 +309,6 @@ export function featuredField(name = 'featured', description?: string): Field {
     type: 'checkbox',
     defaultValue: false,
     index: true,
-    admin: { position: 'sidebar', description },
+    admin: { position: 'sidebar', description, components: { Cell: BOOLEAN_CELL } },
   }
 }

@@ -7,8 +7,9 @@ export const Process: CollectionConfig = {
   slug: 'process',
   labels: { singular: 'Process Stage', plural: 'Process Stages' },
   admin: {
-    group: 'Content',
+    group: 'Services',
     useAsTitle: 'title',
+    listSearchableFields: ['title'],
     defaultColumns: ['num', 'title', 'displayOrder'],
     description: 'The delivery process shown on the homepage and service pages.',
   },

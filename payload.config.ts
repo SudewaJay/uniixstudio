@@ -55,6 +55,12 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: { baseDir: dirname },
+    components: {
+      beforeDashboard: ['/payload/admin/Dashboard#Dashboard'],
+      beforeNavLinks: ['/payload/admin/NavDashboardLink#NavDashboardLink'],
+      actions: ['/payload/admin/ViewSiteAction#ViewSiteAction'],
+      graphics: { Logo: '/payload/admin/Brand#Logo', Icon: '/payload/admin/Brand#Icon' },
+    },
     meta: {
       titleSuffix: ' · Uniix Studio CMS',
       icons: [
@@ -74,26 +80,28 @@ export default buildConfig({
 
   // Admin sidebar order follows this list: Content → Marketing → System, with
   // the Site globals below.
+  // Order sets the sidebar: Inbox, Website, Portfolio, Content, Services,
+  // Local SEO, Administration (groups appear in the order first used).
   collections: [
+    ContactSubmissions,
+    Pages,
+    Team,
     Projects,
-    Services,
-    Pillars,
-    Industries,
+    Clients,
+    Testimonials,
     BlogPosts,
     Authors,
-    Testimonials,
-    Clients,
-    Team,
-    FAQs,
+    Pillars,
+    Services,
+    Industries,
     Process,
     WhyPoints,
+    FAQs,
     Locations,
     LocationPages,
-    Pages,
-    Redirects,
     Media,
-    ContactSubmissions,
     Users,
+    Redirects,
   ],
   globals: [Homepage, About, Nav, Footer, PromoBar, Stats, Settings],
 

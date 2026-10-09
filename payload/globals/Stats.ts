@@ -6,7 +6,7 @@ export const Stats: GlobalConfig = {
   slug: 'stats',
   label: 'Results & Stats',
   admin: {
-    group: 'Site',
+    group: 'Website',
     description: 'Headline figures (homepage "Results"). Only publish numbers you can substantiate.',
   },
   access: { read: anyone, update: isEditor },

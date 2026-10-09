@@ -16,7 +16,7 @@ const statement = (name: string, label: string) => ({
 export const About: GlobalConfig = {
   slug: 'about',
   label: 'About Page',
-  admin: { group: 'Site', preview: () => previewUrl('/about/') },
+  admin: { group: 'Website', preview: () => previewUrl('/about/') },
   versions: { drafts: true, max: 25 },
   access: { read: anyone, update: isEditor, readVersions: isEditor },
   hooks: { afterChange: [revalidateGlobal('about')] },

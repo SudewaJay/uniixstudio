@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { anyone, isAdmin, isEditor } from '../access'
-import { orderField } from '../fields'
+import { BOOLEAN_CELL, orderField } from '../fields'
 import { revalidateHooks } from '../hooks/revalidate'
 
 /** Reusable FAQ bank — pulled into pages via the FAQ block. */
@@ -8,8 +8,9 @@ export const FAQs: CollectionConfig = {
   slug: 'faqs',
   labels: { singular: 'FAQ', plural: 'FAQs' },
   admin: {
-    group: 'Content',
+    group: 'Services',
     useAsTitle: 'question',
+    listSearchableFields: ['question'],
     defaultColumns: ['question', 'category', 'published', 'displayOrder'],
     description: 'General questions reused across landing pages. Service- and post-specific FAQs live on those documents.',
   },
@@ -38,7 +39,7 @@ export const FAQs: CollectionConfig = {
       ],
       admin: { position: 'sidebar' },
     },
-    { name: 'published', type: 'checkbox', defaultValue: true, index: true, admin: { position: 'sidebar' } },
+    { name: 'published', type: 'checkbox', defaultValue: true, index: true, admin: { position: 'sidebar', components: { Cell: BOOLEAN_CELL } } },
     orderField(),
   ],
 }

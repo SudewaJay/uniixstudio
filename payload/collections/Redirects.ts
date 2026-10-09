@@ -1,5 +1,6 @@
 import { APIError, type CollectionBeforeValidateHook, type CollectionConfig } from 'payload'
 import { isAdmin, isEditor } from '../access'
+import { BOOLEAN_CELL } from '../fields'
 import { normalizePath } from '../fields/validators'
 import { revalidateHooks } from '../hooks/revalidate'
 
@@ -45,8 +46,9 @@ const validateRedirect: CollectionBeforeValidateHook = async ({ data, originalDo
 export const Redirects: CollectionConfig = {
   slug: 'redirects',
   admin: {
-    group: 'Marketing',
+    group: 'Administration',
     useAsTitle: 'from',
+    listSearchableFields: ['from', 'to'],
     defaultColumns: ['from', 'to', 'type', 'enabled'],
     description: 'Send old URLs to new ones. Applied to any URL that would otherwise 404.',
   },
@@ -77,7 +79,7 @@ export const Redirects: CollectionConfig = {
           ],
           admin: { width: '70%' },
         },
-        { name: 'enabled', type: 'checkbox', defaultValue: true, admin: { width: '30%' } },
+        { name: 'enabled', type: 'checkbox', defaultValue: true, admin: { width: '30%', components: { Cell: BOOLEAN_CELL } } },
       ],
     },
   ],

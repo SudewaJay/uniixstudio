@@ -12,7 +12,7 @@ export const Settings: GlobalConfig = {
   slug: 'settings',
   label: 'Site Settings',
   admin: {
-    group: 'Site',
+    group: 'Website',
     description: 'Brand identity, contact details, social links and analytics IDs.',
   },
   access: { read: anyone, update: isAdmin },
