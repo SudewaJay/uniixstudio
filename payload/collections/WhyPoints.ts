@@ -9,6 +9,7 @@ export const WhyPoints: CollectionConfig = {
   admin: {
     group: 'Services',
     useAsTitle: 'title',
+    listSearchableFields: ['title'],
     defaultColumns: ['num', 'title', 'displayOrder'],
     description: '"Why Uniix" reasons on the homepage and About page.',
   },

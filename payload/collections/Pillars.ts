@@ -15,6 +15,7 @@ export const Pillars: CollectionConfig = {
   admin: {
     group: 'Services',
     useAsTitle: 'label',
+    listSearchableFields: ['label'],
     defaultColumns: ['label', 'slug', 'tagline', 'displayOrder'],
     description: 'Design · Technology · Growth — the hubs at /services/<pillar>/.',
     preview: (doc) => previewUrl(`/services/${doc.slug}/`),

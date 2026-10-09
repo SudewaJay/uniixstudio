@@ -13,6 +13,7 @@ export const Users: CollectionConfig = {
   admin: {
     group: 'Administration',
     useAsTitle: 'email',
+    listSearchableFields: ['email', 'name'],
     defaultColumns: ['email', 'name', 'role', 'updatedAt'],
     description: 'People who can sign in to the CMS. Only super-admins can invite users or change roles.',
   },

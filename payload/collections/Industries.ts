@@ -12,6 +12,7 @@ export const Industries: CollectionConfig = {
   admin: {
     group: 'Services',
     useAsTitle: 'name',
+    listSearchableFields: ['name', 'slug'],
     defaultColumns: ['name', 'slug', 'featured', 'displayOrder'],
     preview: (doc) => previewUrl(`/industries/${doc.slug}/`),
   },

@@ -313,7 +313,7 @@ export interface HeroBlock {
   blockType: 'hero';
 }
 /**
- * Images, video and documents. Always add alt text — it is required.
+ * Images (JPG, PNG, WebP, AVIF, SVG), MP4/WebM video and PDF, up to 4.5 MB per file. Always add alt text — it is required.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".

@@ -58,7 +58,7 @@ export const ContactSubmissions: CollectionConfig = {
         { label: 'Converted', value: 'converted' },
         { label: 'Archived', value: 'archived' },
       ],
-      admin: { position: 'sidebar' },
+      admin: { position: 'sidebar', components: { Cell: '/payload/admin/StatusCell#StatusCell' } },
     },
     { name: 'notes', type: 'textarea', admin: { description: 'Internal follow-up notes.' } },
   ],

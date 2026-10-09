@@ -557,7 +557,10 @@ body,
 
 /* Status badges: text label + tint, never colour alone */
 .uniix-badge {
+  display: inline-block;
+  width: fit-content;
   flex: none;
+  white-space: nowrap;
   padding: 2px 8px;
   border-radius: 999px;
   font-size: 12px;
@@ -673,3 +676,38 @@ body,
     flex-basis: 100%;
   }
 }
+
+/* ---------- 12. List views ---------- */
+.uniix-thumb {
+  display: block;
+  width: 56px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--uniix-radius-s);
+  border: 1px solid var(--uniix-border);
+  background: var(--uniix-hover);
+}
+.uniix-thumb--empty {
+  background:
+    linear-gradient(135deg, transparent 47%, var(--uniix-border) 47%, var(--uniix-border) 53%, transparent 53%),
+    var(--uniix-hover);
+}
+.table td,
+.table th {
+  vertical-align: middle;
+}
+.uniix-badge--yes {
+  background: var(--uniix-accent-soft);
+  color: var(--uniix-accent-text);
+}
+.uniix-cell-muted {
+  color: var(--uniix-text-2);
+}
+.uniix-badge--status-new { background: var(--uniix-accent-soft); color: var(--uniix-accent-text); }
+.uniix-badge--status-contacted { background: color-mix(in srgb, #2563eb 12%, transparent); color: #1d4ed8; }
+.uniix-badge--status-qualified { background: color-mix(in srgb, #7c3aed 12%, transparent); color: #6d28d9; }
+.uniix-badge--status-converted { background: color-mix(in srgb, #16a34a 12%, transparent); color: #15803d; }
+.uniix-badge--status-archived { background: var(--uniix-hover); color: var(--uniix-text-2); }
+[data-theme='dark'] .uniix-badge--status-contacted { color: #93c5fd; }
+[data-theme='dark'] .uniix-badge--status-qualified { color: #c4b5fd; }
+[data-theme='dark'] .uniix-badge--status-converted { color: #4ade80; }

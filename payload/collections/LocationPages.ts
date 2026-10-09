@@ -40,6 +40,7 @@ export const LocationPages: CollectionConfig = {
   admin: {
     group: 'Local SEO',
     useAsTitle: 'h1',
+    listSearchableFields: ['h1', 'slug'],
     defaultColumns: ['h1', 'location', 'service', 'updatedAt'],
     description: 'Hand-written town × service pages. Not a cross-product — quality over quantity.',
   },

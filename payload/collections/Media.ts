@@ -12,8 +12,10 @@ export const Media: CollectionConfig = {
   labels: { singular: 'Media file', plural: 'Media Library' },
   admin: {
     group: 'Administration',
-    description: 'Images, video and documents. Always add alt text — it is required.',
+    description:
+      'Images (JPG, PNG, WebP, AVIF, SVG), MP4/WebM video and PDF, up to 4.5 MB per file. Always add alt text — it is required.',
     defaultColumns: ['filename', 'alt', 'mimeType', 'filesize', 'updatedAt'],
+    listSearchableFields: ['filename', 'alt'],
   },
   access: { read: anyone, create: isStaff, update: isStaff, delete: isAdmin },
   hooks: revalidateHooks('media'),

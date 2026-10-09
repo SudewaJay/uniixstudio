@@ -9,6 +9,7 @@ export const Testimonials: CollectionConfig = {
   admin: {
     group: 'Portfolio',
     useAsTitle: 'name',
+    listSearchableFields: ['name', 'company', 'headline'],
     defaultColumns: ['name', 'company', 'headline', 'featured', 'displayOrder'],
     description: 'Client quotes. Featured ones appear on the homepage and About page.',
   },

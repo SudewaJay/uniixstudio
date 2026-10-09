@@ -23,6 +23,7 @@ export const Locations: CollectionConfig = {
   admin: {
     group: 'Local SEO',
     useAsTitle: 'name',
+    listSearchableFields: ['name', 'district'],
     defaultColumns: ['name', 'district', 'displayOrder'],
     description: 'Local service-area pages. Write genuinely distinct copy for every town.',
     preview: (doc) => previewUrl(`/locations/${doc.slug}/`),

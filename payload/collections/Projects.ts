@@ -129,7 +129,7 @@ export const Projects: CollectionConfig = {
   admin: {
     group: 'Portfolio',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'client', 'year', 'feature', '_status', 'displayOrder'],
+    defaultColumns: ['thumbnail', 'title', 'client', 'year', 'feature', '_status', 'displayOrder'],
     listSearchableFields: ['title', 'client', 'slug', 'summary'],
     description: 'Portfolio work and case studies at /portfolio/.',
     preview: (doc) => previewUrl(`/portfolio/${doc.slug}/`),
@@ -139,6 +139,16 @@ export const Projects: CollectionConfig = {
   hooks: { beforeChange: [stampAudit], ...revalidateHooks('projects') },
   defaultSort: 'displayOrder',
   fields: [
+    {
+      // List-view thumbnail only (type 'ui' stores nothing). See payload/admin/ThumbnailCell.tsx.
+      name: 'thumbnail',
+      label: 'Image',
+      type: 'ui',
+      admin: {
+        components: { Cell: '/payload/admin/ThumbnailCell#ThumbnailCell' },
+        custom: { imageField: 'coverImage' },
+      },
+    },
     {
       type: 'tabs',
       tabs: [

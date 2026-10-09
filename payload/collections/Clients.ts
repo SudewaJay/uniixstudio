@@ -11,6 +11,7 @@ export const Clients: CollectionConfig = {
   admin: {
     group: 'Portfolio',
     useAsTitle: 'name',
+    listSearchableFields: ['name'],
     defaultColumns: ['name', 'featured', 'displayOrder'],
     description: 'Featured clients appear in the homepage and site logo strips.',
   },

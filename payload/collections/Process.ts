@@ -9,6 +9,7 @@ export const Process: CollectionConfig = {
   admin: {
     group: 'Services',
     useAsTitle: 'title',
+    listSearchableFields: ['title'],
     defaultColumns: ['num', 'title', 'displayOrder'],
     description: 'The delivery process shown on the homepage and service pages.',
   },

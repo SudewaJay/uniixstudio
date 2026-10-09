@@ -35,7 +35,7 @@ export const BlogPosts: CollectionConfig = {
   admin: {
     group: 'Content',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'author', 'publishDate', '_status'],
+    defaultColumns: ['thumbnail', 'title', 'category', 'author', 'publishDate', '_status'],
     listSearchableFields: ['title', 'slug', 'primaryKeyword', 'excerpt'],
     pagination: { defaultLimit: 25 },
     preview: (doc) => previewUrl(`/blog/${doc.slug}/`),
@@ -54,6 +54,16 @@ export const BlogPosts: CollectionConfig = {
   },
   defaultSort: '-publishDate',
   fields: [
+    {
+      // List-view thumbnail only (type 'ui' stores nothing). See payload/admin/ThumbnailCell.tsx.
+      name: 'thumbnail',
+      label: 'Image',
+      type: 'ui',
+      admin: {
+        components: { Cell: '/payload/admin/ThumbnailCell#ThumbnailCell' },
+        custom: { imageField: 'coverImage' },
+      },
+    },
     {
       type: 'tabs',
       tabs: [
