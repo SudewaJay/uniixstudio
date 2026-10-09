@@ -711,3 +711,19 @@ body,
 [data-theme='dark'] .uniix-badge--status-contacted { color: #93c5fd; }
 [data-theme='dark'] .uniix-badge--status-qualified { color: #c4b5fd; }
 [data-theme='dark'] .uniix-badge--status-converted { color: #4ade80; }
+.uniix-thumb-link {
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: var(--uniix-radius-s);
+  cursor: pointer;
+}
+@media (max-width: 480px) {
+  .uniix-view-site {
+    padding: 6px 9px;
+  }
+  .uniix-view-site__label {
+    display: none;
+  }
+}

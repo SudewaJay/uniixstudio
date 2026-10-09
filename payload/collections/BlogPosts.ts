@@ -35,7 +35,7 @@ export const BlogPosts: CollectionConfig = {
   admin: {
     group: 'Content',
     useAsTitle: 'title',
-    defaultColumns: ['thumbnail', 'title', 'category', 'author', 'publishDate', '_status'],
+    defaultColumns: ['title', 'thumbnail', 'category', 'author', 'publishDate', '_status'],
     listSearchableFields: ['title', 'slug', 'primaryKeyword', 'excerpt'],
     pagination: { defaultLimit: 25 },
     preview: (doc) => previewUrl(`/blog/${doc.slug}/`),

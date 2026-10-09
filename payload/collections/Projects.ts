@@ -129,7 +129,7 @@ export const Projects: CollectionConfig = {
   admin: {
     group: 'Portfolio',
     useAsTitle: 'title',
-    defaultColumns: ['thumbnail', 'title', 'client', 'year', 'feature', '_status', 'displayOrder'],
+    defaultColumns: ['title', 'thumbnail', 'client', 'year', 'feature', '_status', 'displayOrder'],
     listSearchableFields: ['title', 'client', 'slug', 'summary'],
     description: 'Portfolio work and case studies at /portfolio/.',
     preview: (doc) => previewUrl(`/portfolio/${doc.slug}/`),
