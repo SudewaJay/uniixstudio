@@ -10,7 +10,7 @@ export const Users: CollectionConfig = {
     cookies: { sameSite: 'Lax', secure: process.env.NODE_ENV === 'production' },
   },
   admin: {
-    group: 'System',
+    group: 'Admin',
     useAsTitle: 'email',
     defaultColumns: ['email', 'name', 'role', 'updatedAt'],
     description: 'People who can sign in to the CMS. Only super-admins can invite users or change roles.',

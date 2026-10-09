@@ -7,7 +7,7 @@ export const Team: CollectionConfig = {
   slug: 'team',
   labels: { singular: 'Team Member', plural: 'Team' },
   admin: {
-    group: 'Content',
+    group: 'Website',
     useAsTitle: 'name',
     defaultColumns: ['name', 'role', 'department', 'featured', 'displayOrder'],
     description: 'People shown on the About page.',

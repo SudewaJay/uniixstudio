@@ -9,7 +9,7 @@ export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
   labels: { singular: 'Enquiry', plural: 'Enquiries' },
   admin: {
-    group: 'System',
+    group: 'Inbox',
     useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'service', 'status', 'createdAt'],
     listSearchableFields: ['name', 'email', 'company', 'message'],

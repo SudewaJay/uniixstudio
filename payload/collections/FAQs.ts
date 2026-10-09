@@ -8,7 +8,7 @@ export const FAQs: CollectionConfig = {
   slug: 'faqs',
   labels: { singular: 'FAQ', plural: 'FAQs' },
   admin: {
-    group: 'Content',
+    group: 'Services',
     useAsTitle: 'question',
     defaultColumns: ['question', 'category', 'published', 'displayOrder'],
     description: 'General questions reused across landing pages. Service- and post-specific FAQs live on those documents.',

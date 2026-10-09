@@ -7,7 +7,7 @@ export const WhyPoints: CollectionConfig = {
   slug: 'why-points',
   labels: { singular: 'Why Uniix point', plural: 'Why Uniix points' },
   admin: {
-    group: 'Content',
+    group: 'Services',
     useAsTitle: 'title',
     defaultColumns: ['num', 'title', 'displayOrder'],
     description: '"Why Uniix" reasons on the homepage and About page.',

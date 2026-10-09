@@ -127,7 +127,7 @@ export const Projects: CollectionConfig = {
   slug: 'projects',
   labels: { singular: 'Project', plural: 'Projects' },
   admin: {
-    group: 'Content',
+    group: 'Portfolio',
     useAsTitle: 'title',
     defaultColumns: ['title', 'client', 'year', 'feature', '_status', 'displayOrder'],
     listSearchableFields: ['title', 'client', 'slug', 'summary'],

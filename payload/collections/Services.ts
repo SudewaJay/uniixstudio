@@ -21,7 +21,7 @@ export const Services: CollectionConfig = {
   slug: 'services',
   labels: { singular: 'Service', plural: 'Services' },
   admin: {
-    group: 'Content',
+    group: 'Services',
     useAsTitle: 'name',
     defaultColumns: ['name', 'pillar', 'featured', '_status', 'updatedAt'],
     listSearchableFields: ['name', 'rawName', 'pageTitle', 'slug'],

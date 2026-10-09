@@ -19,7 +19,7 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Landing Page', plural: 'Landing Pages' },
   admin: {
-    group: 'Marketing',
+    group: 'Website',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'kind', '_status', 'updatedAt'],
     description: 'Campaign landing pages and legal pages, built from blocks. Published at /<slug>/.',

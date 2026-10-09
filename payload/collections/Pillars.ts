@@ -13,7 +13,7 @@ export const Pillars: CollectionConfig = {
   slug: 'pillars',
   labels: { singular: 'Service Pillar', plural: 'Service Pillars' },
   admin: {
-    group: 'Content',
+    group: 'Services',
     useAsTitle: 'label',
     defaultColumns: ['label', 'slug', 'tagline', 'displayOrder'],
     description: 'Design · Technology · Growth — the hubs at /services/<pillar>/.',

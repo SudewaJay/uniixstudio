@@ -6,7 +6,7 @@ import { revalidateGlobal } from '../hooks/revalidate'
 export const Footer: GlobalConfig = {
   slug: 'footer',
   label: 'Footer',
-  admin: { group: 'Site', description: 'Footer links, call to action and legal line. Socials come from Site Settings.' },
+  admin: { group: 'Website', description: 'Footer links, call to action and legal line. Socials come from Site Settings.' },
   access: { read: anyone, update: isEditor },
   hooks: { afterChange: [revalidateGlobal('footer')] },
   fields: [

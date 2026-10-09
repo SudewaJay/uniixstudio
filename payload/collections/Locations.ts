@@ -21,7 +21,7 @@ export const Locations: CollectionConfig = {
   slug: 'locations',
   labels: { singular: 'Location', plural: 'Locations' },
   admin: {
-    group: 'Content',
+    group: 'Local SEO',
     useAsTitle: 'name',
     defaultColumns: ['name', 'district', 'displayOrder'],
     description: 'Local service-area pages. Write genuinely distinct copy for every town.',

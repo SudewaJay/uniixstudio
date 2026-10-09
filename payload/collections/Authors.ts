@@ -7,7 +7,8 @@ import { revalidateHooks } from '../hooks/revalidate'
 /** Public bylines for blog posts (separate from CMS user accounts). */
 export const Authors: CollectionConfig = {
   slug: 'authors',
-  admin: { group: 'Content', useAsTitle: 'name', defaultColumns: ['name', 'role', 'updatedAt'] },
+  labels: { singular: 'Author', plural: 'Authors' },
+  admin: { group: 'Blog', useAsTitle: 'name', defaultColumns: ['name', 'role', 'updatedAt'] },
   access: { read: anyone, create: isEditor, update: isEditor, delete: isAdmin },
   // Bylines appear on every post card, so a change refreshes the blog too.
   hooks: revalidateHooks('authors', ['cms:blog-posts']),

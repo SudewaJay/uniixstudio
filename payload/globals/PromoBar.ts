@@ -5,7 +5,7 @@ import { revalidateGlobal } from '../hooks/revalidate'
 export const PromoBar: GlobalConfig = {
   slug: 'promo-bar',
   label: 'Promo Bar',
-  admin: { group: 'Site', description: 'The thin rotating bar at the very top of every page.' },
+  admin: { group: 'Website', description: 'The thin rotating bar at the very top of every page.' },
   access: { read: anyone, update: isEditor },
   hooks: { afterChange: [revalidateGlobal('promo-bar')] },
   fields: [

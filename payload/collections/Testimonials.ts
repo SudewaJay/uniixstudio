@@ -7,7 +7,7 @@ import { revalidateHooks } from '../hooks/revalidate'
 export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
   admin: {
-    group: 'Content',
+    group: 'Portfolio',
     useAsTitle: 'name',
     defaultColumns: ['name', 'company', 'headline', 'featured', 'displayOrder'],
     description: 'Client quotes. Featured ones appear on the homepage and About page.',
