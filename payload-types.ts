@@ -67,25 +67,25 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'contact-submissions': ContactSubmission;
+    pages: Page;
+    team: Team;
     projects: Project;
-    services: Service;
-    pillars: Pillar;
-    industries: Industry;
+    clients: Client;
+    testimonials: Testimonial;
     'blog-posts': BlogPost;
     authors: Author;
-    testimonials: Testimonial;
-    clients: Client;
-    team: Team;
-    faqs: Faq;
+    pillars: Pillar;
+    services: Service;
+    industries: Industry;
     process: Process;
     'why-points': WhyPoint;
+    faqs: Faq;
     locations: Location;
     'location-pages': LocationPage;
-    pages: Page;
-    redirects: Redirect;
     media: Media;
-    'contact-submissions': ContactSubmission;
     users: User;
+    redirects: Redirect;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -93,25 +93,25 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    team: TeamSelect<false> | TeamSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
-    services: ServicesSelect<false> | ServicesSelect<true>;
-    pillars: PillarsSelect<false> | PillarsSelect<true>;
-    industries: IndustriesSelect<false> | IndustriesSelect<true>;
+    clients: ClientsSelect<false> | ClientsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
-    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
-    clients: ClientsSelect<false> | ClientsSelect<true>;
-    team: TeamSelect<false> | TeamSelect<true>;
-    faqs: FaqsSelect<false> | FaqsSelect<true>;
+    pillars: PillarsSelect<false> | PillarsSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
+    industries: IndustriesSelect<false> | IndustriesSelect<true>;
     process: ProcessSelect<false> | ProcessSelect<true>;
     'why-points': WhyPointsSelect<false> | WhyPointsSelect<true>;
+    faqs: FaqsSelect<false> | FaqsSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
     'location-pages': LocationPagesSelect<false> | LocationPagesSelect<true>;
-    pages: PagesSelect<false> | PagesSelect<true>;
-    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -166,6 +166,540 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * Contact-form enquiries. Update the status as you follow up.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions".
+ */
+export interface ContactSubmission {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string | null;
+  company?: string | null;
+  budget?: string | null;
+  service?: string | null;
+  message: string;
+  /**
+   * Page or campaign the enquiry came from.
+   */
+  source?: string | null;
+  /**
+   * Whether the notification email was sent.
+   */
+  emailDelivered?: boolean | null;
+  status: 'new' | 'contacted' | 'qualified' | 'converted' | 'archived';
+  /**
+   * Internal follow-up notes.
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Campaign landing pages and legal pages, built from blocks. Published at /<slug>/.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  layout?:
+    | (
+        | HeroBlock
+        | RichTextBlock
+        | MediaBlock
+        | SplitContentBlock
+        | StatsBlock
+        | ServicesGridBlock
+        | ProjectsGridBlock
+        | TestimonialsBlock
+        | ClientLogosBlock
+        | IndustriesBlock
+        | ProcessBlock
+        | FAQBlock
+        | CTABlock
+        | GalleryBlock
+        | TeamBlock
+        | ContactFormBlock
+      )[]
+    | null;
+  /**
+   * Optional overrides. Leave blank to use the page title, summary and cover image.
+   */
+  seo?: {
+    /**
+     * Shown in search results. ~60 characters.
+     */
+    metaTitle?: string | null;
+    /**
+     * Shown under the title in search results. Aim for ~155 characters — longer is truncated.
+     */
+    metaDescription?: string | null;
+    /**
+     * Only set when this content is a duplicate of another URL.
+     */
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    /**
+     * 1200×630. Falls back to the cover image, then the site default.
+     */
+    ogImage?: {
+      media?: (number | null) | Media;
+      url?: string | null;
+      /**
+       * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+       */
+      alt?: string | null;
+    };
+    twitterTitle?: string | null;
+    twitterDescription?: string | null;
+  };
+  /**
+   * The URL segment. Leave blank to generate it from the title. Changing it on a live page breaks old links — add a redirect.
+   */
+  slug: string;
+  /**
+   * Legal pages get a plain reading layout and a footer link.
+   */
+  kind?: ('landing' | 'legal') | null;
+  createdBy?: (number | null) | User;
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock".
+ */
+export interface HeroBlock {
+  eyebrow?: string | null;
+  heading: string;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  lede?: string | null;
+  /**
+   * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
+   */
+  image?: {
+    media?: (number | null) | Media;
+    url?: string | null;
+    /**
+     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+     */
+    alt?: string | null;
+  };
+  primaryCta?: {
+    label?: string | null;
+    href?: string | null;
+    newTab?: boolean | null;
+  };
+  secondaryCta?: {
+    label?: string | null;
+    href?: string | null;
+    newTab?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * Images, video and documents. Always add alt text — it is required.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * What the image shows, for screen readers and search. Not a filename.
+   */
+  alt: string;
+  caption?: string | null;
+  /**
+   * Internal notes: source, licence, usage rights.
+   */
+  description?: string | null;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock".
+ */
+export interface RichTextBlock {
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  width?: ('prose' | 'wide') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'richText';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock".
+ */
+export interface MediaBlock {
+  /**
+   * Image, or the poster frame when a Vimeo ID is set.
+   */
+  image?: {
+    media?: (number | null) | Media;
+    url?: string | null;
+    /**
+     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+     */
+    alt?: string | null;
+    caption?: string | null;
+  };
+  /**
+   * Optional Vimeo film.
+   */
+  vimeoId?: string | null;
+  size?: ('contained' | 'wide' | 'full') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'media';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitContentBlock".
+ */
+export interface SplitContentBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  body: string;
+  /**
+   * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
+   */
+  image?: {
+    media?: (number | null) | Media;
+    url?: string | null;
+    /**
+     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+     */
+    alt?: string | null;
+  };
+  imagePosition?: ('left' | 'right') | null;
+  cta?: {
+    label?: string | null;
+    href?: string | null;
+    newTab?: boolean | null;
+  };
+  /**
+   * Background treatment from the design system.
+   */
+  tone?: ('light' | 'warm' | 'dark') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'splitContent';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  items?:
+    | {
+        value: string;
+        label: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Background treatment from the design system.
+   */
+  tone?: ('light' | 'warm' | 'dark') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stats';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesGridBlock".
+ */
+export interface ServicesGridBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  /**
+   * Pick services, or leave empty to show featured ones.
+   */
+  services?: (number | Service)[] | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'servicesGrid';
+}
+/**
+ * Each service has its own page at /services/<pillar>/<service>/.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  /**
+   * Short label — nav, breadcrumbs, cards.
+   */
+  name: string;
+  /**
+   * e.g. "Brand Identity Design". Defaults to Name.
+   */
+  rawName?: string | null;
+  /**
+   * e.g. "Brand Identity Design in Sri Lanka | Uniix Studio". The on-page H1 is built from the Name.
+   */
+  pageTitle: string;
+  /**
+   * One or two sentences for cards and listings.
+   */
+  shortDescription?: string | null;
+  /**
+   * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
+   */
+  coverImage?: {
+    media?: (number | null) | Media;
+    url?: string | null;
+    /**
+     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+     */
+    alt?: string | null;
+  };
+  /**
+   * Main page copy. Use H2s for sections.
+   */
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  process?:
+    | {
+        title: string;
+        duration?: string | null;
+        detail: string;
+        id?: string | null;
+      }[]
+    | null;
+  deliverables?:
+    | {
+        name: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional pricing chip.
+   */
+  pricingFromLKR?: number | null;
+  pricingTiers?:
+    | {
+        name: string;
+        price: string;
+        highlight?: boolean | null;
+        summary?: string | null;
+        includes?: string[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Rendered as a visible accordion. FAQPage schema is only emitted for FAQs shown on the page.
+   */
+  faqs?:
+    | {
+        question: string;
+        /**
+         * 2–3 sentences. Lead with the direct answer.
+         */
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Vimeo films. Also feed the /showreel page and VideoObject schema.
+   */
+  videos?:
+    | {
+        vimeoId: string;
+        title: string;
+        client: string;
+        description?: string | null;
+        year?: string | null;
+        /**
+         * Used for VideoObject.uploadDate.
+         */
+        uploadDate?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Curated internal links (topic cluster).
+   */
+  relatedReading?:
+    | {
+        label: string;
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  relatedServices?: (number | Service)[] | null;
+  relatedProjects?: (number | Project)[] | null;
+  testimonials?: (number | Testimonial)[] | null;
+  industries?: (number | Industry)[] | null;
+  /**
+   * Defaults to "Get a free consultation" → /contact.
+   */
+  cta?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  primaryKeyword?: string | null;
+  /**
+   * Optional overrides. Leave blank to use the page title, summary and cover image.
+   */
+  seo?: {
+    /**
+     * Shown in search results. ~60 characters.
+     */
+    metaTitle?: string | null;
+    /**
+     * Shown under the title in search results. Aim for ~155 characters — longer is truncated.
+     */
+    metaDescription?: string | null;
+    /**
+     * Only set when this content is a duplicate of another URL.
+     */
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    /**
+     * 1200×630. Falls back to the cover image, then the site default.
+     */
+    ogImage?: {
+      media?: (number | null) | Media;
+      url?: string | null;
+      /**
+       * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+       */
+      alt?: string | null;
+    };
+    twitterTitle?: string | null;
+    twitterDescription?: string | null;
+  };
+  /**
+   * The URL segment. Leave blank to generate it from the name. Changing it on a live page breaks old links — add a redirect.
+   */
+  slug: string;
+  /**
+   * Determines the URL prefix.
+   */
+  pillar: number | Pillar;
+  featured?: boolean | null;
+  /**
+   * Order within the pillar.
+   */
+  displayOrder?: number | null;
+  createdBy?: (number | null) | User;
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Portfolio work and case studies at /portfolio/.
@@ -581,70 +1115,6 @@ export interface Project {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Images, video and documents. Always add alt text — it is required.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * What the image shows, for screen readers and search. Not a filename.
-   */
-  alt: string;
-  caption?: string | null;
-  /**
-   * Internal notes: source, licence, usage rights.
-   */
-  description?: string | null;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "industries".
  */
@@ -762,193 +1232,6 @@ export interface Industry {
   createdAt: string;
 }
 /**
- * Each service has its own page at /services/<pillar>/<service>/.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services".
- */
-export interface Service {
-  id: number;
-  /**
-   * Short label — nav, breadcrumbs, cards.
-   */
-  name: string;
-  /**
-   * e.g. "Brand Identity Design". Defaults to Name.
-   */
-  rawName?: string | null;
-  /**
-   * e.g. "Brand Identity Design in Sri Lanka | Uniix Studio". The on-page H1 is built from the Name.
-   */
-  pageTitle: string;
-  /**
-   * One or two sentences for cards and listings.
-   */
-  shortDescription?: string | null;
-  /**
-   * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
-   */
-  coverImage?: {
-    media?: (number | null) | Media;
-    url?: string | null;
-    /**
-     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-     */
-    alt?: string | null;
-  };
-  /**
-   * Main page copy. Use H2s for sections.
-   */
-  body: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  process?:
-    | {
-        title: string;
-        duration?: string | null;
-        detail: string;
-        id?: string | null;
-      }[]
-    | null;
-  deliverables?:
-    | {
-        name: string;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Optional pricing chip.
-   */
-  pricingFromLKR?: number | null;
-  pricingTiers?:
-    | {
-        name: string;
-        price: string;
-        highlight?: boolean | null;
-        summary?: string | null;
-        includes?: string[] | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Rendered as a visible accordion. FAQPage schema is only emitted for FAQs shown on the page.
-   */
-  faqs?:
-    | {
-        question: string;
-        /**
-         * 2–3 sentences. Lead with the direct answer.
-         */
-        answer: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Vimeo films. Also feed the /showreel page and VideoObject schema.
-   */
-  videos?:
-    | {
-        vimeoId: string;
-        title: string;
-        client: string;
-        description?: string | null;
-        year?: string | null;
-        /**
-         * Used for VideoObject.uploadDate.
-         */
-        uploadDate?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Curated internal links (topic cluster).
-   */
-  relatedReading?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
-  relatedServices?: (number | Service)[] | null;
-  relatedProjects?: (number | Project)[] | null;
-  testimonials?: (number | Testimonial)[] | null;
-  industries?: (number | Industry)[] | null;
-  /**
-   * Defaults to "Get a free consultation" → /contact.
-   */
-  cta?: {
-    label?: string | null;
-    href?: string | null;
-  };
-  primaryKeyword?: string | null;
-  /**
-   * Optional overrides. Leave blank to use the page title, summary and cover image.
-   */
-  seo?: {
-    /**
-     * Shown in search results. ~60 characters.
-     */
-    metaTitle?: string | null;
-    /**
-     * Shown under the title in search results. Aim for ~155 characters — longer is truncated.
-     */
-    metaDescription?: string | null;
-    /**
-     * Only set when this content is a duplicate of another URL.
-     */
-    canonicalURL?: string | null;
-    noIndex?: boolean | null;
-    noFollow?: boolean | null;
-    ogTitle?: string | null;
-    ogDescription?: string | null;
-    /**
-     * 1200×630. Falls back to the cover image, then the site default.
-     */
-    ogImage?: {
-      media?: (number | null) | Media;
-      url?: string | null;
-      /**
-       * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-       */
-      alt?: string | null;
-    };
-    twitterTitle?: string | null;
-    twitterDescription?: string | null;
-  };
-  /**
-   * The URL segment. Leave blank to generate it from the name. Changing it on a live page breaks old links — add a redirect.
-   */
-  slug: string;
-  /**
-   * Determines the URL prefix.
-   */
-  pillar: number | Pillar;
-  featured?: boolean | null;
-  /**
-   * Order within the pillar.
-   */
-  displayOrder?: number | null;
-  createdBy?: (number | null) | User;
-  updatedBy?: (number | null) | User;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
  * Client quotes. Featured ones appear on the homepage and About page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1020,6 +1303,35 @@ export interface Testimonial {
   displayOrder?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * People who can sign in to the CMS. Only super-admins can invite users or change roles.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name?: string | null;
+  role: 'super-admin' | 'admin' | 'editor' | 'author';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * Design · Technology · Growth — the hubs at /services/<pillar>/.
@@ -1107,33 +1419,318 @@ export interface Pillar {
   createdAt: string;
 }
 /**
- * People who can sign in to the CMS. Only super-admins can invite users or change roles.
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectsGridBlock".
+ */
+export interface ProjectsGridBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  /**
+   * Pick projects, or leave empty to show the latest featured work.
+   */
+  projects?: (number | Project)[] | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'projectsGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  /**
+   * Leave empty to show featured testimonials.
+   */
+  testimonials?: (number | Testimonial)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ClientLogosBlock".
+ */
+export interface ClientLogosBlock {
+  heading?: string | null;
+  /**
+   * Leave empty to show featured clients.
+   */
+  clients?: (number | Client)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'clientLogos';
+}
+/**
+ * Featured clients appear in the homepage and site logo strips.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "clients".
  */
-export interface User {
+export interface Client {
   id: number;
-  name?: string | null;
-  role: 'super-admin' | 'admin' | 'editor' | 'author';
+  name: string;
+  /**
+   * SVG preferred. Upload, or use a /clients/… path.
+   */
+  logo?: {
+    media?: (number | null) | Media;
+    url?: string | null;
+    /**
+     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+     */
+    alt?: string | null;
+  };
+  website?: string | null;
+  location?: string | null;
+  industry?: (number | null) | Industry;
+  /**
+   * Developer: Tailwind classes for the text fallback when there is no logo.
+   */
+  wordmarkStyle?: string | null;
+  featured?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  displayOrder?: number | null;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IndustriesBlock".
+ */
+export interface IndustriesBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  industries?: (number | Industry)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'industries';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessBlock".
+ */
+export interface ProcessBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  /**
+   * Leave empty to show every Process Stage in order.
+   */
+  stages?: (number | Process)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'process';
+}
+/**
+ * The delivery process shown on the homepage and service pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "process".
+ */
+export interface Process {
+  id: number;
+  /**
+   * "01"
+   */
+  num: string;
+  title: string;
+  description: string;
+  deliverables?: string[] | null;
+  /**
+   * Lower numbers appear first.
+   */
+  displayOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock".
+ */
+export interface FAQBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  /**
+   * From the FAQ bank. Only these are emitted as FAQPage schema.
+   */
+  faqs: (number | Faq)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * General questions reused across landing pages. Service- and post-specific FAQs live on those documents.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs".
+ */
+export interface Faq {
+  id: number;
+  question: string;
+  answer: string;
+  category?: ('general' | 'pricing' | 'design' | 'technology' | 'growth') | null;
+  published?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  displayOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CTABlock".
+ */
+export interface CTABlock {
+  heading: string;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  body?: string | null;
+  label: string;
+  href: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  heading?: string | null;
+  images?:
     | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
+        /**
+         * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
+         */
+        image?: {
+          media?: (number | null) | Media;
+          url?: string | null;
+          /**
+           * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+           */
+          alt?: string | null;
+          caption?: string | null;
+        };
+        id?: string | null;
       }[]
     | null;
-  password?: string | null;
-  collection: 'users';
+  columns?: ('2' | '3' | '4') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamBlock".
+ */
+export interface TeamBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  /**
+   * Leave empty to show featured team members.
+   */
+  members?: (number | Team)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'team';
+}
+/**
+ * People shown on the About page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: number;
+  name: string;
+  role: string;
+  department?: ('Leadership' | 'Design' | 'Technology' | 'Growth' | 'Production' | 'Operations') | null;
+  bio?: string | null;
+  /**
+   * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
+   */
+  photo?: {
+    media?: (number | null) | Media;
+    url?: string | null;
+    /**
+     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
+     */
+    alt?: string | null;
+  };
+  /**
+   * Monogram when there is no photo.
+   */
+  initial?: string | null;
+  skills?: string[] | null;
+  socialLinks?:
+    | {
+        label: string;
+        href: string;
+        newTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The URL segment. Leave blank to generate it from the name. Changing it on a live page breaks old links — add a redirect.
+   */
+  slug: string;
+  featured?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  displayOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactFormBlock".
+ */
+export interface ContactFormBlock {
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * Rendered in the italic gradient style.
+   */
+  headingAccent?: string | null;
+  intro?: string | null;
+  /**
+   * Tag stored with submissions from this form, e.g. "finland-campaign".
+   */
+  source?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contactForm';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1308,130 +1905,6 @@ export interface Author {
    * The URL segment. Leave blank to generate it from the name. Changing it on a live page breaks old links — add a redirect.
    */
   slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Featured clients appear in the homepage and site logo strips.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "clients".
- */
-export interface Client {
-  id: number;
-  name: string;
-  /**
-   * SVG preferred. Upload, or use a /clients/… path.
-   */
-  logo?: {
-    media?: (number | null) | Media;
-    url?: string | null;
-    /**
-     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-     */
-    alt?: string | null;
-  };
-  website?: string | null;
-  location?: string | null;
-  industry?: (number | null) | Industry;
-  /**
-   * Developer: Tailwind classes for the text fallback when there is no logo.
-   */
-  wordmarkStyle?: string | null;
-  featured?: boolean | null;
-  /**
-   * Lower numbers appear first.
-   */
-  displayOrder?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * People shown on the About page.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team".
- */
-export interface Team {
-  id: number;
-  name: string;
-  role: string;
-  department?: ('Leadership' | 'Design' | 'Technology' | 'Growth' | 'Production' | 'Operations') | null;
-  bio?: string | null;
-  /**
-   * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
-   */
-  photo?: {
-    media?: (number | null) | Media;
-    url?: string | null;
-    /**
-     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-     */
-    alt?: string | null;
-  };
-  /**
-   * Monogram when there is no photo.
-   */
-  initial?: string | null;
-  skills?: string[] | null;
-  socialLinks?:
-    | {
-        label: string;
-        href: string;
-        newTab?: boolean | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * The URL segment. Leave blank to generate it from the name. Changing it on a live page breaks old links — add a redirect.
-   */
-  slug: string;
-  featured?: boolean | null;
-  /**
-   * Lower numbers appear first.
-   */
-  displayOrder?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * General questions reused across landing pages. Service- and post-specific FAQs live on those documents.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faqs".
- */
-export interface Faq {
-  id: number;
-  question: string;
-  answer: string;
-  category?: ('general' | 'pricing' | 'design' | 'technology' | 'growth') | null;
-  published?: boolean | null;
-  /**
-   * Lower numbers appear first.
-   */
-  displayOrder?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * The delivery process shown on the homepage and service pages.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "process".
- */
-export interface Process {
-  id: number;
-  /**
-   * "01"
-   */
-  num: string;
-  title: string;
-  description: string;
-  deliverables?: string[] | null;
-  /**
-   * Lower numbers appear first.
-   */
-  displayOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1636,448 +2109,6 @@ export interface LocationPage {
   createdAt: string;
 }
 /**
- * Campaign landing pages and legal pages, built from blocks. Published at /<slug>/.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: number;
-  title: string;
-  layout?:
-    | (
-        | HeroBlock
-        | RichTextBlock
-        | MediaBlock
-        | SplitContentBlock
-        | StatsBlock
-        | ServicesGridBlock
-        | ProjectsGridBlock
-        | TestimonialsBlock
-        | ClientLogosBlock
-        | IndustriesBlock
-        | ProcessBlock
-        | FAQBlock
-        | CTABlock
-        | GalleryBlock
-        | TeamBlock
-        | ContactFormBlock
-      )[]
-    | null;
-  /**
-   * Optional overrides. Leave blank to use the page title, summary and cover image.
-   */
-  seo?: {
-    /**
-     * Shown in search results. ~60 characters.
-     */
-    metaTitle?: string | null;
-    /**
-     * Shown under the title in search results. Aim for ~155 characters — longer is truncated.
-     */
-    metaDescription?: string | null;
-    /**
-     * Only set when this content is a duplicate of another URL.
-     */
-    canonicalURL?: string | null;
-    noIndex?: boolean | null;
-    noFollow?: boolean | null;
-    ogTitle?: string | null;
-    ogDescription?: string | null;
-    /**
-     * 1200×630. Falls back to the cover image, then the site default.
-     */
-    ogImage?: {
-      media?: (number | null) | Media;
-      url?: string | null;
-      /**
-       * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-       */
-      alt?: string | null;
-    };
-    twitterTitle?: string | null;
-    twitterDescription?: string | null;
-  };
-  /**
-   * The URL segment. Leave blank to generate it from the title. Changing it on a live page breaks old links — add a redirect.
-   */
-  slug: string;
-  /**
-   * Legal pages get a plain reading layout and a footer link.
-   */
-  kind?: ('landing' | 'legal') | null;
-  createdBy?: (number | null) | User;
-  updatedBy?: (number | null) | User;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "HeroBlock".
- */
-export interface HeroBlock {
-  eyebrow?: string | null;
-  heading: string;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  lede?: string | null;
-  /**
-   * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
-   */
-  image?: {
-    media?: (number | null) | Media;
-    url?: string | null;
-    /**
-     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-     */
-    alt?: string | null;
-  };
-  primaryCta?: {
-    label?: string | null;
-    href?: string | null;
-    newTab?: boolean | null;
-  };
-  secondaryCta?: {
-    label?: string | null;
-    href?: string | null;
-    newTab?: boolean | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'hero';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RichTextBlock".
- */
-export interface RichTextBlock {
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  width?: ('prose' | 'wide') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'richText';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock".
- */
-export interface MediaBlock {
-  /**
-   * Image, or the poster frame when a Vimeo ID is set.
-   */
-  image?: {
-    media?: (number | null) | Media;
-    url?: string | null;
-    /**
-     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-     */
-    alt?: string | null;
-    caption?: string | null;
-  };
-  /**
-   * Optional Vimeo film.
-   */
-  vimeoId?: string | null;
-  size?: ('contained' | 'wide' | 'full') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'media';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SplitContentBlock".
- */
-export interface SplitContentBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  body: string;
-  /**
-   * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
-   */
-  image?: {
-    media?: (number | null) | Media;
-    url?: string | null;
-    /**
-     * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-     */
-    alt?: string | null;
-  };
-  imagePosition?: ('left' | 'right') | null;
-  cta?: {
-    label?: string | null;
-    href?: string | null;
-    newTab?: boolean | null;
-  };
-  /**
-   * Background treatment from the design system.
-   */
-  tone?: ('light' | 'warm' | 'dark') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'splitContent';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "StatsBlock".
- */
-export interface StatsBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  items?:
-    | {
-        value: string;
-        label: string;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Background treatment from the design system.
-   */
-  tone?: ('light' | 'warm' | 'dark') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'stats';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServicesGridBlock".
- */
-export interface ServicesGridBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  /**
-   * Pick services, or leave empty to show featured ones.
-   */
-  services?: (number | Service)[] | null;
-  limit?: number | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'servicesGrid';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProjectsGridBlock".
- */
-export interface ProjectsGridBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  /**
-   * Pick projects, or leave empty to show the latest featured work.
-   */
-  projects?: (number | Project)[] | null;
-  limit?: number | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'projectsGrid';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TestimonialsBlock".
- */
-export interface TestimonialsBlock {
-  /**
-   * Leave empty to show featured testimonials.
-   */
-  testimonials?: (number | Testimonial)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'testimonials';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ClientLogosBlock".
- */
-export interface ClientLogosBlock {
-  heading?: string | null;
-  /**
-   * Leave empty to show featured clients.
-   */
-  clients?: (number | Client)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'clientLogos';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "IndustriesBlock".
- */
-export interface IndustriesBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  industries?: (number | Industry)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'industries';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProcessBlock".
- */
-export interface ProcessBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  /**
-   * Leave empty to show every Process Stage in order.
-   */
-  stages?: (number | Process)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'process';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FAQBlock".
- */
-export interface FAQBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  /**
-   * From the FAQ bank. Only these are emitted as FAQPage schema.
-   */
-  faqs: (number | Faq)[];
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'faq';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CTABlock".
- */
-export interface CTABlock {
-  heading: string;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  body?: string | null;
-  label: string;
-  href: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'cta';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "GalleryBlock".
- */
-export interface GalleryBlock {
-  heading?: string | null;
-  images?:
-    | {
-        /**
-         * Upload to the Media library, or paste an existing image URL (Cloudinary or a /public path).
-         */
-        image?: {
-          media?: (number | null) | Media;
-          url?: string | null;
-          /**
-           * Describe the image for screen readers and search. Uploaded images fall back to the alt text saved in the Media library.
-           */
-          alt?: string | null;
-          caption?: string | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  columns?: ('2' | '3' | '4') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'gallery';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TeamBlock".
- */
-export interface TeamBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  /**
-   * Leave empty to show featured team members.
-   */
-  members?: (number | Team)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'team';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContactFormBlock".
- */
-export interface ContactFormBlock {
-  eyebrow?: string | null;
-  heading?: string | null;
-  /**
-   * Rendered in the italic gradient style.
-   */
-  headingAccent?: string | null;
-  intro?: string | null;
-  /**
-   * Tag stored with submissions from this form, e.g. "finland-campaign".
-   */
-  source?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'contactForm';
-}
-/**
  * Send old URLs to new ones. Applied to any URL that would otherwise 404.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2095,37 +2126,6 @@ export interface Redirect {
   to: string;
   type: 'permanent' | 'temporary';
   enabled?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Contact-form enquiries. Update the status as you follow up.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-submissions".
- */
-export interface ContactSubmission {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string | null;
-  company?: string | null;
-  budget?: string | null;
-  service?: string | null;
-  message: string;
-  /**
-   * Page or campaign the enquiry came from.
-   */
-  source?: string | null;
-  /**
-   * Whether the notification email was sent.
-   */
-  emailDelivered?: boolean | null;
-  status: 'new' | 'contacted' | 'qualified' | 'converted' | 'archived';
-  /**
-   * Internal follow-up notes.
-   */
-  notes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2154,20 +2154,28 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'contact-submissions';
+        value: number | ContactSubmission;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'team';
+        value: number | Team;
+      } | null)
+    | ({
         relationTo: 'projects';
         value: number | Project;
       } | null)
     | ({
-        relationTo: 'services';
-        value: number | Service;
+        relationTo: 'clients';
+        value: number | Client;
       } | null)
     | ({
-        relationTo: 'pillars';
-        value: number | Pillar;
-      } | null)
-    | ({
-        relationTo: 'industries';
-        value: number | Industry;
+        relationTo: 'testimonials';
+        value: number | Testimonial;
       } | null)
     | ({
         relationTo: 'blog-posts';
@@ -2178,20 +2186,16 @@ export interface PayloadLockedDocument {
         value: number | Author;
       } | null)
     | ({
-        relationTo: 'testimonials';
-        value: number | Testimonial;
+        relationTo: 'pillars';
+        value: number | Pillar;
       } | null)
     | ({
-        relationTo: 'clients';
-        value: number | Client;
+        relationTo: 'services';
+        value: number | Service;
       } | null)
     | ({
-        relationTo: 'team';
-        value: number | Team;
-      } | null)
-    | ({
-        relationTo: 'faqs';
-        value: number | Faq;
+        relationTo: 'industries';
+        value: number | Industry;
       } | null)
     | ({
         relationTo: 'process';
@@ -2202,6 +2206,10 @@ export interface PayloadLockedDocument {
         value: number | WhyPoint;
       } | null)
     | ({
+        relationTo: 'faqs';
+        value: number | Faq;
+      } | null)
+    | ({
         relationTo: 'locations';
         value: number | Location;
       } | null)
@@ -2210,24 +2218,16 @@ export interface PayloadLockedDocument {
         value: number | LocationPage;
       } | null)
     | ({
-        relationTo: 'pages';
-        value: number | Page;
-      } | null)
-    | ({
-        relationTo: 'redirects';
-        value: number | Redirect;
-      } | null)
-    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'contact-submissions';
-        value: number | ContactSubmission;
-      } | null)
-    | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2273,868 +2273,20 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "projects_select".
+ * via the `definition` "contact-submissions_select".
  */
-export interface ProjectsSelect<T extends boolean = true> {
-  title?: T;
-  overline?: T;
-  headline?: T;
-  summary?: T;
-  coverImage?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  heroOverlay?: T;
-  client?: T;
-  year?: T;
-  location?: T;
-  industryLabel?: T;
-  liveUrl?: T;
-  tags?: T;
-  audienceTier?: T;
-  serviceTags?: T;
-  deliverables?: T;
-  bg?: T;
-  bigText?: T;
-  bigClass?: T;
-  problem?: T;
-  solution?: T;
-  result?: T;
-  metrics?:
-    | T
-    | {
-        prefix?: T;
-        value?: T;
-        suffix?: T;
-        label?: T;
-        description?: T;
-        id?: T;
-      };
-  narrative?:
-    | T
-    | {
-        narrativeBrief?:
-          | T
-          | {
-              eyebrow?: T;
-              headline?: T;
-              lead?: T;
-              problems?:
-                | T
-                | {
-                    title?: T;
-                    body?: T;
-                    id?: T;
-                  };
-              footnote?: T;
-              id?: T;
-              blockName?: T;
-            };
-        narrativeApproach?:
-          | T
-          | {
-              eyebrow?: T;
-              headline?: T;
-              pullQuote?: T;
-              proofs?:
-                | T
-                | {
-                    claim?: T;
-                    evidence?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        narrativeIa?:
-          | T
-          | {
-              eyebrow?: T;
-              headline?: T;
-              lead?: T;
-              quadrants?:
-                | T
-                | {
-                    label?: T;
-                    title?: T;
-                    description?: T;
-                    query?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        narrativePillars?:
-          | T
-          | {
-              eyebrow?: T;
-              headline?: T;
-              lead?: T;
-              items?:
-                | T
-                | {
-                    title?: T;
-                    body?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        narrativeOutcome?:
-          | T
-          | {
-              eyebrow?: T;
-              headline?: T;
-              stats?:
-                | T
-                | {
-                    value?: T;
-                    label?: T;
-                    body?: T;
-                    id?: T;
-                  };
-              closing?: T;
-              id?: T;
-              blockName?: T;
-            };
-      };
-  body?: T;
-  contentBlocks?:
-    | T
-    | {
-        heading?: T;
-        body?: T;
-        image?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        imagePosition?: T;
-        id?: T;
-      };
-  testimonial?:
-    | T
-    | {
-        quote?: T;
-        name?: T;
-        role?: T;
-      };
-  faqs?:
-    | T
-    | {
-        question?: T;
-        answer?: T;
-        id?: T;
-      };
-  designRationale?: T;
-  colorPalette?:
-    | T
-    | {
-        name?: T;
-        hex?: T;
-        role?: T;
-        id?: T;
-      };
-  typography?:
-    | T
-    | {
-        family?: T;
-        role?: T;
-        weights?: T;
-        sample?: T;
-        rationale?: T;
-        id?: T;
-      };
-  uiPrinciples?:
-    | T
-    | {
-        title?: T;
-        detail?: T;
-        id?: T;
-      };
-  motionPrinciples?:
-    | T
-    | {
-        title?: T;
-        detail?: T;
-        id?: T;
-      };
-  techStack?:
-    | T
-    | {
-        name?: T;
-        category?: T;
-        url?: T;
-        id?: T;
-      };
-  wireframes?:
-    | T
-    | {
-        image?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        caption?: T;
-        id?: T;
-      };
-  gallery?:
-    | T
-    | {
-        image?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        id?: T;
-      };
-  galleryHeading?: T;
-  galleryAspect?: T;
-  socialGallery?:
-    | T
-    | {
-        image?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        id?: T;
-      };
-  socialGalleryHeading?: T;
-  socialCampaign?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        images?:
-          | T
-          | {
-              image?:
-                | T
-                | {
-                    media?: T;
-                    url?: T;
-                    alt?: T;
-                  };
-              label?: T;
-              id?: T;
-            };
-      };
-  videos?:
-    | T
-    | {
-        vimeoId?: T;
-        title?: T;
-        client?: T;
-        description?: T;
-        year?: T;
-        uploadDate?: T;
-        id?: T;
-      };
-  industry?: T;
-  services?: T;
-  relatedProjects?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalURL?: T;
-        noIndex?: T;
-        noFollow?: T;
-        ogTitle?: T;
-        ogDescription?: T;
-        ogImage?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        twitterTitle?: T;
-        twitterDescription?: T;
-      };
-  slug?: T;
-  hasCaseStudy?: T;
-  feature?: T;
-  displayOrder?: T;
-  createdBy?: T;
-  updatedBy?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services_select".
- */
-export interface ServicesSelect<T extends boolean = true> {
+export interface ContactSubmissionsSelect<T extends boolean = true> {
   name?: T;
-  rawName?: T;
-  pageTitle?: T;
-  shortDescription?: T;
-  coverImage?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  body?: T;
-  process?:
-    | T
-    | {
-        title?: T;
-        duration?: T;
-        detail?: T;
-        id?: T;
-      };
-  deliverables?:
-    | T
-    | {
-        name?: T;
-        description?: T;
-        id?: T;
-      };
-  pricingFromLKR?: T;
-  pricingTiers?:
-    | T
-    | {
-        name?: T;
-        price?: T;
-        highlight?: T;
-        summary?: T;
-        includes?: T;
-        id?: T;
-      };
-  faqs?:
-    | T
-    | {
-        question?: T;
-        answer?: T;
-        id?: T;
-      };
-  videos?:
-    | T
-    | {
-        vimeoId?: T;
-        title?: T;
-        client?: T;
-        description?: T;
-        year?: T;
-        uploadDate?: T;
-        id?: T;
-      };
-  relatedReading?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
-  relatedServices?: T;
-  relatedProjects?: T;
-  testimonials?: T;
-  industries?: T;
-  cta?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-      };
-  primaryKeyword?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalURL?: T;
-        noIndex?: T;
-        noFollow?: T;
-        ogTitle?: T;
-        ogDescription?: T;
-        ogImage?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        twitterTitle?: T;
-        twitterDescription?: T;
-      };
-  slug?: T;
-  pillar?: T;
-  featured?: T;
-  displayOrder?: T;
-  createdBy?: T;
-  updatedBy?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pillars_select".
- */
-export interface PillarsSelect<T extends boolean = true> {
-  label?: T;
-  num?: T;
-  accentColor?: T;
-  tagline?: T;
-  description?: T;
-  headline?: T;
-  positioning?: T;
-  capabilities?:
-    | T
-    | {
-        name?: T;
-        description?: T;
-        id?: T;
-      };
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalURL?: T;
-        noIndex?: T;
-        noFollow?: T;
-        ogTitle?: T;
-        ogDescription?: T;
-        ogImage?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        twitterTitle?: T;
-        twitterDescription?: T;
-      };
-  slug?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "industries_select".
- */
-export interface IndustriesSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  image?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  body?: T;
-  challenges?:
-    | T
-    | {
-        title?: T;
-        body?: T;
-        id?: T;
-      };
-  solutions?:
-    | T
-    | {
-        title?: T;
-        body?: T;
-        id?: T;
-      };
-  caseStudies?: T;
-  services?: T;
-  testimonials?: T;
-  accent?: T;
-  bgGradient?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalURL?: T;
-        noIndex?: T;
-        noFollow?: T;
-        ogTitle?: T;
-        ogDescription?: T;
-        ogImage?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        twitterTitle?: T;
-        twitterDescription?: T;
-      };
-  slug?: T;
-  featured?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog-posts_select".
- */
-export interface BlogPostsSelect<T extends boolean = true> {
-  title?: T;
-  excerpt?: T;
-  coverImage?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-        caption?: T;
-      };
-  body?: T;
-  keyTakeaways?: T;
-  ctaBlock?: T;
-  ctaHeading?: T;
-  ctaLabel?: T;
-  ctaHref?: T;
-  faqs?:
-    | T
-    | {
-        question?: T;
-        answer?: T;
-        id?: T;
-      };
-  faqSchema?: T;
-  relatedPosts?: T;
-  relatedServices?: T;
-  primaryKeyword?: T;
-  secondaryKeywords?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalURL?: T;
-        noIndex?: T;
-        noFollow?: T;
-        ogTitle?: T;
-        ogDescription?: T;
-        ogImage?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        twitterTitle?: T;
-        twitterDescription?: T;
-      };
-  slug?: T;
-  publishDate?: T;
-  updatedDate?: T;
-  author?: T;
-  category?: T;
-  tags?: T;
-  layout?: T;
-  featured?: T;
-  tableOfContents?: T;
-  wordCount?: T;
-  readTime?: T;
-  createdBy?: T;
-  updatedBy?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors_select".
- */
-export interface AuthorsSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  bio?: T;
-  avatar?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  initial?: T;
   email?: T;
-  socials?:
-    | T
-    | {
-        linkedin?: T;
-        twitter?: T;
-        website?: T;
-      };
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials_select".
- */
-export interface TestimonialsSelect<T extends boolean = true> {
-  quote?: T;
-  headline?: T;
-  name?: T;
-  role?: T;
+  phone?: T;
   company?: T;
-  initial?: T;
-  project?: T;
-  year?: T;
-  rating?: T;
-  avatar?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  companyLogo?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  videoUrl?: T;
-  poster?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  relatedProject?: T;
-  relatedService?: T;
-  featured?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "clients_select".
- */
-export interface ClientsSelect<T extends boolean = true> {
-  name?: T;
-  logo?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  website?: T;
-  location?: T;
-  industry?: T;
-  wordmarkStyle?: T;
-  featured?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team_select".
- */
-export interface TeamSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  department?: T;
-  bio?: T;
-  photo?:
-    | T
-    | {
-        media?: T;
-        url?: T;
-        alt?: T;
-      };
-  initial?: T;
-  skills?: T;
-  socialLinks?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        newTab?: T;
-        id?: T;
-      };
-  slug?: T;
-  featured?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faqs_select".
- */
-export interface FaqsSelect<T extends boolean = true> {
-  question?: T;
-  answer?: T;
-  category?: T;
-  published?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "process_select".
- */
-export interface ProcessSelect<T extends boolean = true> {
-  num?: T;
-  title?: T;
-  description?: T;
-  deliverables?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "why-points_select".
- */
-export interface WhyPointsSelect<T extends boolean = true> {
-  num?: T;
-  title?: T;
-  instead?: T;
-  description?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "locations_select".
- */
-export interface LocationsSelect<T extends boolean = true> {
-  name?: T;
-  district?: T;
-  lede?: T;
-  intro?:
-    | T
-    | {
-        paragraph?: T;
-        id?: T;
-      };
-  localAngle?: T;
-  keyIndustries?: T;
-  landmarks?: T;
-  featuredServices?:
-    | T
-    | {
-        service?: T;
-        label?: T;
-        id?: T;
-      };
-  relatedPosts?: T;
-  faqs?:
-    | T
-    | {
-        question?: T;
-        answer?: T;
-        id?: T;
-      };
-  geo?:
-    | T
-    | {
-        lat?: T;
-        lng?: T;
-      };
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalURL?: T;
-        noIndex?: T;
-        noFollow?: T;
-        ogTitle?: T;
-        ogDescription?: T;
-        ogImage?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        twitterTitle?: T;
-        twitterDescription?: T;
-      };
-  slug?: T;
-  displayOrder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "location-pages_select".
- */
-export interface LocationPagesSelect<T extends boolean = true> {
-  location?: T;
+  budget?: T;
   service?: T;
-  h1?: T;
-  serviceLabel?: T;
-  lede?: T;
-  intro?:
-    | T
-    | {
-        paragraph?: T;
-        id?: T;
-      };
-  benefits?:
-    | T
-    | {
-        title?: T;
-        body?: T;
-        id?: T;
-      };
-  faqs?:
-    | T
-    | {
-        question?: T;
-        answer?: T;
-        id?: T;
-      };
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalURL?: T;
-        noIndex?: T;
-        noFollow?: T;
-        ogTitle?: T;
-        ogDescription?: T;
-        ogImage?:
-          | T
-          | {
-              media?: T;
-              url?: T;
-              alt?: T;
-            };
-        twitterTitle?: T;
-        twitterDescription?: T;
-      };
+  message?: T;
+  source?: T;
+  emailDelivered?: T;
+  status?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3453,13 +2605,868 @@ export interface ContactFormBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects_select".
+ * via the `definition` "team_select".
  */
-export interface RedirectsSelect<T extends boolean = true> {
-  from?: T;
-  to?: T;
-  type?: T;
-  enabled?: T;
+export interface TeamSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  department?: T;
+  bio?: T;
+  photo?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  initial?: T;
+  skills?: T;
+  socialLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        newTab?: T;
+        id?: T;
+      };
+  slug?: T;
+  featured?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  overline?: T;
+  headline?: T;
+  summary?: T;
+  coverImage?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  heroOverlay?: T;
+  client?: T;
+  year?: T;
+  location?: T;
+  industryLabel?: T;
+  liveUrl?: T;
+  tags?: T;
+  audienceTier?: T;
+  serviceTags?: T;
+  deliverables?: T;
+  bg?: T;
+  bigText?: T;
+  bigClass?: T;
+  problem?: T;
+  solution?: T;
+  result?: T;
+  metrics?:
+    | T
+    | {
+        prefix?: T;
+        value?: T;
+        suffix?: T;
+        label?: T;
+        description?: T;
+        id?: T;
+      };
+  narrative?:
+    | T
+    | {
+        narrativeBrief?:
+          | T
+          | {
+              eyebrow?: T;
+              headline?: T;
+              lead?: T;
+              problems?:
+                | T
+                | {
+                    title?: T;
+                    body?: T;
+                    id?: T;
+                  };
+              footnote?: T;
+              id?: T;
+              blockName?: T;
+            };
+        narrativeApproach?:
+          | T
+          | {
+              eyebrow?: T;
+              headline?: T;
+              pullQuote?: T;
+              proofs?:
+                | T
+                | {
+                    claim?: T;
+                    evidence?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        narrativeIa?:
+          | T
+          | {
+              eyebrow?: T;
+              headline?: T;
+              lead?: T;
+              quadrants?:
+                | T
+                | {
+                    label?: T;
+                    title?: T;
+                    description?: T;
+                    query?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        narrativePillars?:
+          | T
+          | {
+              eyebrow?: T;
+              headline?: T;
+              lead?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    body?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        narrativeOutcome?:
+          | T
+          | {
+              eyebrow?: T;
+              headline?: T;
+              stats?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    body?: T;
+                    id?: T;
+                  };
+              closing?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  body?: T;
+  contentBlocks?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        image?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        imagePosition?: T;
+        id?: T;
+      };
+  testimonial?:
+    | T
+    | {
+        quote?: T;
+        name?: T;
+        role?: T;
+      };
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  designRationale?: T;
+  colorPalette?:
+    | T
+    | {
+        name?: T;
+        hex?: T;
+        role?: T;
+        id?: T;
+      };
+  typography?:
+    | T
+    | {
+        family?: T;
+        role?: T;
+        weights?: T;
+        sample?: T;
+        rationale?: T;
+        id?: T;
+      };
+  uiPrinciples?:
+    | T
+    | {
+        title?: T;
+        detail?: T;
+        id?: T;
+      };
+  motionPrinciples?:
+    | T
+    | {
+        title?: T;
+        detail?: T;
+        id?: T;
+      };
+  techStack?:
+    | T
+    | {
+        name?: T;
+        category?: T;
+        url?: T;
+        id?: T;
+      };
+  wireframes?:
+    | T
+    | {
+        image?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        caption?: T;
+        id?: T;
+      };
+  gallery?:
+    | T
+    | {
+        image?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        id?: T;
+      };
+  galleryHeading?: T;
+  galleryAspect?: T;
+  socialGallery?:
+    | T
+    | {
+        image?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        id?: T;
+      };
+  socialGalleryHeading?: T;
+  socialCampaign?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        images?:
+          | T
+          | {
+              image?:
+                | T
+                | {
+                    media?: T;
+                    url?: T;
+                    alt?: T;
+                  };
+              label?: T;
+              id?: T;
+            };
+      };
+  videos?:
+    | T
+    | {
+        vimeoId?: T;
+        title?: T;
+        client?: T;
+        description?: T;
+        year?: T;
+        uploadDate?: T;
+        id?: T;
+      };
+  industry?: T;
+  services?: T;
+  relatedProjects?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  slug?: T;
+  hasCaseStudy?: T;
+  feature?: T;
+  displayOrder?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients_select".
+ */
+export interface ClientsSelect<T extends boolean = true> {
+  name?: T;
+  logo?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  website?: T;
+  location?: T;
+  industry?: T;
+  wordmarkStyle?: T;
+  featured?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  quote?: T;
+  headline?: T;
+  name?: T;
+  role?: T;
+  company?: T;
+  initial?: T;
+  project?: T;
+  year?: T;
+  rating?: T;
+  avatar?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  companyLogo?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  videoUrl?: T;
+  poster?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  relatedProject?: T;
+  relatedService?: T;
+  featured?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts_select".
+ */
+export interface BlogPostsSelect<T extends boolean = true> {
+  title?: T;
+  excerpt?: T;
+  coverImage?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+        caption?: T;
+      };
+  body?: T;
+  keyTakeaways?: T;
+  ctaBlock?: T;
+  ctaHeading?: T;
+  ctaLabel?: T;
+  ctaHref?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  faqSchema?: T;
+  relatedPosts?: T;
+  relatedServices?: T;
+  primaryKeyword?: T;
+  secondaryKeywords?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  slug?: T;
+  publishDate?: T;
+  updatedDate?: T;
+  author?: T;
+  category?: T;
+  tags?: T;
+  layout?: T;
+  featured?: T;
+  tableOfContents?: T;
+  wordCount?: T;
+  readTime?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  bio?: T;
+  avatar?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  initial?: T;
+  email?: T;
+  socials?:
+    | T
+    | {
+        linkedin?: T;
+        twitter?: T;
+        website?: T;
+      };
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pillars_select".
+ */
+export interface PillarsSelect<T extends boolean = true> {
+  label?: T;
+  num?: T;
+  accentColor?: T;
+  tagline?: T;
+  description?: T;
+  headline?: T;
+  positioning?: T;
+  capabilities?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  slug?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  name?: T;
+  rawName?: T;
+  pageTitle?: T;
+  shortDescription?: T;
+  coverImage?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  body?: T;
+  process?:
+    | T
+    | {
+        title?: T;
+        duration?: T;
+        detail?: T;
+        id?: T;
+      };
+  deliverables?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+        id?: T;
+      };
+  pricingFromLKR?: T;
+  pricingTiers?:
+    | T
+    | {
+        name?: T;
+        price?: T;
+        highlight?: T;
+        summary?: T;
+        includes?: T;
+        id?: T;
+      };
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  videos?:
+    | T
+    | {
+        vimeoId?: T;
+        title?: T;
+        client?: T;
+        description?: T;
+        year?: T;
+        uploadDate?: T;
+        id?: T;
+      };
+  relatedReading?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  relatedServices?: T;
+  relatedProjects?: T;
+  testimonials?: T;
+  industries?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  primaryKeyword?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  slug?: T;
+  pillar?: T;
+  featured?: T;
+  displayOrder?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "industries_select".
+ */
+export interface IndustriesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  image?:
+    | T
+    | {
+        media?: T;
+        url?: T;
+        alt?: T;
+      };
+  body?: T;
+  challenges?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  solutions?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  caseStudies?: T;
+  services?: T;
+  testimonials?: T;
+  accent?: T;
+  bgGradient?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  slug?: T;
+  featured?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "process_select".
+ */
+export interface ProcessSelect<T extends boolean = true> {
+  num?: T;
+  title?: T;
+  description?: T;
+  deliverables?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "why-points_select".
+ */
+export interface WhyPointsSelect<T extends boolean = true> {
+  num?: T;
+  title?: T;
+  instead?: T;
+  description?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs_select".
+ */
+export interface FaqsSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  category?: T;
+  published?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
+  name?: T;
+  district?: T;
+  lede?: T;
+  intro?:
+    | T
+    | {
+        paragraph?: T;
+        id?: T;
+      };
+  localAngle?: T;
+  keyIndustries?: T;
+  landmarks?: T;
+  featuredServices?:
+    | T
+    | {
+        service?: T;
+        label?: T;
+        id?: T;
+      };
+  relatedPosts?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  geo?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  slug?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "location-pages_select".
+ */
+export interface LocationPagesSelect<T extends boolean = true> {
+  location?: T;
+  service?: T;
+  h1?: T;
+  serviceLabel?: T;
+  lede?: T;
+  intro?:
+    | T
+    | {
+        paragraph?: T;
+        id?: T;
+      };
+  benefits?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?:
+          | T
+          | {
+              media?: T;
+              url?: T;
+              alt?: T;
+            };
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3530,25 +3537,6 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-submissions_select".
- */
-export interface ContactSubmissionsSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  phone?: T;
-  company?: T;
-  budget?: T;
-  service?: T;
-  message?: T;
-  source?: T;
-  emailDelivered?: T;
-  status?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -3570,6 +3558,18 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  from?: T;
+  to?: T;
+  type?: T;
+  enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
