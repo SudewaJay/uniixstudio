@@ -28,6 +28,33 @@ export default function EditorialProjectFeed({ projects }: Props) {
       {projects.map((project, index) => {
         // Map projects to their unique visual composition
         switch (project.slug) {
+          case "cricbook":
+            return (
+              <FlagshipProductStory
+                key={project.slug}
+                project={project}
+                index={index}
+                total={projects.length}
+              />
+            );
+          case "bilesma-natural":
+            return (
+              <PackagingStory
+                key={project.slug}
+                project={project}
+                index={index}
+                total={projects.length}
+              />
+            );
+          case "bilesma-natural-social-media":
+            return (
+              <SocialFeedStory
+                key={project.slug}
+                project={project}
+                index={index}
+                total={projects.length}
+              />
+            );
           case "rentmycar-lk":
             return (
               <FullBleedLeadStory
@@ -42,6 +69,7 @@ export default function EditorialProjectFeed({ projects }: Props) {
                 key={project.slug}
                 project={project}
                 index={index}
+                total={projects.length}
               />
             );
           case "ecowave-energy":
@@ -50,6 +78,7 @@ export default function EditorialProjectFeed({ projects }: Props) {
                 key={project.slug}
                 project={project}
                 index={index}
+                total={projects.length}
               />
             );
           case "sierra-energy-solutions":
@@ -58,6 +87,7 @@ export default function EditorialProjectFeed({ projects }: Props) {
                 key={project.slug}
                 project={project}
                 index={index}
+                total={projects.length}
               />
             );
           case "zerro":
@@ -172,6 +202,84 @@ function ProjectCardShell({
 }
 
 /* -------------------------------------------------------------------------- */
+/* 00. FLAGSHIP PRODUCT STORY (CricBook)                                      */
+/* -------------------------------------------------------------------------- */
+
+function FlagshipProductStory({
+  project,
+  index,
+  total,
+}: {
+  project: Project;
+  index: number;
+  total: number;
+}) {
+  return (
+    <section className="wrap">
+      <Reveal>
+        <ProjectCardShell href={`/portfolio/${project.slug}/`}>
+          <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-[#15103F] text-white border border-white/10 shadow-lift">
+            <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)]">
+              {/* Narrative */}
+              <div className="order-2 lg:order-1 flex flex-col justify-between gap-10 p-6 sm:p-10 lg:p-12">
+                <div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="px-3 py-1 rounded-full bg-[#22E0A0] text-[#06302A] font-mono text-[10px] tracking-[0.18em] uppercase">
+                      Flagship
+                    </span>
+                    <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-white/60">
+                      {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")} · {project.year}
+                    </span>
+                  </div>
+                  <h2 className="t-h2 mt-6 text-white group-hover:translate-x-1 transition-transform duration-micro ease-uniix text-[clamp(38px,4.6vw,64px)]">
+                    {project.title}
+                  </h2>
+                  <p className="mt-3 font-mono text-[11px] tracking-[0.2em] uppercase text-[#22E0A0]">
+                    {project.overline}
+                  </p>
+                  <p className="t-lead mt-6 text-white/80 max-w-[46ch]">{project.summary}</p>
+                </div>
+
+                <div>
+                  {project.tags && project.tags.length > 0 && (
+                    <ul className="flex flex-wrap gap-2" aria-label="Services">
+                      {project.tags.map((t) => (
+                        <li
+                          key={t}
+                          className="px-3 py-1 rounded-full bg-white/[.07] text-white/85 text-[12px] font-medium border border-white/10"
+                        >
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <span className="mt-8 inline-flex items-center gap-2 font-display text-[16px] font-medium text-[#22E0A0] group-hover:gap-3 transition-all duration-micro">
+                    Explore the product case study <span className="cta-arrow">↗</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Visual */}
+              <div className="order-1 lg:order-2 relative aspect-[16/10] lg:aspect-auto lg:min-h-[520px] overflow-hidden">
+                <div className="absolute inset-0 transition-transform duration-reveal ease-uniix group-hover:scale-[1.03]">
+                  <SmartImage
+                    src={project.coverImage}
+                    alt={`${project.title} — sports booking platform on desktop and mobile`}
+                    sizes="(min-width:1280px) 760px, (min-width:1024px) 60vw, 100vw"
+                    priority={index === 0}
+                    position="left center"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </ProjectCardShell>
+      </Reveal>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /* 01. FULL-WIDTH CINEMATIC LEAD STORY (RentMyCar.lk)                        */
 /* -------------------------------------------------------------------------- */
 
@@ -205,7 +313,7 @@ function FullBleedLeadStory({
               {/* Top Floating Badge */}
               <div className="absolute top-6 left-6 md:top-8 md:left-8 z-10 flex items-center gap-3">
                 <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 font-mono text-[11px] tracking-[0.18em] uppercase text-brand-2">
-                  Featured Case 01
+                  Featured Case {String(index + 1).padStart(2, "0")}
                 </span>
                 <span className="hidden sm:inline-block font-mono text-[11px] tracking-[0.18em] uppercase text-white/70">
                   {project.year} · Sri Lanka
@@ -261,9 +369,11 @@ function FullBleedLeadStory({
 function SplitDossierStory({
   project,
   index,
+  total,
 }: {
   project: Project;
   index: number;
+  total: number;
 }) {
   return (
     <section className="wrap">
@@ -274,7 +384,7 @@ function SplitDossierStory({
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
                 <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
-                  {String(index + 1).padStart(2, "0")} / 08
+                  {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
                 </span>
                 <span className="text-ink-mute/40">·</span>
                 <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
@@ -340,9 +450,11 @@ function SplitDossierStory({
 function BrandSystemStory({
   project,
   index,
+  total,
 }: {
   project: Project;
   index: number;
+  total: number;
 }) {
   return (
     <section className="wrap">
@@ -381,7 +493,7 @@ function BrandSystemStory({
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
                 <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
-                  {String(index + 1).padStart(2, "0")} / 08
+                  {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
                 </span>
                 <span className="text-ink-mute/40">·</span>
                 <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
@@ -425,15 +537,190 @@ function BrandSystemStory({
 }
 
 /* -------------------------------------------------------------------------- */
+/* PACKAGING BEFORE / AFTER (Bilesma Natural)                                 */
+/* -------------------------------------------------------------------------- */
+
+function PackagingStory({
+  project,
+  index,
+  total,
+}: {
+  project: Project;
+  index: number;
+  total: number;
+}) {
+  return (
+    <section className="wrap">
+      <Reveal>
+        <ProjectCardShell href={`/portfolio/${project.slug}/`}>
+          <div className="grid lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] gap-10 lg:gap-14 items-center bg-bg-paper border border-line rounded-2xl md:rounded-3xl p-6 sm:p-10 lg:p-12 hover:shadow-soft transition-all duration-std">
+            <div className="flex flex-col lg:order-1 order-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
+                  {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                </span>
+                <span className="text-ink-mute/40">·</span>
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
+                  Beauty &amp; Packaging
+                </span>
+              </div>
+
+              <h2 className="t-h2 mt-4 text-[clamp(30px,3.6vw,50px)] group-hover:translate-x-1 transition-transform duration-micro ease-uniix">
+                {project.title}
+              </h2>
+
+              <p className="t-lead mt-5 text-ink-2 max-w-[46ch]">{project.headline}</p>
+
+              {project.tags && (
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {project.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="px-3 py-1 rounded-full border border-line text-[12px] text-ink-2 bg-bg-warm"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-8">
+                <span className="link-cta group-hover:text-brand-ink">
+                  See the before &amp; after <span className="cta-arrow">↗</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-[0.8fr_1.2fr] gap-3 md:gap-4 lg:order-2 order-1">
+              <div className="relative aspect-[3/4] overflow-hidden rounded-xl md:rounded-2xl bg-white border border-line">
+                <div className="absolute inset-[8%]">
+                  <SmartImage
+                    src="/portfolio/bilesma/old-kraft-bag.webp"
+                    alt="Bilesma Natural kraft bag before the redesign"
+                    sizes="(min-width:1024px) 20vw, 40vw"
+                    fit="contain"
+                  />
+                </div>
+                <span className="absolute left-3 top-3 rounded-full bg-[#7A5A3A] px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase text-white">
+                  Before
+                </span>
+              </div>
+              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl md:rounded-2xl bg-[#1F3A2B]">
+                <div className="absolute inset-0 transition-transform duration-reveal ease-uniix group-hover:scale-[1.04]">
+                  <SmartImage
+                    src="/portfolio/bilesma/bag-tagline-monstera.webp"
+                    alt="Bilesma Natural redesigned botanical carry bag"
+                    sizes="(min-width:1024px) 30vw, 58vw"
+                  />
+                </div>
+                <span className="absolute left-3 top-3 rounded-full bg-[#6A9670] px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase text-white">
+                  After
+                </span>
+              </div>
+            </div>
+          </div>
+        </ProjectCardShell>
+      </Reveal>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* SOCIAL FEED FAN (Bilesma Natural Social)                                   */
+/* -------------------------------------------------------------------------- */
+
+const SOCIAL_FAN = [
+  { src: "/portfolio/bilesma-social/saffron-benefits.webp", cls: "-translate-x-[58%] -rotate-[9deg] group-hover:-translate-x-[78%] group-hover:-rotate-[12deg]" },
+  { src: "/portfolio/bilesma-social/curly-ingredients.webp", cls: "translate-x-[58%] rotate-[9deg] group-hover:translate-x-[78%] group-hover:rotate-[12deg]" },
+  { src: "/portfolio/bilesma-social/kasthuri-benefits.webp", cls: "z-10 group-hover:-translate-y-[4%]" },
+];
+
+function SocialFeedStory({
+  project,
+  index,
+  total,
+}: {
+  project: Project;
+  index: number;
+  total: number;
+}) {
+  return (
+    <section className="wrap">
+      <Reveal>
+        <ProjectCardShell href={`/portfolio/${project.slug}/`}>
+          <div className="grid lg:grid-cols-[minmax(0,55%)_minmax(0,45%)] gap-10 lg:gap-14 items-center rounded-2xl md:rounded-3xl border border-line bg-bg-paper p-6 sm:p-10 lg:p-12 hover:shadow-soft transition-all duration-std">
+            <div className="relative flex items-center justify-center overflow-hidden rounded-xl md:rounded-2xl bg-[#1F3A2B] py-12 md:py-16">
+              <div className="relative aspect-[4/5] w-[38%]">
+                {SOCIAL_FAN.map((c, i) => (
+                  <div
+                    key={c.src}
+                    className={`absolute inset-0 overflow-hidden rounded-xl shadow-[0_24px_50px_-18px_rgba(0,0,0,.6)] transition-transform duration-reveal ease-uniix ${c.cls}`}
+                  >
+                    <SmartImage
+                      src={c.src}
+                      alt={i === 2 ? "Bilesma Natural social media posts designed by Uniix Studio" : ""}
+                      sizes="(min-width:1024px) 18vw, 36vw"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
+                  {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                </span>
+                <span className="text-ink-mute/40">·</span>
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">
+                  Beauty &amp; Social
+                </span>
+              </div>
+
+              <h2 className="t-h2 mt-4 text-[clamp(30px,3.6vw,50px)] group-hover:translate-x-1 transition-transform duration-micro ease-uniix">
+                {project.title}
+              </h2>
+
+              <p className="t-lead mt-5 text-ink-2 max-w-[46ch]">{project.headline}</p>
+
+              {project.tags && (
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {project.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="px-3 py-1 rounded-full border border-line text-[12px] text-ink-2 bg-bg-warm"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-8">
+                <span className="link-cta group-hover:text-brand-ink">
+                  Take a post apart <span className="cta-arrow">↗</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </ProjectCardShell>
+      </Reveal>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /* 04. CREATIVE CAMPAIGN GRID (Sierra Energy Solutions)                       */
 /* -------------------------------------------------------------------------- */
 
 function CampaignGridStory({
   project,
   index,
+  total,
 }: {
   project: Project;
   index: number;
+  total: number;
 }) {
   return (
     <section className="wrap">
@@ -444,7 +731,7 @@ function CampaignGridStory({
               <div>
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-brand-ink">
-                    {String(index + 1).padStart(2, "0")} / 08
+                    {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
                   </span>
                   <span className="text-ink-mute/40">·</span>
                   <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-mute">

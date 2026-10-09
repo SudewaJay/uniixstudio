@@ -9,9 +9,9 @@ import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: "Web Design & Development Near You | Uniix Studio — Negombo, Ja-Ela, Wattala",
+  title: "Web Design & Development Near You | Uniix Studio — Colombo, Negombo, Ja-Ela, Wattala",
   description:
-    "Uniix Studio designs and builds websites, e-commerce and brands for businesses across Negombo, Ja-Ela, Wattala and the Gampaha–Colombo corridor.",
+    "Uniix Studio designs and builds websites, e-commerce and brands for businesses across Colombo, Negombo, Ja-Ela, Wattala and the Gampaha–Colombo corridor.",
   alternates: { canonical: site.canonical("/locations/") },
   openGraph: {
     title: "Web Design & Development Near You | Uniix Studio",

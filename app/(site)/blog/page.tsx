@@ -20,7 +20,21 @@ export const metadata: Metadata = {
 
 export default async function BlogIndexPage() {
   // Published, non-future posts only — drafts and stubs never reach this list.
-  const published = await getPosts();
+  // Only the fields the index cards render cross to the client. Passing the
+  // full posts serialized every Markdown body into the RSC payload (~280KB,
+  // prefetched from the nav on every page).
+  const published = (await getPosts()).map(
+    ({ slug, title, excerpt, category, publishDate, readTime, coverImage, author }) => ({
+      slug,
+      title,
+      excerpt,
+      category,
+      publishDate,
+      readTime,
+      coverImage,
+      author,
+    }),
+  );
 
   const crumbs = breadcrumbSchema([
     { name: "Home", url: "/" },

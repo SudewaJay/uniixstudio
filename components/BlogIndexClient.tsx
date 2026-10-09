@@ -21,7 +21,12 @@ const SORT_OPTIONS = [
 
 const PAGE_SIZE = 6;
 
-export default function BlogIndexClient({ posts }: { posts: BlogPost[] }) {
+export type BlogCard = Pick<
+  BlogPost,
+  "slug" | "title" | "excerpt" | "category" | "publishDate" | "readTime" | "coverImage" | "author"
+>;
+
+export default function BlogIndexClient({ posts }: { posts: BlogCard[] }) {
   const [tab, setTab] = useState<string>("all");
   const [sort, setSort] = useState<string>("recent");
   const [page, setPage] = useState<number>(1);

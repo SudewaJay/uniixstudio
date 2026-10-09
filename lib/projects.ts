@@ -169,6 +169,12 @@ export type Project = {
   faqs?: Array<{ question: string; answer: string }>;
   /** Opt-in: overlay the hero title on the cover image instead of stacking them. */
   heroOverlay?: boolean;
+  /** Optional <title> override for the case-study page. */
+  seoTitle?: string;
+  /** Optional meta description override (defaults to `summary`). */
+  seoDescription?: string;
+  /** Optional 1200×630 JPG for Open Graph / X (defaults to a transform of `coverImage`). */
+  ogImage?: string;
   /** Long-form Markdown body from MDX. Only set for projects with a content/projects/*.mdx file. */
   body?: string;
   /** True when the project has a case-study page at /portfolio/<slug>/. */

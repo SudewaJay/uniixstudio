@@ -102,32 +102,16 @@ export default async function RootLayout({
     <html lang="en" className={mono.variable}>
       <head>
         {/*
-          Google Sans Flex — display AND body.
-          It is NOT in next/font's bundled catalog and is not open-licensed, so
-          it cannot be self-hosted through next/font — it loads from Google's
-          CDN. preconnect to both hosts keeps the extra hop off the critical
-          path as much as possible, and `display=swap` means text paints in the
-          fallback immediately rather than blocking.
-
-          Axes requested: opsz 6–144 (optical sizing for display type),
-          slnt -10–0 (a real slant axis — the accent lines use it instead of a
-          synthetic oblique, since the family ships no true italic),
-          wght 300–800.
-
-          It is the only text face on the site now (JetBrains Mono still
-          handles the mono meta labels), so Lexend is no longer downloaded —
-          that saving offsets part of this third-party request.
+          Google Sans Flex is self-hosted (see @font-face in globals.css).
+          Preloading the latin subset lets it download in parallel with the
+          CSS instead of being discovered only after the stylesheet parses.
         */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
+          rel="preload"
+          href="/fonts/GoogleSansFlex-latin.woff2"
+          as="font"
+          type="font/woff2"
           crossOrigin="anonymous"
-        />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,slnt,wght@6..144,-10..0,300..800&display=swap"
         />
       </head>
       <body className="font-sans">

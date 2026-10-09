@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import fs from "node:fs";
+import path from "node:path";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import Reveal from "@/components/Reveal";
@@ -30,6 +32,9 @@ import NextProjectExhibition from "@/components/portfolio/case-study/NextProject
 import CaseStudyCTA from "@/components/portfolio/case-study/CaseStudyCTA";
 import SocialCampaignCarousel from "@/components/SocialCampaignCarousel";
 import CaseStudyNarrative from "@/components/CaseStudyNarrative";
+import CricBookCaseStudy from "@/components/portfolio/cricbook/CricBookCaseStudy";
+import BilesmaCaseStudy from "@/components/portfolio/bilesma/BilesmaCaseStudy";
+import BilesmaSocialCaseStudy from "@/components/portfolio/bilesma-social/BilesmaSocialCaseStudy";
 
 export async function generateStaticParams() {
   return (await getDetailedProjects()).map((p) => ({ slug: p.slug }));
@@ -120,6 +125,49 @@ export default async function ProjectDetailPage({
       ? project.videos.map((v) => videoObjectSchema(v))
       : []),
   );
+
+  // Flagship product case study with its own bespoke composition.
+  if (project.slug === "cricbook") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <CricBookCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+        />
+      </>
+    );
+  }
+
+  if (project.slug === "bilesma-natural") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <BilesmaCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+          hasReel={fs.existsSync(
+            path.join(process.cwd(), "public", "portfolio", "bilesma", "logo-reel.mp4"),
+          )}
+        />
+      </>
+    );
+  }
+
+  if (project.slug === "bilesma-natural-social-media") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <BilesmaSocialCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+        />
+      </>
+    );
+  }
 
   return (
     <>

@@ -71,7 +71,7 @@ export default function PortfolioHero({
               <div className="flex flex-wrap items-center gap-8 md:gap-14">
                 <div>
                   <div className="t-numeral text-[clamp(28px,2.4vw,36px)] text-ink">
-                    08
+                    {String(totalCount).padStart(2, "0")}
                   </div>
                   <div className="t-meta text-ink-mute text-[10px] mt-1">
                     Featured Case Studies

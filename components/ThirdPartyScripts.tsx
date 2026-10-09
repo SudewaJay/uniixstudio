@@ -4,7 +4,11 @@
  * One place for every analytics ID. IDs come from CMS Site Settings →
  * Analytics, falling back to env vars (NEXT_PUBLIC_GA_ID,
  * NEXT_PUBLIC_CLARITY_ID, NEXT_PUBLIC_META_PIXEL_ID). Nothing loads when
- * unset. strategy="afterInteractive" keeps them off the critical path.
+ * unset.
+ *
+ * Loaded with strategy="lazyOnload" (after the load event, during idle time).
+ * gtag.js alone is ~190KB and was the largest long task on mobile when it ran
+ * afterInteractive; deferring it keeps it out of TBT/LCP.
  */
 import Script from "next/script";
 import type { SiteSettings } from "@/lib/cms/site";
@@ -22,9 +26,9 @@ export default function ThirdPartyScripts({ analytics }: { analytics: SiteSettin
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
-          <Script id="ga4-init" strategy="afterInteractive">
+          <Script id="ga4-init" strategy="lazyOnload">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
@@ -39,7 +43,7 @@ export default function ThirdPartyScripts({ analytics }: { analytics: SiteSettin
       )}
 
       {CLARITY_ID && (
-        <Script id="clarity-init" strategy="afterInteractive">
+        <Script id="clarity-init" strategy="lazyOnload">
           {`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -51,7 +55,7 @@ export default function ThirdPartyScripts({ analytics }: { analytics: SiteSettin
       )}
 
       {PIXEL_ID && (
-        <Script id="meta-pixel-init" strategy="afterInteractive">
+        <Script id="meta-pixel-init" strategy="lazyOnload">
           {`
             !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;

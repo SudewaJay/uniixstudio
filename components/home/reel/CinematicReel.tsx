@@ -635,14 +635,14 @@ export default function CinematicReel({ films }: { films: ReelFilm[] }) {
                     />
                   </span>
                   <span className="mt-3 flex items-baseline gap-3">
-                    <span className={clsx("t-meta tabular-nums text-[10px]", on ? "accent" : "text-white/40")}>
+                    <span className={clsx("t-meta tabular-nums text-[10px]", on ? "accent" : "text-white/60")}>
                       {pad2(i + 1)}
                     </span>
                     <span className="min-w-0 truncate text-[14px] font-medium tracking-[-0.01em]">
                       {labels.name}
                     </span>
                   </span>
-                  <span className="mt-1 block pl-[30px] text-[12px] text-white/50">
+                  <span className="mt-1 block pl-[30px] text-[12px] text-white/65">
                     {labels.kind}
                     {f.duration ? ` · ${formatDuration(f.duration)}` : ""}
                   </span>

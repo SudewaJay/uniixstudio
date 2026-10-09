@@ -246,7 +246,10 @@ export function creativeWorkSchema(project: Project) {
     project.coverImage,
     ...(project.gallery ?? []),
     ...((project.wireframes ?? []).map((w) => w.src)),
-  ].filter(Boolean);
+  ]
+    .filter(Boolean)
+    // Local assets (/portfolio/...) must be absolute in structured data.
+    .map((src) => (src.startsWith("/") ? `${SITE_URL}${src}` : src));
   const keywords = [
     ...(project.services ?? []),
     ...((project.techStack ?? []).map((t) => t.name)),

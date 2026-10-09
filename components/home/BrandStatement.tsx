@@ -54,8 +54,8 @@ export default function BrandStatement({
           </Reveal>
           <ul className="mt-9 grid grid-cols-3 items-center gap-x-8 gap-y-9 sm:gap-x-12 lg:grid-cols-6">
             {clients.map((c, i) => (
-              <Reveal key={c.name} delay={(i % 4) as 0 | 1 | 2 | 3}>
-                <li className="relative h-10 md:h-11">
+              <li key={c.name}>
+                <Reveal delay={(i % 4) as 0 | 1 | 2 | 3} className="relative h-10 md:h-11">
                   {c.logo ? (
                     <SmartImage
                       src={c.logo}
@@ -69,8 +69,8 @@ export default function BrandStatement({
                       {c.name}
                     </span>
                   )}
-                </li>
-              </Reveal>
+                </Reveal>
+              </li>
             ))}
           </ul>
         </div>
