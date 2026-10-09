@@ -59,6 +59,7 @@ export default buildConfig({
       beforeDashboard: ['/payload/admin/Dashboard#Dashboard'],
       beforeNavLinks: ['/payload/admin/NavDashboardLink#NavDashboardLink'],
       actions: ['/payload/admin/ViewSiteAction#ViewSiteAction'],
+      graphics: { Logo: '/payload/admin/Brand#Logo', Icon: '/payload/admin/Brand#Icon' },
     },
     meta: {
       titleSuffix: ' · Uniix Studio CMS',

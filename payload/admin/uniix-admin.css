@@ -727,3 +727,20 @@ body,
     display: none;
   }
 }
+
+/* ---------- 13. Brand (payload/admin/Brand.tsx) ---------- */
+.uniix-logo {
+  display: block;
+  width: 168px;
+  aspect-ratio: 778 / 346;
+  margin-inline: auto;
+  background-color: var(--uniix-text);
+  -webkit-mask: url('/uniix-logo.svg') center / contain no-repeat;
+  mask: url('/uniix-logo.svg') center / contain no-repeat;
+}
+.uniix-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
