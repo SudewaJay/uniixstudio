@@ -450,7 +450,7 @@ export const locationServices: LocationService[] = [
     pillar: "technology",
     serviceLabel: "Web Development",
     h1: "Web Development in Colombo",
-    metaTitle: "Web Development Colombo | Custom Web Apps & Next.js Sites — Uniix Studio",
+    metaTitle: "Web Development Colombo | Custom Web Apps & Next.js — Uniix Studio",
     metaDescription:
       "Web development in Colombo. Uniix Studio builds high-performance Next.js websites, headless CMS builds, client portals and SaaS MVPs for Colombo companies.",
     lede: "High-performance websites, web apps and MVPs engineered for Colombo companies.",
