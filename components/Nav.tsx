@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { nav } from "@/lib/content";
+import type { NavData, NavItem } from "@/lib/cms/site";
 import { PROMO_BAR_HEIGHT } from "./PromoBar";
 import Logo from "./Logo";
 import clsx from "clsx";
@@ -18,7 +18,71 @@ import clsx from "clsx";
  * absent from the HTML (invisible to crawlers and no-JS) and visibly swapped
  * in after hydration on every page load.
  */
-export default function Nav() {
+/** Desktop dropdown: opens on hover and on keyboard focus/click. */
+function NavDropdown({
+  item,
+  light,
+  active,
+}: {
+  item: NavItem;
+  light: boolean;
+  active: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const id = `nav-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+    >
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen((o) => !o)}
+        onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
+        className={clsx(
+          "inline-flex items-center gap-1 px-4 py-2.5 rounded-full text-[14.5px] font-medium transition-colors duration-micro ease-uniix",
+          active
+            ? light ? "text-white" : "text-ink"
+            : light ? "text-white/75 hover:text-white" : "text-ink-2 hover:text-ink",
+        )}
+      >
+        {item.label}
+        <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" className={clsx("transition-transform", open && "rotate-180")}>
+          <path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      </button>
+      <div
+        id={id}
+        hidden={!open}
+        className="absolute left-1/2 top-full -translate-x-1/2 pt-2 min-w-[260px]"
+      >
+        <ul className="rounded-lg2 border border-line bg-bg p-2 shadow-soft">
+          <li>
+            <Link href={item.href} className="block rounded-lg px-4 py-3 text-[14.5px] font-medium text-ink hover:bg-bg-warm">
+              {item.label} — overview
+            </Link>
+          </li>
+          {item.children?.map((c) => (
+            <li key={c.href}>
+              <Link href={c.href} className="block rounded-lg px-4 py-3 hover:bg-bg-warm">
+                <span className="block text-[14.5px] font-medium text-ink">{c.label}</span>
+                {c.description && <span className="mt-0.5 block text-[13px] text-ink-mute">{c.description}</span>}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+export default function Nav({ nav }: { nav: NavData }) {
   const [scrolled, setScrolled] = useState(false);
   const [overDark, setOverDark] = useState(false);
   const [open, setOpen] = useState(false);
@@ -134,10 +198,15 @@ export default function Nav() {
 
           {/* Desktop links — server-rendered, hidden by CSS under 1024px. */}
           <ul className="hidden lg:flex items-center gap-1 ml-auto">
-            {nav.map((item) => (
+            {nav.items.map((item) => (
               <li key={item.href}>
+                {item.children?.length ? (
+                  <NavDropdown item={item} light={light} active={isActive(item.href)} />
+                ) : (
                 <Link
                   href={item.href}
+                  target={item.newTab ? "_blank" : undefined}
+                  rel={item.newTab ? "noopener noreferrer" : undefined}
                   aria-current={isActive(item.href) ? "page" : undefined}
                   className={clsx(
                     "relative inline-flex items-center px-4 py-2.5 rounded-full text-[14.5px] font-medium",
@@ -162,19 +231,20 @@ export default function Nav() {
                     />
                   )}
                 </Link>
+                )}
               </li>
             ))}
           </ul>
 
           <div className="flex items-center gap-3 ml-auto lg:ml-4">
             <Link
-              href="/contact"
+              href={nav.cta.href}
               className={clsx(
                 "btn btn-sm hidden sm:inline-flex",
                 light ? "btn-light" : "btn-primary",
               )}
             >
-              Start a project <span className="cta-arrow">↗</span>
+              {nav.cta.label} <span className="cta-arrow">↗</span>
             </Link>
 
             {/* Mobile opener — hidden by CSS at >=1024px. */}
@@ -253,9 +323,12 @@ export default function Nav() {
               </button>
 
               <ul className="flex flex-col">
-                {[...nav, { href: "/contact", label: "Contact" }].map((item, i) => (
+                {[
+                  ...nav.items.flatMap((item) => [item, ...(item.children ?? [])]),
+                  ...(nav.items.some((i) => i.href.startsWith("/contact")) ? [] : [{ href: "/contact", label: "Contact" }]),
+                ].map((item, i) => (
                   <motion.li
-                    key={item.href}
+                    key={`${item.href}-${i}`}
                     initial={{ opacity: 0, x: 16 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.06 + i * 0.05, duration: 0.28, ease: "easeOut" }}
@@ -280,8 +353,8 @@ export default function Nav() {
                 transition={{ delay: 0.34, duration: 0.28, ease: "easeOut" }}
                 className="mt-8"
               >
-                <Link href="/contact" className="btn btn-accent w-full">
-                  Start a project <span className="cta-arrow">↗</span>
+                <Link href={nav.cta.href} className="btn btn-accent w-full">
+                  {nav.cta.label} <span className="cta-arrow">↗</span>
                 </Link>
               </motion.div>
 

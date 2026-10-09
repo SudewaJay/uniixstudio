@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
-import { industries } from "@/lib/industries";
+import { getIndustries } from "@/lib/cms/industries";
 import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: site.canonical("/industries/") },
 };
 
-export default function IndustriesIndexPage() {
+export default async function IndustriesIndexPage() {
+  const industries = await getIndustries();
   return (
     <>
       <PageHeader

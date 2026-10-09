@@ -1,178 +1,291 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { industries } from "@/lib/industries";
+import clsx from "clsx";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+import type { Industry } from "@/lib/industries";
+import type { SectionCopy } from "@/lib/cms/site";
 import SmartImage from "../ui/SmartImage";
-import SectionHeader from "../ui/SectionHeader";
 import Reveal from "../Reveal";
 
-const EASE = [0.22, 0.61, 0.36, 1] as const;
+/**
+ * Real Uniix work that stands behind an industry. Only industries with a
+ * genuine project get an image; the rest get a typographic card rather than a
+ * stock photo standing in for work we'd be implying we did.
+ */
+export type IndustryProof = { image: string; label: string };
+
+const PREVIEW_W = 300;
+const PREVIEW_H = 375;
 
 /**
- * Section 05 — Industries.
+ * Section 05 — Industries, as a compact visual index.
  *
- * An editorial index, not a card grid. Pointing at (or tabbing to) a row swaps
- * the preview image, so the section demonstrates range instead of listing it.
- *
- * Replaces the Apple-style carousel of 640px cards, where every card was a
- * <button> opening a modal that had no focus trap, showed one paragraph, and
- * then offered a link — two interactions to reach a page, and no crawlable
- * href from the homepage. Each row is now a plain link.
+ * Previously a 1,200px-tall list + sticky 4:5 preview. Now eight links in a
+ * 2×4 index with a floating preview that trails the pointer (desktop) or a
+ * single preview panel driven by tap (touch). Every industry name is a real
+ * crawlable link in the DOM at every width; descriptions stay in the DOM too,
+ * inside the preview, so nothing is lost for SEO.
  */
-export default function IndustryIndex() {
+export default function IndustryIndex({
+  industries,
+  proof = {},
+  copy,
+}: {
+  /** In CMS order (Industries → Order). */
+  industries: Pick<Industry, "slug" | "name" | "description" | "accent">[];
+  proof?: Record<string, IndustryProof>;
+  copy?: SectionCopy;
+}) {
   const reduce = useReducedMotion();
-  const [active, setActive] = useState(0);
-  const [open, setOpen] = useState<number | null>(null);
+  const list = industries;
+
+  const [active, setActive] = useState<number | null>(null);
+  // Touch default: open on the first industry with real work behind it.
+  const [tapped, setTapped] = useState(() =>
+    Math.max(0, list.findIndex((i) => proof[i.slug])),
+  );
+
+  // Floating preview position (desktop).
+  const areaRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const spring = { stiffness: 260, damping: 30, mass: 0.6 };
+  const sx = useSpring(x, spring);
+  const sy = useSpring(y, spring);
+
+  const place = useCallback(
+    (px: number, py: number, jump = false) => {
+      const box = areaRef.current?.getBoundingClientRect();
+      if (!box) return;
+      const nx = Math.min(Math.max(px - box.left + 28, 0), box.width - PREVIEW_W);
+      const ny = py - box.top - PREVIEW_H / 2;
+      x.set(nx);
+      y.set(ny);
+      if (jump || reduce) {
+        sx.jump(nx);
+        sy.jump(ny);
+      }
+    },
+    [reduce, sx, sy, x, y],
+  );
+
+  const half = Math.ceil(list.length / 2);
 
   return (
-    <section className="section bg-bg-warm border-y border-line-soft">
+    <section
+      id="industries"
+      aria-labelledby="industries-heading"
+      className="section-tight bg-bg-warm border-t border-line-soft"
+    >
       <div className="wrap">
-        <SectionHeader
-          eyebrow="Industries"
-          title={
-            <>
-              Range, proven across
-              <br />
-              <span className="t-italic accent-grad-text">eight markets.</span>
-            </>
-          }
-          support="We've shipped brand, web and growth work in each of these. Pick the one that looks like your business."
-        />
+        {/* ------------------------------------------------------ Header */}
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <Reveal>
+            <span className="eyebrow">{copy?.eyebrow ?? "Industries"}</span>
+            <h2
+              id="industries-heading"
+              className="t-h2 mt-4 text-[clamp(30px,3.8vw,52px)]"
+            >
+              {copy?.heading ?? "Built for"}{" "}
+              <span className="t-italic accent-grad-text">{copy?.headingAccent ?? "different worlds."}</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={1}>
+            <Link href="/industries/" className="link-cta group shrink-0">
+              All industries <span className="cta-arrow">↗</span>
+            </Link>
+          </Reveal>
+        </div>
 
-        {/* ----------------------------------------------- Desktop index */}
-        <div className="mt-14 hidden lg:grid grid-cols-[minmax(0,1fr)_minmax(0,42%)] gap-16 items-start">
-          <ul
-            className="border-t border-line"
-            onMouseLeave={() => setActive(0)}
+        {/* ------------------------------------------ Desktop: pointer index */}
+        <div
+          ref={areaRef}
+          className="relative mt-10 hidden lg:block"
+          onPointerMove={(e) => e.pointerType === "mouse" && place(e.clientX, e.clientY)}
+          onPointerLeave={() => setActive(null)}
+        >
+          <ol
+            className={clsx(
+              "ind-list grid grid-flow-col grid-cols-2 gap-x-16 border-t border-line",
+              active !== null && "has-active",
+            )}
+            style={{ gridTemplateRows: `repeat(${half}, auto)` }}
           >
-            {industries.map((ind, i) => (
-              <li key={ind.slug} className="border-b border-line">
+            {list.map((ind, i) => (
+              <li
+                key={ind.slug}
+                className={clsx("ind-row relative border-b border-line", active === i && "is-active")}
+              >
                 <Link
                   href={`/industries/${ind.slug}/`}
-                  onMouseEnter={() => setActive(i)}
-                  onFocus={() => setActive(i)}
-                  className="group flex items-baseline gap-6 py-5 transition-[padding] duration-std ease-uniix hover:pl-3 focus-visible:pl-3"
+                  onPointerEnter={(e) => {
+                    if (e.pointerType !== "mouse") return;
+                    if (active === null) place(e.clientX, e.clientY, true);
+                    setActive(i);
+                  }}
+                  onFocus={(e) => {
+                    const r = e.currentTarget.getBoundingClientRect();
+                    place(r.left + r.width * 0.55, r.top + r.height / 2, true);
+                    setActive(i);
+                  }}
+                  onBlur={() => setActive(null)}
+                  className="flex items-baseline gap-5 py-[18px] outline-offset-4"
                 >
                   <span
-                    className={`t-meta shrink-0 tabular-nums transition-colors duration-micro ${
-                      i === active ? "accent" : "text-ink-mute"
-                    }`}
+                    className={clsx(
+                      "t-meta w-6 shrink-0 tabular-nums transition-colors duration-micro",
+                      active === i ? "accent" : "text-ink-mute",
+                    )}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="ind-name font-display font-medium text-[clamp(24px,2.3vw,34px)] leading-[1.1] tracking-[-0.025em]">
+                    {ind.name}
+                  </span>
+                  {proof[ind.slug] && (
+                    <span className="t-meta ml-auto shrink-0 self-center text-[9px] text-ink-mute">
+                      Case study
+                    </span>
+                  )}
+                </Link>
+                <span
+                  aria-hidden="true"
+                  className="ind-rule absolute inset-x-0 -bottom-px h-px bg-brand-ink"
+                />
+              </li>
+            ))}
+          </ol>
+
+          {/* Floating preview — decorative; the link carries the meaning. */}
+          <motion.div
+            aria-hidden="true"
+            style={{ x: sx, y: sy, width: PREVIEW_W, height: PREVIEW_H }}
+            className={clsx(
+              "ind-preview pointer-events-none absolute left-0 top-0 z-10 overflow-hidden rounded-lg2 bg-bg-ink shadow-lift",
+              active !== null && "is-shown",
+            )}
+          >
+            {list.map((ind, i) => (
+              <PreviewSlide
+                key={ind.slug}
+                index={i}
+                name={ind.name}
+                description={ind.description}
+                proof={proof[ind.slug]}
+                on={active === i}
+                sizes={`${PREVIEW_W}px`}
+              />
+            ))}
+          </motion.div>
+        </div>
+
+        {/* --------------------------------------------- Touch: tap to preview */}
+        <div className="mt-8 lg:hidden">
+          <div id="industry-preview" className="relative aspect-[16/10] overflow-hidden rounded-lg2 bg-bg-ink">
+            {list.map((ind, i) => (
+              <PreviewSlide
+                key={ind.slug}
+                index={i}
+                name={ind.name}
+                description={ind.description}
+                proof={proof[ind.slug]}
+                on={tapped === i}
+                sizes="(min-width:768px) 90vw, 92vw"
+                href={`/industries/${ind.slug}/`}
+              />
+            ))}
+          </div>
+
+          <ul className="mt-4 grid grid-cols-2 gap-x-4 border-t border-line">
+            {list.map((ind, i) => (
+              <li key={ind.slug} className="border-b border-line">
+                <button
+                  type="button"
+                  onClick={() => setTapped(i)}
+                  aria-pressed={tapped === i}
+                  aria-controls="industry-preview"
+                  className="flex min-h-[52px] w-full items-center gap-3 text-left"
+                >
+                  <span
+                    className={clsx(
+                      "t-meta shrink-0 text-[10px] tabular-nums",
+                      tapped === i ? "accent" : "text-ink-mute",
+                    )}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
-                    className={`font-display font-medium text-[clamp(24px,2.4vw,34px)] tracking-[-0.02em] leading-tight transition-colors duration-micro ${
-                      i === active ? "text-ink" : "text-ink/60"
-                    }`}
+                    className={clsx(
+                      "text-[15px] font-medium leading-tight tracking-[-0.01em] transition-colors duration-micro",
+                      tapped === i ? "text-ink" : "text-ink/65",
+                    )}
                   >
                     {ind.name}
                   </span>
-                  <span
-                    aria-hidden="true"
-                    className="ml-auto shrink-0 self-center text-ink-mute opacity-0 -translate-x-2 transition-all duration-std ease-uniix group-hover:opacity-100 group-hover:translate-x-0 group-focus-visible:opacity-100 group-focus-visible:translate-x-0"
-                  >
-                    ↗
-                  </span>
-                </Link>
+                </button>
               </li>
             ))}
           </ul>
-
-          {/* Preview — sticky, swaps with the active row. */}
-          <div className="sticky top-[calc(var(--header-h)+32px)]">
-            <div className="frame relative aspect-[4/5] shadow-lift ring-1 ring-black/5">
-              <AnimatePresence mode="popLayout" initial={false}>
-                <motion.div
-                  key={industries[active].slug}
-                  initial={reduce ? false : { opacity: 0, scale: 1.04 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.45, ease: EASE }}
-                  className="absolute inset-0"
-                >
-                  <SmartImage
-                    src={industries[active].image}
-                    alt=""
-                    sizes="(min-width:1280px) 40vw, 44vw"
-                  />
-                </motion.div>
-              </AnimatePresence>
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent"
-              />
-              <div className="absolute inset-x-0 bottom-0 p-7">
-                <p className="t-meta text-white/70 text-[10px]">
-                  {String(active + 1).padStart(2, "0")} ·{" "}
-                  {industries[active].name}
-                </p>
-                <p className="mt-3 text-[15px] leading-[1.55] text-white/90 max-w-[36ch]">
-                  {industries[active].description}
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
-
-        {/* -------------------------------------------- Mobile accordion */}
-        <div className="lg:hidden mt-10 border-t border-line">
-          {industries.map((ind, i) => {
-            const isOpen = open === i;
-            return (
-              <div key={ind.slug} className="border-b border-line">
-                <h3>
-                  <button
-                    type="button"
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    aria-expanded={isOpen}
-                    aria-controls={`industry-${ind.slug}`}
-                    className="flex w-full min-h-[64px] items-center gap-4 py-4 text-left"
-                  >
-                    <span className="t-meta shrink-0 text-ink-mute tabular-nums">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="flex-1 font-display font-medium text-[22px] tracking-[-0.02em]">
-                      {ind.name}
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className={`shrink-0 text-lg text-ink-mute transition-transform duration-std ease-uniix ${
-                        isOpen ? "rotate-45" : ""
-                      }`}
-                    >
-                      +
-                    </span>
-                  </button>
-                </h3>
-                <div id={`industry-${ind.slug}`} hidden={!isOpen}>
-                  <div className="pb-6">
-                    <div className="frame aspect-[16/10]">
-                      <SmartImage src={ind.image} alt="" sizes="92vw" />
-                    </div>
-                    <p className="t-body mt-4 text-ink-2">{ind.description}</p>
-                    <Link
-                      href={`/industries/${ind.slug}/`}
-                      className="link-cta group mt-5 text-[14px]"
-                    >
-                      {ind.name} work <span className="cta-arrow">↗</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <Reveal>
-          <div className="mt-12 lg:mt-14">
-            <Link href="/industries" className="link-cta group">
-              All industries <span className="cta-arrow">↗</span>
-            </Link>
-          </div>
-        </Reveal>
       </div>
     </section>
+  );
+}
+
+function PreviewSlide({
+  index,
+  name,
+  description,
+  proof,
+  on,
+  sizes,
+  href,
+}: {
+  index: number;
+  name: string;
+  description: string;
+  proof?: IndustryProof;
+  on: boolean;
+  sizes: string;
+  href?: string;
+}) {
+  const num = String(index + 1).padStart(2, "0");
+  return (
+    <div className={clsx("ind-slide absolute inset-0", on && "is-on")} aria-hidden={!on || undefined}>
+      {proof ? (
+        <>
+          <SmartImage src={proof.image} alt="" sizes={sizes} quality={65} />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" />
+        </>
+      ) : (
+        <span
+          aria-hidden="true"
+          className="t-numeral accent-grad-text absolute -right-2 -top-6 text-[180px] opacity-90"
+        >
+          {num}
+        </span>
+      )}
+
+      <div className="on-dark absolute inset-x-0 bottom-0 p-5 text-white md:p-6">
+        <p className="t-meta text-[10px] text-white/60">
+          {num} · {proof ? proof.label : "Sector"}
+        </p>
+        <p className="mt-2 font-display text-[22px] font-medium leading-tight tracking-[-0.02em]">
+          {name}
+        </p>
+        <p className="mt-2 hidden max-w-[40ch] text-[13px] leading-[1.5] text-white/70 sm:block">{description}</p>
+        {href && (
+          <Link
+            href={href}
+            tabIndex={on ? undefined : -1}
+            className="mt-3 inline-flex min-h-[40px] items-center gap-2 text-[14px] font-medium text-white underline decoration-white/40 underline-offset-4"
+          >
+            Explore {name.toLowerCase()} <span aria-hidden="true">↗</span>
+          </Link>
+        )}
+      </div>
+    </div>
   );
 }

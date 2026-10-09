@@ -27,6 +27,10 @@ export const SERVICE_LINK_MAP: Record<string, string> = {
   "UI/UX Design": "/services/design/ui-ux-design/",
   "UI/UX": "/services/design/ui-ux-design/",
   "Graphic Design": "/services/design/",
+  "Packaging Design": "/services/design/print-design/",
+  "Print Design": "/services/design/print-design/",
+  "Motion Graphics": "/services/design/motion-graphics/",
+  "Social Media Creatives": "/services/design/social-media-creatives/",
 
   // Growth
   "SEO": "/services/growth/seo/",

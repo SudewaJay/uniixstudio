@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { testimonials } from "@/lib/content";
 import Reveal from "./Reveal";
 
 /**
@@ -25,8 +24,6 @@ type Testimonial = {
   videoUrl?: string;
   poster?: string;
 };
-
-const items = testimonials as readonly Testimonial[];
 
 function PlayGlyph({ className }: { className?: string }) {
   return (
@@ -160,7 +157,7 @@ function ArrowButton({
   );
 }
 
-export default function TestimonialsSection() {
+export default function TestimonialsSection({ items }: { items: readonly Testimonial[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
 
   if (items.length === 0) return null;

@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
-import { industries } from "@/lib/industries";
-import { site } from "@/lib/content";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema } from "@/lib/schema";
+import { getIndustries } from "@/lib/cms/industries";
+import { getProjects } from "@/lib/cms/projects";
+import { buildMetadata } from "@/lib/cms/seo";
+import { notFoundOrRedirect } from "@/lib/cms/redirects";
 
-export function generateStaticParams() {
-  return industries.map((ind) => ({ slug: ind.slug }));
+export async function generateStaticParams() {
+  return (await getIndustries()).map((ind) => ({ slug: ind.slug }));
 }
-
-export const dynamic = "force-static";
-export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -19,20 +21,16 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const ind = industries.find((i) => i.slug === slug);
+  const ind = (await getIndustries()).find((i) => i.slug === slug);
   if (!ind) return { title: "Industry" };
-  const canonical = site.canonical(`/industries/${slug}/`);
-  return {
-    metadataBase: new URL(site.url),
+  return buildMetadata({
+    path: `/industries/${slug}/`,
     title: `${ind.name} — Digital Agency for ${ind.name} | Uniix Studio`,
+    ogTitle: `${ind.name} | Uniix Studio`,
     description: ind.description,
-    alternates: { canonical },
-    openGraph: {
-      title: `${ind.name} | Uniix Studio`,
-      description: ind.description,
-      url: canonical,
-    },
-  };
+    image: ind.image || undefined,
+    seo: ind.seo,
+  });
 }
 
 export default async function IndustryDetailPage({
@@ -41,13 +39,28 @@ export default async function IndustryDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const [industries, projects] = await Promise.all([getIndustries(), getProjects()]);
   const industry = industries.find((i) => i.slug === slug);
-  if (!industry) notFound();
+  if (!industry) return notFoundOrRedirect(`/industries/${slug}/`);
 
   const others = industries.filter((i) => i.slug !== slug).slice(0, 4);
+  const work = (industry.projectSlugs ?? [])
+    .map((s) => projects.find((p) => p.slug === s))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  const pairs = [
+    { heading: "The challenge", items: industry.challenges ?? [] },
+    { heading: "How we help", items: industry.solutions ?? [] },
+  ].filter((g) => g.items.length > 0);
+
+  const crumbs = breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Industries", url: "/industries/" },
+    { name: industry.name, url: `/industries/${industry.slug}/` },
+  ]);
 
   return (
     <>
+      <JsonLd data={crumbs} />
       <PageHeader
         eyebrow={`Industries · ${industry.name}`}
         title={
@@ -77,6 +90,77 @@ export default async function IndustryDetailPage({
           </div>
         </div>
       </section>
+
+      {/* Optional CMS sections — render only when an editor has filled them. */}
+      {industry.body && (
+        <section className="pb-16 md:pb-24">
+          <div className="wrap">
+            <div className="max-w-[68ch] mx-auto text-ink-2 text-[17px] leading-[1.7] [&_h2]:display [&_h2]:text-ink [&_h2]:text-[clamp(26px,3vw,36px)] [&_h2]:mt-12 [&_h2]:mb-4 [&_p]:mb-5 [&_ul]:list-disc [&_ul]:pl-6 [&_a]:underline">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{industry.body}</ReactMarkdown>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {pairs.length > 0 && (
+        <section className="pb-16 md:pb-24">
+          <div className="wrap grid gap-12 lg:grid-cols-2">
+            {pairs.map((g) => (
+              <Reveal key={g.heading}>
+                <h2 className="display" style={{ fontSize: "clamp(28px,3.4vw,44px)" }}>
+                  {g.heading}
+                </h2>
+                <ul className="mt-8 border-t border-line">
+                  {g.items.map((it) => (
+                    <li key={it.title} className="border-b border-line py-6">
+                      <h3 className="font-display font-medium text-[20px] tracking-[-0.015em]">{it.title}</h3>
+                      {it.body && <p className="mt-2 text-ink-2 text-[15px] leading-[1.6]">{it.body}</p>}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(work.length > 0 || (industry.serviceLinks?.length ?? 0) > 0) && (
+        <section className="pb-16 md:pb-24">
+          <div className="wrap">
+            {work.length > 0 && (
+              <>
+                <Reveal>
+                  <span className="eyebrow">Selected work</span>
+                </Reveal>
+                <div className="mt-8 grid gap-6 md:grid-cols-2">
+                  {work.map((p) => (
+                    <Link
+                      key={p.slug}
+                      href={`/portfolio/${p.slug}/`}
+                      className="group block rounded-lg2 border border-line bg-bg-paper p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-soft"
+                    >
+                      <span className="t-meta text-ink-mute">{p.overline}</span>
+                      <h3 className="mt-3 font-display font-medium text-[26px] tracking-[-0.02em]">{p.title}</h3>
+                      <p className="mt-3 text-ink-2 text-[15px] leading-[1.6]">{p.summary}</p>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+            {(industry.serviceLinks?.length ?? 0) > 0 && (
+              <ul className="mt-10 flex flex-wrap gap-3">
+                {industry.serviceLinks!.map((s) => (
+                  <li key={s.href}>
+                    <Link href={s.href} className="btn btn-secondary btn-sm">
+                      {s.label} <span className="cta-arrow">↗</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="pb-24 md:pb-32">
         <div className="wrap">

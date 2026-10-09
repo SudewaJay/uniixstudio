@@ -2,25 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { site } from "@/lib/content";
-import { locations } from "@/lib/locations";
-
-const socials = [
-  { label: "Instagram", href: site.socials.instagram },
-  { label: "LinkedIn", href: site.socials.linkedin },
-  { label: "Facebook", href: site.socials.facebook },
-  { label: "Behance", href: "https://www.behance.net/uniixstudio" },
-  { label: "Dribbble", href: "https://dribbble.com/uniixstudio" },
-];
-
-const primaryNav = [
-  { label: "Home", href: "/" },
-  { label: "Services", href: "/services" },
-  { label: "Work", href: "/portfolio" },
-  { label: "Insights", href: "/blog" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+import type { FooterData, SiteSettings } from "@/lib/cms/site";
+import type { Location } from "@/lib/locations";
 
 function useColomboClock() {
   const [time, setTime] = useState<string>("");
@@ -40,8 +23,24 @@ function useColomboClock() {
   return time;
 }
 
-export default function Footer() {
+export default function Footer({
+  footer,
+  settings,
+  locations,
+}: {
+  footer: FooterData;
+  settings: SiteSettings;
+  locations: Pick<Location, "slug" | "name">[];
+}) {
   const time = useColomboClock();
+  const socials = settings.socials;
+  const primaryNav = footer.links;
+  const ctaHref = footer.ctaHref ?? "/contact";
+  const ctaText = [footer.ctaHeading ?? "Get in Touch", footer.ctaHeadingAccent].filter(Boolean).join(" ");
+  const copyright = (footer.copyright ?? `${settings.name} © {year} · All rights reserved`).replace(
+    "{year}",
+    String(new Date().getFullYear()),
+  );
 
   return (
     <footer className="relative bg-[#0A0A0A] text-white overflow-hidden">
@@ -81,10 +80,10 @@ export default function Footer() {
             ))}
           </ul>
           <a
-            href={`mailto:${site.email}`}
+            href={`mailto:${settings.email}`}
             className="inline-flex items-center min-h-[24px] text-[14px] md:text-[15px] font-medium text-white/55 hover:text-white transition-colors"
           >
-            {site.email}
+            {settings.email}
           </a>
         </div>
 
@@ -94,18 +93,18 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 items-start gap-8 md:gap-10 py-10 md:py-16">
           <Link
             href="/"
-            className="inline-flex items-baseline gap-1 group"
+            className="inline-flex items-center group w-fit"
             aria-label="Uniix Studio home"
           >
-            <span className="font-display font-medium text-white text-[28px] md:text-[30px] tracking-[-0.02em] leading-none group-hover:opacity-90 transition-opacity">
-              uniix
-            </span>
-            <span
-              aria-hidden
-              className="inline-grid place-items-center w-3.5 h-3.5 rounded-full border border-[#F07B20] text-[8px] font-bold text-[#F07B20] leading-none -translate-y-2.5"
-            >
-              ®
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/uniix-logo.svg"
+              alt="Uniix Studio"
+              width={778}
+              height={346}
+              className="h-10 md:h-12 w-auto group-hover:opacity-90 transition-opacity"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
           </Link>
 
           <nav aria-label="Footer navigation">
@@ -114,6 +113,8 @@ export default function Footer() {
                 <li key={item.label}>
                   <Link
                     href={item.href}
+                    target={item.newTab ? "_blank" : undefined}
+                    rel={item.newTab ? "noopener noreferrer" : undefined}
                     className="font-display font-medium text-white/55 hover:text-white text-[22px] md:text-[26px] tracking-[-0.02em] leading-tight transition-colors"
                   >
                     {item.label}
@@ -124,8 +125,7 @@ export default function Footer() {
           </nav>
 
           <p className="text-white/55 text-[14px] md:text-[15px] leading-relaxed max-w-[34ch] md:text-right md:ml-auto">
-            Studio based in Colombo — we design brands that perform across
-            Sri Lanka, Australia and the UK.
+            {footer.description}
           </p>
         </div>
 
@@ -133,24 +133,25 @@ export default function Footer() {
 
         {/* Massive "Get in Touch" — clickable, sends to /contact */}
         <Link
-          href="/contact"
+          href={ctaHref}
           className="block py-8 md:py-12 group"
-          aria-label="Get in touch — contact Uniix Studio"
+          aria-label={`${ctaText} — contact ${settings.name}`}
         >
           <div
-            className="font-display font-medium text-white tracking-[-0.045em] leading-[0.85] group-hover:tracking-[-0.04em] transition-all duration-500 select-none"
-            style={{ fontSize: "clamp(72px, 17vw, 280px)" }}
+            className="font-display font-medium text-white whitespace-nowrap tracking-[-0.045em] leading-[0.85] group-hover:tracking-[-0.04em] transition-all duration-500 select-none"
+            style={{ fontSize: "clamp(40px, 15vw, 220px)" }}
           >
-            Get in Touch
+            {ctaText}
           </div>
         </Link>
 
         <div className="h-px bg-white/12" />
 
         {/* Areas we serve — sitewide internal links to location pages */}
+        {footer.showLocations && locations.length > 0 && (<>
         <div className="pt-5 md:pt-6 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/60 shrink-0">
-            Areas we serve
+            {footer.locationsLabel}
           </span>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
             <li>
@@ -175,14 +176,20 @@ export default function Footer() {
         </div>
 
         <div className="mt-5 md:mt-6 h-px bg-white/12" />
+        </>)}
 
         {/* Bottom row — copyright + location + live clock */}
         <div className="pt-5 md:pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6">
-          <div className="text-[12px] md:text-[13px] text-white/60">
-            Uniix Studio © {new Date().getFullYear()} · All rights reserved
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] md:text-[13px] text-white/60">
+            <span suppressHydrationWarning>{copyright}</span>
+            {footer.legalLinks.map((l) => (
+              <Link key={l.href} href={l.href} className="hover:text-white transition-colors">
+                {l.label}
+              </Link>
+            ))}
           </div>
           <div className="flex items-center gap-3 text-[12px] md:text-[13px] text-white/55">
-            <span>{site.location}</span>
+            <span>{settings.location}</span>
             <span
               suppressHydrationWarning
               className="font-mono tabular-nums tracking-wider text-white/70 min-w-[64px]"

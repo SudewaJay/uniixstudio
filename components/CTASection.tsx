@@ -1,7 +1,8 @@
-import { site } from "@/lib/content";
+import { getSiteSettings } from "@/lib/cms/site";
 import Reveal from "./Reveal";
 
-export default function CTASection() {
+export default async function CTASection() {
+  const site = await getSiteSettings();
   return (
     <section id="cta" className="bg-bg-ink text-white py-24 md:py-32 relative overflow-hidden">
       <div
@@ -40,12 +41,14 @@ export default function CTASection() {
               <a href={`mailto:${site.email}`} className="btn btn-grad">
                 Start a project ↗
               </a>
-              <a
-                href={site.whatsappLink}
-                className="btn btn-ghost text-white border-white/20 hover:bg-white hover:text-ink hover:border-white"
-              >
-                WhatsApp us
-              </a>
+              {site.whatsappLink && (
+                <a
+                  href={site.whatsappLink}
+                  className="btn btn-ghost text-white border-white/20 hover:bg-white hover:text-ink hover:border-white"
+                >
+                  WhatsApp us
+                </a>
+              )}
             </div>
           </Reveal>
           <Reveal delay={4}>

@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
-import { site } from "@/lib/content";
+import { site as siteConfig } from "@/lib/content";
+import { getSiteSettings } from "@/lib/cms/site";
 import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(siteConfig.url),
   title: "Contact Uniix Studio | Hire a Creative Digital Agency in Sri Lanka",
   description:
     "Start a project with Uniix Studio. Tell us about your goals and we'll be in touch within 24 hours. Based in Colombo, working with brands across Sri Lanka, Australia and the UK.",
-  alternates: { canonical: site.canonical("/contact/") },
+  alternates: { canonical: siteConfig.canonical("/contact/") },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const site = await getSiteSettings();
   const crumbs = breadcrumbSchema([
     { name: "Home", url: "/" },
     { name: "Contact", url: "/contact/" },
@@ -38,7 +40,7 @@ export default function ContactPage() {
         <div className="wrap">
           <div className="grid lg:grid-cols-[1.5fr_1fr] gap-10 lg:gap-16 items-start">
             <Reveal>
-              <ContactForm />
+              <ContactForm whatsapp={site.whatsapp} whatsappLink={site.whatsappLink} source="contact-page" />
             </Reveal>
 
             <Reveal delay={1}>
@@ -64,8 +66,8 @@ export default function ContactPage() {
                 />
                 <ContactCard
                   label="WhatsApp"
-                  value={site.whatsapp}
-                  href={site.whatsappLink}
+                  value={site.whatsapp ?? site.phone ?? ""}
+                  href={site.whatsappLink ?? `tel:${site.phone ?? ""}`}
                   icon={
                     <svg
                       viewBox="0 0 24 24"

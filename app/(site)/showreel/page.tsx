@@ -8,11 +8,10 @@ import {
   videoObjectSchema,
   schemaGraph,
 } from "@/lib/schema";
-import { allServices } from "@/lib/services-fs";
+import { getServices } from "@/lib/cms/services";
 import { site } from "@/lib/content";
-import type { ServiceVideo } from "@/lib/services-fs";
+import type { ServiceVideo } from "@/lib/services";
 
-export const dynamic = "force-static";
 
 const canonical = site.canonical("/showreel/");
 
@@ -31,11 +30,11 @@ export const metadata: Metadata = {
   },
 };
 
-/** Aggregate every video declared on every service MDX. */
-function getAllVideos(): ServiceVideo[] {
+/** Every film on a published service, deduped (CMS → Services → Media & links). */
+async function getAllVideos(): Promise<ServiceVideo[]> {
   const seen = new Set<string>();
   const out: ServiceVideo[] = [];
-  for (const s of allServices) {
+  for (const s of await getServices()) {
     if (!s.videos) continue;
     for (const v of s.videos) {
       if (seen.has(v.vimeoId)) continue;
@@ -46,8 +45,8 @@ function getAllVideos(): ServiceVideo[] {
   return out;
 }
 
-export default function ShowreelPage() {
-  const videos = getAllVideos();
+export default async function ShowreelPage() {
+  const videos = await getAllVideos();
 
   const pageSchema = schemaGraph(
     breadcrumbSchema([

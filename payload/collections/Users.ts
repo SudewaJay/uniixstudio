@@ -1,51 +1,45 @@
-import type { CollectionConfig, Access, FieldAccess } from 'payload'
-
-const isAdminOrEditor: Access = ({ req: { user } }) => {
-  if (!user) return false
-  if (user.role === 'admin' || user.role === 'editor') return true
-  return false
-}
-
-const isAdmin: Access = ({ req: { user } }) => {
-  if (!user) return false
-  if (user.role === 'admin') return true
-  return false
-}
-
-// Field-level access uses a different signature than collection-level Access.
-// FieldAccess must return boolean (no Where clauses allowed at the field layer).
-const isAdminField: FieldAccess = ({ req: { user } }) => {
-  if (!user) return false
-  return user.role === 'admin'
-}
+import type { CollectionConfig } from 'payload'
+import { ROLES, adminOrSelf, isSuperAdmin, superAdminField, superAdminOrSelf } from '../access'
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  auth: true,
+  auth: {
+    tokenExpiration: 60 * 60 * 8, // 8h sessions
+    maxLoginAttempts: 5,
+    lockTime: 15 * 60 * 1000,
+    cookies: { sameSite: 'Lax', secure: process.env.NODE_ENV === 'production' },
+  },
   admin: {
     group: 'System',
     useAsTitle: 'email',
+    defaultColumns: ['email', 'name', 'role', 'updatedAt'],
+    description: 'People who can sign in to the CMS. Only super-admins can invite users or change roles.',
   },
   access: {
-    read: isAdminOrEditor,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    // Every role can use the admin panel; the public never can.
+    admin: ({ req }) => Boolean(req.user),
+    read: adminOrSelf,
+    create: isSuperAdmin,
+    update: superAdminOrSelf,
+    delete: isSuperAdmin,
+    unlock: isSuperAdmin,
   },
   fields: [
+    { name: 'name', type: 'text' },
     {
       name: 'role',
       type: 'select',
-      options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'Editor', value: 'editor' },
-        { label: 'Viewer', value: 'viewer' },
-      ],
       required: true,
       defaultValue: 'editor',
-      access: {
-        update: isAdminField,
-      },
+      saveToJWT: true,
+      options: [
+        { label: 'Super admin — everything, including users', value: 'super-admin' },
+        { label: 'Admin — all content, settings & enquiries', value: 'admin' },
+        { label: 'Editor — create, edit & publish content', value: 'editor' },
+        { label: 'Author — draft own blog posts', value: 'author' },
+      ] satisfies { value: (typeof ROLES)[number]; label: string }[],
+      access: { create: superAdminField, update: superAdminField },
+      admin: { position: 'sidebar' },
     },
   ],
 }

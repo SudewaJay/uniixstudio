@@ -1,4 +1,4 @@
-import { clients } from "@/lib/content";
+import type { ClientLogo } from "@/lib/cms/content";
 import SmartImage from "../ui/SmartImage";
 import Reveal from "../Reveal";
 
@@ -9,7 +9,15 @@ import Reveal from "../Reveal";
  * carries the studio's positioning statement first and uses the client logos as
  * the evidence beneath it, so the colour shift earns its place.
  */
-export default function BrandStatement() {
+export default function BrandStatement({
+  clients,
+  body,
+  trustLine,
+}: {
+  clients: ClientLogo[];
+  body?: string;
+  trustLine?: string;
+}) {
   return (
     <section id="brand-statement" className="on-dark relative overflow-hidden bg-bg-ink text-white section-tight">
       <div
@@ -32,9 +40,8 @@ export default function BrandStatement() {
 
         <Reveal delay={1}>
           <p className="t-lead mt-8 max-w-[58ch] text-white/70">
-            Most agencies bolt these together from three different teams. We run them as
-            one, so your brand, your site and your marketing all pull in the same
-            direction — and nothing gets lost in the handoff.
+            {body ??
+              "Most agencies bolt these together from three different teams. We run them as one, so your brand, your site and your marketing all pull in the same direction — and nothing gets lost in the handoff."}
           </p>
         </Reveal>
 
@@ -42,17 +49,17 @@ export default function BrandStatement() {
         <div className="mt-14 md:mt-20 border-t border-line-dark pt-10">
           <Reveal>
             <p className="t-meta text-white/45 text-center">
-              Trusted by ambitious teams across Colombo, Sydney &amp; the UK
+              {trustLine ?? "Trusted by ambitious teams across Colombo, Sydney & the UK"}
             </p>
           </Reveal>
           <ul className="mt-9 grid grid-cols-3 items-center gap-x-8 gap-y-9 sm:gap-x-12 lg:grid-cols-6">
             {clients.map((c, i) => (
-              <Reveal key={c.name} delay={(i % 4) as 0 | 1 | 2 | 3}>
-                <li className="relative h-10 md:h-11">
+              <li key={c.name}>
+                <Reveal delay={(i % 4) as 0 | 1 | 2 | 3} className="relative h-10 md:h-11">
                   {c.logo ? (
                     <SmartImage
                       src={c.logo}
-                      alt={c.name}
+                      alt={c.alt}
                       sizes="(min-width:1024px) 140px, 28vw"
                       fit="contain"
                       className="opacity-70 transition-opacity duration-std ease-uniix hover:opacity-100 [filter:brightness(0)_invert(1)]"
@@ -62,8 +69,8 @@ export default function BrandStatement() {
                       {c.name}
                     </span>
                   )}
-                </li>
-              </Reveal>
+                </Reveal>
+              </li>
             ))}
           </ul>
         </div>

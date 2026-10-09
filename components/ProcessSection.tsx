@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { process } from "@/lib/content";
+import { getProcess } from "@/lib/cms/content";
 import Reveal from "./Reveal";
 
 const ICONS: Record<string, JSX.Element> = {
@@ -29,7 +29,8 @@ const ICONS: Record<string, JSX.Element> = {
   ),
 };
 
-export default function ProcessSection() {
+export default async function ProcessSection() {
+  const process = await getProcess();
   return (
     <section id="process" className="bg-bg-warm py-24 md:py-32">
       <div className="wrap">

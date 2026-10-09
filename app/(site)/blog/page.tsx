@@ -1,23 +1,40 @@
 import type { Metadata } from "next";
-import { allPosts as posts } from "@/lib/blog-fs";
+import { getPosts } from "@/lib/cms/blog";
+import { buildMetadata } from "@/lib/cms/seo";
 import BlogIndexClient from "@/components/BlogIndexClient";
 import { site } from "@/lib/content";
 import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+const base = buildMetadata({
+  path: "/blog/",
   title: "Digital Marketing & Design Blog Sri Lanka | Uniix Studio",
   description:
     "Field notes on design, growth, and digital marketing — learnings from shipping work for brands across Sri Lanka, Australia and the UK. The Uniix Studio blog.",
-  alternates: {
-    canonical: site.canonical("/blog/"),
-    types: { "application/rss+xml": site.canonical("/blog/rss.xml") },
-  },
+});
+
+export const metadata: Metadata = {
+  ...base,
+  alternates: { ...base.alternates, types: { "application/rss+xml": site.canonical("/blog/rss.xml") } },
 };
 
-export default function BlogIndexPage() {
-  const published = posts.filter((p) => !p.isStub);
+export default async function BlogIndexPage() {
+  // Published, non-future posts only — drafts and stubs never reach this list.
+  // Only the fields the index cards render cross to the client. Passing the
+  // full posts serialized every Markdown body into the RSC payload (~280KB,
+  // prefetched from the nav on every page).
+  const published = (await getPosts()).map(
+    ({ slug, title, excerpt, category, publishDate, readTime, coverImage, author }) => ({
+      slug,
+      title,
+      excerpt,
+      category,
+      publishDate,
+      readTime,
+      coverImage,
+      author,
+    }),
+  );
 
   const crumbs = breadcrumbSchema([
     { name: "Home", url: "/" },

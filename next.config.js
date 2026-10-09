@@ -1,8 +1,44 @@
-const { withPayload } = require('@payloadcms/next/withPayload');
+import { createRequire } from 'node:module';
+import { withPayload } from '@payloadcms/next/withPayload';
+
+const require = createRequire(import.meta.url);
 
 /** @type {import('next').NextConfig} */
+const securityHeaders = [
+  // NOTE: includeSubDomains applies HTTPS-only to every *.uniixstudio.com host.
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+];
+
 const nextConfig = {
   reactStrictMode: true,
+  async headers() {
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      {
+        // Self-hosted fonts are content-stable; cache them for a year.
+        source: "/fonts/:file*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+    ];
+  },
+  webpack(config, { isServer, dev }) {
+    // Next always bundles a polyfill module (Array.prototype.at/flat/flatMap,
+    // Object.fromEntries/hasOwn, String trimStart/trimEnd) into the client.
+    // Every browser in our browserslist ships these natively, so it is dead
+    // weight that Lighthouse flags as "Legacy JavaScript".
+    if (!isServer && !dev) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        [require.resolve("next/dist/build/polyfills/polyfill-module")]: false,
+      };
+    }
+    return config;
+  },
   // Per SEO Masterplan: every URL ends with a trailing slash for consistency
   trailingSlash: true,
   images: {
@@ -60,4 +96,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withPayload(nextConfig);
+export default withPayload(nextConfig);

@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { type BlogPost, formatDate } from "@/lib/blog";
+import type { BlogPost } from "@/lib/blog";
+import { formatDate } from "@/lib/format";
 
 const TABS = [
   { id: "all", label: "View all" },
@@ -20,7 +21,12 @@ const SORT_OPTIONS = [
 
 const PAGE_SIZE = 6;
 
-export default function BlogIndexClient({ posts }: { posts: BlogPost[] }) {
+export type BlogCard = Pick<
+  BlogPost,
+  "slug" | "title" | "excerpt" | "category" | "publishDate" | "readTime" | "coverImage" | "author"
+>;
+
+export default function BlogIndexClient({ posts }: { posts: BlogCard[] }) {
   const [tab, setTab] = useState<string>("all");
   const [sort, setSort] = useState<string>("recent");
   const [page, setPage] = useState<number>(1);

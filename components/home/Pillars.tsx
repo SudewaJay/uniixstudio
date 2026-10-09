@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { services } from "@/lib/content";
-import { getServicesForPillar, type ServicePillar } from "@/lib/services";
+import type { SectionCopy } from "@/lib/cms/site";
 import SmartImage from "../ui/SmartImage";
 import SectionHeader from "../ui/SectionHeader";
 
@@ -70,18 +69,27 @@ function Icon({ slug, className }: { slug: string; className?: string }) {
  * control. Sub-service links stay in the DOM whether or not a panel is open, so
  * the internal linking is unchanged for crawlers.
  */
-export default function Pillars({ proof }: { proof: PillarProof[] }) {
+export type HomePillar = {
+  slug: string;
+  num: string;
+  title: string;
+  positioning: string;
+  subs: Array<{ slug: string; name: string; pillar: string }>;
+};
+
+export default function Pillars({
+  pillars: items,
+  proof,
+  copy,
+}: {
+  pillars: HomePillar[];
+  proof: PillarProof[];
+  copy?: SectionCopy;
+}) {
   const reduce = useReducedMotion();
   const [active, setActive] = useState(0);
 
-  const pillars = services.map((s) => ({
-    slug: s.slug,
-    num: s.num,
-    title: s.title,
-    positioning: s.positioning,
-    subs: getServicesForPillar(s.slug as ServicePillar),
-    proof: proof.find((p) => p.pillar === s.slug),
-  }));
+  const pillars = items.map((s) => ({ ...s, proof: proof.find((p) => p.pillar === s.slug) }));
 
   const activeProof = pillars[active]?.proof;
 
@@ -89,15 +97,15 @@ export default function Pillars({ proof }: { proof: PillarProof[] }) {
     <section id="services" className="section bg-bg-paper border-y border-line-soft">
       <div className="wrap">
         <SectionHeader
-          eyebrow="What we do"
+          eyebrow={copy?.eyebrow ?? "What we do"}
           title={
             <>
-              Three disciplines.
+              {copy?.heading ?? "Three disciplines."}
               <br />
-              <span className="t-italic accent-grad-text">One accountable team.</span>
+              <span className="t-italic accent-grad-text">{copy?.headingAccent ?? "One accountable team."}</span>
             </>
           }
-          support="Open a discipline to see what sits inside it — and a project where we shipped it."
+          support={copy?.support ?? "Open a discipline to see what sits inside it — and a project where we shipped it."}
           action={
             <Link href="/services" className="link-cta group">
               All services <span className="cta-arrow">↗</span>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { site } from "@/lib/content";
 
 const services = [
   "Brand identity",
@@ -20,7 +19,16 @@ const budgets = [
   "Not sure yet",
 ];
 
-export default function ContactForm() {
+export default function ContactForm({
+  whatsapp,
+  whatsappLink,
+  source,
+}: {
+  whatsapp?: string;
+  whatsappLink?: string;
+  /** Stored with the enquiry in the CMS, e.g. a campaign landing page slug. */
+  source?: string;
+}) {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -46,7 +54,10 @@ export default function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          source: source ?? (typeof window !== "undefined" ? window.location.pathname : undefined),
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as {
         ok?: boolean;
@@ -94,12 +105,16 @@ export default function ContactForm() {
           Your message is on its way.
         </h3>
         <p className="text-ink-2 text-[16px] leading-[1.6] max-w-[44ch] mx-auto">
-          We&apos;ll be in touch within 24 hours. Want to chat sooner? WhatsApp us
-          at{" "}
-          <a href={site.whatsappLink} className="underline">
-            {site.whatsapp}
-          </a>
-          .
+          We&apos;ll be in touch within 24 hours.
+          {whatsappLink && whatsapp && (
+            <>
+              {" "}Want to chat sooner? WhatsApp us at{" "}
+              <a href={whatsappLink} className="underline">
+                {whatsapp}
+              </a>
+              .
+            </>
+          )}
         </p>
       </div>
     );

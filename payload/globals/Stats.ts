@@ -1,21 +1,29 @@
 import type { GlobalConfig } from 'payload'
+import { anyone, isEditor } from '../access'
+import { revalidateGlobal } from '../hooks/revalidate'
 
 export const Stats: GlobalConfig = {
   slug: 'stats',
-  label: 'Stats Bar',
+  label: 'Results & Stats',
   admin: {
-    group: 'Globals',
-    description: 'The 4-column "By the numbers" section between Testimonials and Blog. Max 4 entries.',
+    group: 'Site',
+    description: 'Headline figures (homepage "Results"). Only publish numbers you can substantiate.',
   },
-  access: { read: () => true },
+  access: { read: anyone, update: isEditor },
+  hooks: { afterChange: [revalidateGlobal('stats')] },
   fields: [
     {
       name: 'entries',
       type: 'array',
       maxRows: 4,
       fields: [
-        { name: 'value', type: 'text', required: true },
-        { name: 'label', type: 'text', required: true },
+        {
+          type: 'row',
+          fields: [
+            { name: 'value', type: 'text', required: true, admin: { width: '30%' } },
+            { name: 'label', type: 'text', required: true, admin: { width: '70%' } },
+          ],
+        },
         { name: 'description', type: 'textarea' },
       ],
     },

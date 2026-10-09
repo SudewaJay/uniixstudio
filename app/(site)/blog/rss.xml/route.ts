@@ -1,7 +1,8 @@
-import { allPosts } from "@/lib/blog-fs";
+import { getPosts } from "@/lib/cms/blog";
 import { site } from "@/lib/content";
 
-export const dynamic = "force-static";
+// Regenerated on demand when a post changes (cache tags), hourly as a backstop.
+export const revalidate = 3600;
 
 function escapeXml(s: string): string {
   return s
@@ -12,10 +13,8 @@ function escapeXml(s: string): string {
     .replace(/'/g, "&apos;");
 }
 
-export function GET() {
-  const published = allPosts
-    .filter((p) => !p.isStub)
-    .sort((a, b) => (a.publishDate < b.publishDate ? 1 : -1));
+export async function GET() {
+  const published = [...(await getPosts())].sort((a, b) => (a.publishDate < b.publishDate ? 1 : -1));
 
   const feedUrl = site.canonical("/blog/rss.xml");
   const blogUrl = site.canonical("/blog/");
@@ -30,7 +29,7 @@ export function GET() {
       const image = p.coverImage?.startsWith("http")
         ? p.coverImage
         : p.coverImage
-          ? site.canonical(p.coverImage)
+          ? `${site.url}${p.coverImage}` // not canonical(): that appends a slash to the file path
           : "";
       return `    <item>
       <title>${escapeXml(p.title)}</title>

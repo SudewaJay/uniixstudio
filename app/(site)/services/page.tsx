@@ -4,25 +4,20 @@ import PageHeader from "@/components/PageHeader";
 import ProcessSection from "@/components/ProcessSection";
 import CTASection from "@/components/CTASection";
 import Reveal from "@/components/Reveal";
-import { pillars, getServicesForPillar } from "@/lib/services";
-import { site } from "@/lib/content";
+import { getPillars, getServices } from "@/lib/cms/services";
+import { buildMetadata } from "@/lib/cms/seo";
+import { splitAccent } from "@/lib/text";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+export const metadata: Metadata = buildMetadata({
+  path: "/services/",
   title: "Services — Brand, Web & Digital Marketing | Uniix Studio",
   description:
     "Brand identity, web design, performance marketing and SEO — all under one roof. Explore Uniix Studio's three pillars: Design, Technology, Growth.",
-  alternates: { canonical: site.canonical("/services/") },
-};
+});
 
-const pillarHeadlines: Record<string, { headline: string; accentText: string }> =
-  {
-    design: { headline: "Design that", accentText: "moves people." },
-    technology: { headline: "Technology built", accentText: "to scale." },
-    growth: { headline: "Growth driven", accentText: "by data." },
-  };
-
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const [pillars, allServices] = await Promise.all([getPillars(), getServices()]);
+  const getServicesForPillar = (slug: string) => allServices.filter((s) => s.pillar === slug);
   return (
     <>
       <PageHeader
@@ -44,7 +39,7 @@ export default function ServicesPage() {
         <div className="wrap flex flex-col gap-20 md:gap-28">
           {pillars.map((pillar, idx) => {
             const services = getServicesForPillar(pillar.slug);
-            const head = pillarHeadlines[pillar.slug];
+            const head = splitAccent(pillar.headline ?? pillar.tagline);
             return (
               <div
                 key={pillar.slug}

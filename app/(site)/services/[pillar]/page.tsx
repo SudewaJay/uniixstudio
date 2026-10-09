@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
-import { pillars, getPillar } from "@/lib/services";
-import { getServicesForPillarFs as getServicesForPillar } from "@/lib/services-fs";
 import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
-import { site } from "@/lib/content";
+import { getPillar, getPillars, getServicesForPillar } from "@/lib/cms/services";
+import { buildMetadata } from "@/lib/cms/seo";
+import { notFoundOrRedirect } from "@/lib/cms/redirects";
 
-export function generateStaticParams() {
-  return pillars.map((p) => ({ pillar: p.slug }));
+export async function generateStaticParams() {
+  return (await getPillars()).map((p) => ({ pillar: p.slug }));
 }
-
-export const dynamic = "force-static";
-export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -22,20 +18,14 @@ export async function generateMetadata({
   params: Promise<{ pillar: string }>;
 }): Promise<Metadata> {
   const { pillar: pillarSlug } = await params;
-  const pillar = getPillar(pillarSlug);
+  const pillar = await getPillar(pillarSlug);
   if (!pillar) return { title: "Services" };
-  const canonical = site.canonical(`/services/${pillarSlug}/`);
-  return {
-    metadataBase: new URL(site.url),
+  return buildMetadata({
+    path: `/services/${pillarSlug}/`,
     title: `${pillar.label} Services in Sri Lanka | Uniix Studio`,
     description: pillar.description,
-    alternates: { canonical },
-    openGraph: {
-      title: `${pillar.label} Services in Sri Lanka | Uniix Studio`,
-      description: pillar.description,
-      url: canonical,
-    },
-  };
+    seo: pillar.seo,
+  });
 }
 
 export default async function PillarPage({
@@ -44,10 +34,10 @@ export default async function PillarPage({
   params: Promise<{ pillar: string }>;
 }) {
   const { pillar: pillarSlug } = await params;
-  const pillar = getPillar(pillarSlug);
-  if (!pillar) notFound();
+  const [pillar, pillars] = await Promise.all([getPillar(pillarSlug), getPillars()]);
+  if (!pillar) return notFoundOrRedirect(`/services/${pillarSlug}/`);
 
-  const services = getServicesForPillar(pillar.slug);
+  const services = await getServicesForPillar(pillar.slug);
   const otherPillars = pillars.filter((p) => p.slug !== pillar.slug);
 
   const crumbs = breadcrumbSchema([

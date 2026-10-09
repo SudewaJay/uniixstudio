@@ -1,265 +1,190 @@
-import type { CollectionConfig } from 'payload'
-import { revalidateCollection, revalidateCollectionDelete } from '../hooks/revalidate'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+import { editorOrOwnDoc, isStaff, publishedOrStaff } from '../access'
+import { faqsField, featuredField, hrefField, imageField, seoField, slugField } from '../fields'
+import { auditFields, authorsCannotPublish, stampAudit } from '../hooks/audit'
+import { revalidateHooks } from '../hooks/revalidate'
+import { draftVersions, previewUrl } from '../utilities/preview'
+
+/** Count words in a Lexical document (text nodes only). */
+function lexicalWordCount(node: unknown): number {
+  if (!node || typeof node !== 'object') return 0
+  const n = node as { text?: unknown; children?: unknown[]; root?: unknown }
+  if (n.root) return lexicalWordCount(n.root)
+  let count = typeof n.text === 'string' ? n.text.trim().split(/\s+/).filter(Boolean).length : 0
+  if (Array.isArray(n.children)) for (const c of n.children) count += lexicalWordCount(c)
+  return count
+}
+
+const computeReadingStats: CollectionBeforeChangeHook = ({ data }) => {
+  if (data?.body) {
+    const words = lexicalWordCount(data.body)
+    data.wordCount = words
+    data.readTime = `${Math.max(1, Math.round(words / 220))} min read`
+  }
+  return data
+}
 
 /**
- * Blog post — drives /blog/[slug]/ pages.
- * Tabs structure: Content / SEO & AEO / Settings & Publish.
- * Includes draft/publish workflow, auto word count + read time, and FAQPage schema emission.
+ * Blog / Insights — /blog/ and /blog/<slug>/.
+ * Publishing = Payload's Publish button. A post published with a future
+ * "Publish date" stays hidden until that date (the listing refreshes hourly).
  */
 export const BlogPosts: CollectionConfig = {
   slug: 'blog-posts',
   labels: { singular: 'Blog Post', plural: 'Blog Posts' },
   admin: {
+    group: 'Content',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'status', 'publishDate', 'author'],
+    defaultColumns: ['title', 'category', 'author', 'publishDate', '_status'],
     listSearchableFields: ['title', 'slug', 'primaryKeyword', 'excerpt'],
-    description: 'All published blog posts. Per Masterplan §6.2, target 20 posts on launch.',
-    group: 'Editorial',
     pagination: { defaultLimit: 25 },
+    preview: (doc) => previewUrl(`/blog/${doc.slug}/`),
   },
-  versions: {
-    drafts: {
-      autosave: { interval: 2000 },
-    },
-    maxPerDoc: 20,
+  versions: draftVersions,
+  access: {
+    read: publishedOrStaff,
+    create: isStaff,
+    update: editorOrOwnDoc,
+    delete: editorOrOwnDoc,
+    readVersions: isStaff,
   },
   hooks: {
-    afterChange: [revalidateCollection('blog-posts')],
-    afterDelete: [revalidateCollectionDelete('blog-posts')],
-    // Auto-calc wordCount + readTime on save (cheap, deterministic).
-    beforeChange: [
-      ({ data }) => {
-        if (typeof data?.body === 'string') {
-          const words = data.body.trim().split(/\s+/).filter(Boolean).length
-          data.wordCount = words
-          data.readTime = `${Math.max(1, Math.round(words / 220))} min read`
-        }
-        return data
-      },
-    ],
+    beforeChange: [authorsCannotPublish, stampAudit, computeReadingStats],
+    ...revalidateHooks('blog-posts'),
   },
-  access: { read: () => true },
+  defaultSort: '-publishDate',
   fields: [
     {
       type: 'tabs',
       tabs: [
-        /* ------------------------------ CONTENT ------------------------------ */
         {
           label: 'Content',
-          description: 'The story itself — title, body, cover image, author.',
           fields: [
-            {
-              name: 'title',
-              type: 'text',
-              required: true,
-              admin: {
-                description: 'Post title. Drives the H1 and the slug suggestion.',
-              },
-            },
+            { name: 'title', type: 'text', required: true, admin: { description: 'The H1.' } },
             {
               name: 'excerpt',
               type: 'textarea',
-              maxLength: 200,
               required: true,
-              admin: {
-                description: 'Shows on the blog index card and as the og:description fallback. ~2 sentences.',
-              },
+              maxLength: 320,
+              admin: { description: 'Card copy + meta description fallback. ~2 sentences.' },
             },
+            imageField('coverImage', { label: 'Cover image', required: true, caption: true }),
+            { name: 'body', type: 'richText', required: true },
             {
-              name: 'body',
-              type: 'richText',
-              required: true,
-              admin: {
-                description: 'Full post body. Min 1,500 words per Masterplan §6.3 for blog posts.',
-              },
-            },
-            {
-              name: 'coverImage',
-              type: 'upload',
-              relationTo: 'media',
-              required: true,
-              admin: {
-                description: '16:10 ratio works best — 1600×1000 minimum. Used as og:image fallback.',
-                width: '60%',
-              },
-            },
-            {
-              name: 'coverImageAlt',
+              name: 'keyTakeaways',
               type: 'text',
-              required: true,
-              admin: {
-                description: 'Describe the image for screen readers AND keyword inclusion.',
-                width: '40%',
-              },
-            },
-            {
-              name: 'author',
-              type: 'relationship',
-              relationTo: 'authors',
-              required: true,
-              admin: { width: '50%' },
-            },
-            {
-              name: 'category',
-              type: 'select',
-              required: true,
-              defaultValue: 'Design',
-              options: [
-                { label: 'Design', value: 'Design' },
-                { label: 'Technology', value: 'Technology' },
-                { label: 'Growth', value: 'Growth' },
-                { label: 'Insights', value: 'Insights' },
-              ],
-              admin: { width: '50%' },
+              hasMany: true,
+              admin: { description: 'Short "in brief" answers beside the intro (editorial layout).' },
             },
             {
               name: 'ctaBlock',
               type: 'textarea',
-              admin: {
-                description: 'Optional emphasized line shown above the related-posts footer. Skip for stub posts.',
-              },
-            },
-          ],
-        },
-
-        /* ----------------------------- SEO & AEO ----------------------------- */
-        {
-          label: 'SEO & AEO',
-          description: 'Search + Answer Engine Optimization. JSON-LD is auto-emitted.',
-          fields: [
-            {
-              name: 'primaryKeyword',
-              type: 'text',
-              required: true,
-              admin: {
-                description: 'Primary keyword for ranking. Per Masterplan §6.3 must appear in H1, first paragraph, ≥2 H2s, and conclusion.',
-              },
+              admin: { description: 'Optional emphasised line above "Continue reading".' },
             },
             {
-              name: 'seo',
-              type: 'group',
-              label: 'Meta tags',
-              admin: { description: 'Override the default <title> and <meta description>. Optional.' },
+              type: 'collapsible',
+              label: 'Closing call to action (editorial layout)',
+              admin: { initCollapsed: true },
               fields: [
+                { name: 'ctaHeading', type: 'text' },
                 {
-                  name: 'metaTitle',
-                  type: 'text',
-                  maxLength: 60,
-                  admin: { description: 'Max 60 chars. Lead with the primary keyword.' },
-                },
-                {
-                  name: 'metaDescription',
-                  type: 'textarea',
-                  maxLength: 160,
-                  admin: { description: 'Max 160 chars. Soft CTA at the end.' },
-                },
-                {
-                  name: 'ogImage',
-                  type: 'upload',
-                  relationTo: 'media',
-                  admin: { description: 'Custom OG image. Falls back to coverImage if blank.' },
+                  type: 'row',
+                  fields: [
+                    { name: 'ctaLabel', type: 'text', admin: { width: '50%' } },
+                    hrefField('ctaHref', { admin: { width: '50%' } }),
+                  ],
                 },
               ],
             },
+            faqsField(8),
             {
-              name: 'faqs',
-              type: 'array',
-              labels: { singular: 'FAQ', plural: 'FAQs' },
-              admin: {
-                description: 'Per Masterplan §9. Renders visible FAQ + emits FAQPage JSON-LD for People Also Ask boxes.',
-                initCollapsed: true,
-              },
-              fields: [
-                { name: 'question', type: 'text', required: true },
-                {
-                  name: 'answer',
-                  type: 'textarea',
-                  required: true,
-                  admin: { description: '2–3 sentences. Direct answer first.' },
-                },
-              ],
-              maxRows: 8,
-            },
-            {
-              name: 'tableOfContents',
+              name: 'faqSchema',
+              label: 'Emit FAQPage schema',
               type: 'checkbox',
               defaultValue: false,
-              admin: {
-                description: 'Auto-generate TOC. Recommended for posts >2,000 words (Masterplan §6.3).',
-              },
+              admin: { description: 'Google no longer shows FAQ rich results for most sites; leave off unless needed.' },
             },
           ],
         },
-
-        /* --------------------------- SETTINGS ---------------------------- */
         {
-          label: 'Settings & Publish',
-          description: 'URL slug, schedule, internal linking.',
+          label: 'Relationships',
           fields: [
-            {
-              name: 'slug',
-              type: 'text',
-              unique: true,
-              required: true,
-              admin: {
-                description: 'URL slug. Lowercase, hyphens. e.g., "10-signs-you-need-rebrand".',
-                width: '60%',
-              },
-            },
-            {
-              name: 'status',
-              type: 'select',
-              required: true,
-              defaultValue: 'draft',
-              options: [
-                { label: 'Draft', value: 'draft' },
-                { label: 'Scheduled', value: 'scheduled' },
-                { label: 'Published', value: 'published' },
-              ],
-              admin: { width: '40%' },
-            },
-            {
-              name: 'publishDate',
-              type: 'date',
-              required: true,
-              admin: {
-                description: 'When the post goes (or went) live. Drives sort order on /blog.',
-                date: { pickerAppearance: 'dayAndTime', displayFormat: 'd MMM yyyy h:mm a' },
-                width: '50%',
-              },
-            },
-            {
-              name: 'pillarLink',
-              type: 'relationship',
-              relationTo: 'pillars',
-              admin: {
-                description: 'Topic-cluster pillar (Masterplan §6.1). Drives "View all in [pillar]" link.',
-                width: '50%',
-              },
-            },
             {
               name: 'relatedPosts',
               type: 'relationship',
               relationTo: 'blog-posts',
               hasMany: true,
               maxRows: 3,
-              admin: {
-                description: 'Up to 3 related posts shown in "Continue reading".',
-              },
+              filterOptions: ({ id }) => ({ id: { not_equals: id } }),
             },
-            {
-              name: 'wordCount',
-              type: 'number',
-              admin: { readOnly: true, description: 'Auto-calculated on save.', width: '50%' },
-            },
-            {
-              name: 'readTime',
-              type: 'text',
-              admin: { readOnly: true, description: 'Auto-calculated on save.', width: '50%' },
-            },
+            { name: 'relatedServices', type: 'relationship', relationTo: 'services', hasMany: true, maxRows: 4 },
+          ],
+        },
+        {
+          label: 'SEO',
+          fields: [
+            { name: 'primaryKeyword', type: 'text' },
+            { name: 'secondaryKeywords', type: 'text', hasMany: true },
+            seoField(),
           ],
         },
       ],
     },
+    slugField('title'),
+    {
+      name: 'publishDate',
+      type: 'date',
+      required: true,
+      index: true,
+      defaultValue: () => new Date().toISOString(),
+      admin: {
+        position: 'sidebar',
+        date: { pickerAppearance: 'dayAndTime' },
+        description: 'Posts with a future date stay hidden until then.',
+      },
+    },
+    {
+      name: 'updatedDate',
+      label: 'Last substantive update',
+      type: 'date',
+      admin: { position: 'sidebar', description: 'Sets dateModified in schema.' },
+    },
+    { name: 'author', type: 'relationship', relationTo: 'authors', required: true, admin: { position: 'sidebar' } },
+    {
+      name: 'category',
+      type: 'select',
+      required: true,
+      defaultValue: 'Insights',
+      index: true,
+      options: ['Design', 'Technology', 'Growth', 'Insights'],
+      admin: { position: 'sidebar' },
+    },
+    { name: 'tags', type: 'text', hasMany: true, admin: { position: 'sidebar' } },
+    {
+      name: 'layout',
+      type: 'select',
+      defaultValue: 'standard',
+      options: [
+        { label: 'Standard', value: 'standard' },
+        { label: 'Editorial long-form (sticky contents)', value: 'editorial' },
+      ],
+      admin: { position: 'sidebar' },
+    },
+    featuredField(),
+    {
+      name: 'tableOfContents',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { position: 'sidebar' },
+    },
+    {
+      type: 'row',
+      admin: { position: 'sidebar' },
+      fields: [
+        { name: 'wordCount', type: 'number', admin: { readOnly: true, width: '50%' } },
+        { name: 'readTime', type: 'text', admin: { readOnly: true, width: '50%' } },
+      ],
+    },
+    ...auditFields,
   ],
 }

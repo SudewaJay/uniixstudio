@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import Reveal from "@/components/Reveal";
-import { getPost, allPosts as posts, formatDate } from "@/lib/blog-fs";
-import { locations } from "@/lib/locations";
+import { formatDate } from "@/lib/format";
+import { getPost, getPosts } from "@/lib/cms/blog";
+import { getLocations } from "@/lib/cms/locations";
+import { getServices } from "@/lib/cms/services";
+import { getSiteSettings } from "@/lib/cms/site";
+import { buildMetadata } from "@/lib/cms/seo";
+import { notFoundOrRedirect } from "@/lib/cms/redirects";
 import {
   articleSchema,
   breadcrumbSchema,
@@ -14,15 +18,11 @@ import {
   schemaGraph,
 } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
-import { site } from "@/lib/content";
-import { ogImageUrl, ogImageMeta } from "@/lib/og-image";
+import EditorialArticle from "@/components/blog/EditorialArticle";
 
-export function generateStaticParams() {
-  return posts.filter((p) => !p.isStub).map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getPosts()).map((p) => ({ slug: p.slug }));
 }
-
-export const dynamic = "force-static";
-export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -30,31 +30,18 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPost(slug);
   if (!post) return { title: "Article" };
-  const canonical = site.canonical(`/blog/${slug}/`);
-  const ogImages = ogImageMeta(post.coverImage);
-  const twitterImage = ogImageUrl(post.coverImage);
-  return {
-    metadataBase: new URL(site.url),
-    title: post.title,
+  return buildMetadata({
+    path: `/blog/${slug}/`,
+    title: post.seoTitle ?? post.title,
     description: post.metaDescription,
-    alternates: { canonical },
-    openGraph: {
-      title: post.title,
-      description: post.metaDescription,
-      url: canonical,
-      images: ogImages,
-      type: "article",
-      publishedTime: post.publishDate,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.metaDescription,
-      images: twitterImage ? [twitterImage] : undefined,
-    },
-  };
+    image: post.ogImage ?? post.coverImage,
+    type: "article",
+    publishedTime: post.publishDate,
+    modifiedTime: post.updatedDate,
+    seo: post.seo,
+  });
 }
 
 export default async function BlogPostPage({
@@ -63,8 +50,14 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
-  if (!post || post.isStub) notFound();
+  const [post, allPublished, locations, allServices, settings] = await Promise.all([
+    getPost(slug),
+    getPosts(),
+    getLocations(),
+    getServices(),
+    getSiteSettings(),
+  ]);
+  if (!post) return notFoundOrRedirect(`/blog/${slug}/`);
 
   // Rotate the published list to start right after the current post (wrapping
   // around) so every post is surfaced as "related" by the posts preceding it.
@@ -73,15 +66,21 @@ export default async function BlogPostPage({
   // "pages have only one incoming internal link"). Same-category posts are
   // preferred for relevance, then the rotated sequence fills the rest — which
   // guarantees no post is orphaned.
-  const allPublished = posts.filter((p) => !p.isStub);
   const curIdx = allPublished.findIndex((p) => p.slug === slug);
   const rotated =
     curIdx >= 0
       ? [...allPublished.slice(curIdx + 1), ...allPublished.slice(0, curIdx)]
       : allPublished.filter((p) => p.slug !== slug);
+  // Hand-picked cluster posts (frontmatter `relatedPosts`) lead; the rotation
+  // fills any remaining slots.
+  const picked = (post.relatedPosts ?? [])
+    .map((s) => allPublished.find((p) => p.slug === s))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p) && p!.slug !== slug);
+  const pickedSlugs = new Set(picked.map((p) => p.slug));
   const related = [
-    ...rotated.filter((p) => p.category === post.category),
-    ...rotated.filter((p) => p.category !== post.category),
+    ...picked,
+    ...rotated.filter((p) => p.category === post.category && !pickedSlugs.has(p.slug)),
+    ...rotated.filter((p) => p.category !== post.category && !pickedSlugs.has(p.slug)),
   ].slice(0, 3);
 
   // Location pages that reference this post → reverse internal link, so the
@@ -96,10 +95,23 @@ export default async function BlogPostPage({
       { name: post.title, url: `/blog/${post.slug}/` },
     ]),
   ];
-  if (post.faqs && post.faqs.length > 0) {
+  if (post.faqs && post.faqs.length > 0 && post.faqSchema !== false) {
     schemas.push(faqPageSchema(post.faqs));
   }
   const pageSchema = schemaGraph(...schemas);
+
+  if (post.layout === "editorial") {
+    return (
+      <EditorialArticle
+        post={post}
+        schema={pageSchema}
+        related={related}
+        servingAreas={servingAreas.map(({ slug, name }) => ({ slug, name }))}
+        allServices={allServices}
+        contact={{ whatsappLink: settings.whatsappLink, phone: settings.phone }}
+      />
+    );
+  }
 
   return (
     <article>
@@ -155,7 +167,7 @@ export default async function BlogPostPage({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.coverImage}
-                alt=""
+                alt={post.coverAlt ?? ""}
                 className="w-full h-full object-cover"
               />
             </div>

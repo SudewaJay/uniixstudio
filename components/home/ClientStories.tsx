@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { testimonials } from "@/lib/content";
+import type { TestimonialItem } from "@/lib/cms/content";
+import type { SectionCopy } from "@/lib/cms/site";
 import Reveal from "../Reveal";
 
 const EASE = [0.22, 0.61, 0.36, 1] as const;
@@ -52,7 +53,7 @@ function Arrow({
  * The quote region is a polite live region so the change is announced to
  * screen-reader users who press the arrows.
  */
-export default function ClientStories() {
+export default function ClientStories({ testimonials, copy }: { testimonials: TestimonialItem[]; copy?: SectionCopy }) {
   const reduce = useReducedMotion();
   const [i, setI] = useState(0);
   const [dir, setDir] = useState(1);
@@ -74,9 +75,9 @@ export default function ClientStories() {
             <h2>, not an eyebrow, so the section is titled in the outline. */}
         <Reveal>
           <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-            <span className="eyebrow">Client stories</span>
+            <span className="eyebrow">{copy?.eyebrow ?? "Client stories"}</span>
             <h2 className="t-h4 text-ink-mute font-normal">
-              What clients actually say.
+              {copy?.heading ?? "What clients actually say."}
             </h2>
           </div>
         </Reveal>

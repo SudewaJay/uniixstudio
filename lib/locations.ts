@@ -43,6 +43,7 @@ export type Location = {
    * pulled live from the posts, so only the slug lives here.
    */
   relatedPosts: string[];
+  seo?: import("./cms/seo").SeoFields;
 };
 
 const WEB = { pillar: "technology", slug: "web-design", label: "Web Design" };
@@ -118,8 +119,8 @@ export const locations: Location[] = [
       },
     ],
     relatedPosts: [
+      "website-design-negombo-tourism-businesses",
       "restaurant-website-design-sri-lanka",
-      "local-seo-sri-lanka-guide",
       "google-my-business-setup-sri-lanka-2026",
     ],
   },
@@ -171,9 +172,9 @@ export const locations: Location[] = [
       },
     ],
     relatedPosts: [
+      "business-website-cost-ja-ela",
       "ecommerce-website-development-sri-lanka-guide",
       "how-to-rank-on-google-sri-lanka",
-      "local-seo-sri-lanka-guide",
     ],
   },
   {
@@ -224,9 +225,62 @@ export const locations: Location[] = [
       },
     ],
     relatedPosts: [
-      "local-seo-sri-lanka-guide",
+      "web-design-for-wattala-businesses",
       "real-estate-website-sri-lanka",
       "google-my-business-setup-sri-lanka-2026",
+    ],
+  },
+  {
+    slug: "colombo",
+    name: "Colombo",
+    district: "Colombo",
+    geo: { lat: 6.9271, lng: 79.8612 },
+    metaDescription:
+      "Web design & development in Colombo. Uniix Studio builds fast, conversion-focused websites, web apps and brands for Colombo startups, SMEs and corporates.",
+    lede: "Websites, web apps and brands for Colombo's startups, SMEs and established companies.",
+    intro: [
+      "Colombo is Sri Lanka's most crowded digital market. From Fort and Colombo 3 to Rajagiriya and Nugegoda, every category — law firms, clinics, fintechs, property developers, restaurants, consultancies — has a dozen competitors with a decent website. In Colombo, \"decent\" is the baseline. What wins is a site that's noticeably faster, clearer and more credible than the one the buyer looked at five minutes ago.",
+      "Colombo buyers are also the most likely in the country to judge you before they ever speak to you. A procurement team, an investor, an overseas partner or a Colombo 7 homeowner will look at your website, LinkedIn and Google reviews first. We build sites that stand up to that scrutiny: sharp positioning, proof up front, and a build quality that holds up on a phone and on a boardroom screen.",
+      "We work with Colombo startups launching their first product, SMEs outgrowing a template site, and established companies that need a redesign, a custom web app or a proper e-commerce platform — with the same senior team from first call to launch, and without big-agency overheads.",
+    ],
+    localAngle:
+      "Colombo search results are the most competitive in Sri Lanka, so ranking and converting here comes down to fundamentals done properly: Core Web Vitals, clean technical SEO, specific service pages and credible proof. A studio just outside the city gives you Colombo-grade work at a fairer price.",
+    keyIndustries: [
+      "Corporate & professional services",
+      "Startups & tech",
+      "Real estate & property development",
+      "Healthcare & clinics",
+      "Hospitality, restaurants & retail",
+    ],
+    landmarks: [
+      "Colombo Fort & Colombo 1–3",
+      "Colombo 7 (Cinnamon Gardens)",
+      "Rajagiriya & Battaramulla",
+      "Nugegoda & Dehiwala",
+      "Port City Colombo",
+    ],
+    featuredServices: [WEB, DEV, ECOM, SEO, BRAND, WP],
+    faqs: [
+      {
+        question: "Why choose Uniix Studio over a large Colombo web design agency?",
+        answer:
+          "You work directly with the senior designers and developers who build your site — no account-manager layer, no junior hand-off. You get Colombo-grade quality and modern tech (Next.js, headless CMS, proper SEO foundations) at a price that reflects a lean studio, not city-centre office rent.",
+      },
+      {
+        question: "Do you build custom web applications for Colombo companies?",
+        answer:
+          "Yes. Beyond marketing websites we build client portals, booking systems, dashboards, internal tools and SaaS MVPs — scoped around the workflow you actually need, with clean code your future team can maintain.",
+      },
+      {
+        question: "Can you meet us in Colombo?",
+        answer:
+          "Yes. Most of the project runs over calls, WhatsApp and shared links, but we're close to the city and happy to meet in person for kickoff, workshops or key reviews.",
+      },
+    ],
+    relatedPosts: [
+      "digital-marketing-agency-colombo",
+      "website-cost-sri-lanka-2026",
+      "web-design-vs-web-development-differences",
     ],
   },
 ];

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PortfolioArchiveClient from "@/components/portfolio/PortfolioArchiveClient";
-import { allProjects } from "@/lib/projects-fs";
+import { getProjects } from "@/lib/cms/projects";
+import type { Project } from "@/lib/projects";
 import { site } from "@/lib/content";
 import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
@@ -34,7 +35,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PortfolioPage() {
+/** Only what the archive cards render — keeps case-study payloads off the client. */
+function toCard(p: Project): Project {
+  const { slug, title, overline, year, feature, headline, summary, bg, bigText, bigClass, coverImage, tags, audienceTier, client, industry, services, deliverables, hasDetail } = p;
+  return { slug, title, overline, year, feature, headline, summary, bg, bigText, bigClass, coverImage, tags, audienceTier, client, industry, services, deliverables, hasDetail };
+}
+
+export default async function PortfolioPage() {
+  const allProjects = await getProjects();
   const crumbs = breadcrumbSchema([
     { name: "Home", url: "/" },
     { name: "Portfolio", url: "/portfolio/" },
@@ -49,7 +57,7 @@ export default function PortfolioPage() {
       "A curated archive of identities, digital products, websites, and growth systems built to solve real business problems.",
     mainEntity: {
       "@type": "ItemList",
-      itemListElement: allProjects.map((p, i) => ({
+      itemListElement: allProjects.filter((p) => p.hasDetail).map((p, i) => ({
         "@type": "ListItem",
         position: i + 1,
         url: `${site.url}/portfolio/${p.slug}/`,
@@ -61,7 +69,7 @@ export default function PortfolioPage() {
   return (
     <>
       <JsonLd data={schemaGraph(crumbs, collectionSchema)} />
-      <PortfolioArchiveClient initialProjects={allProjects} />
+      <PortfolioArchiveClient initialProjects={allProjects.map(toCard)} />
     </>
   );
 }

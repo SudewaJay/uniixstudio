@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import type { ServiceVideo } from "@/lib/services-fs";
+import type { ServiceVideo } from "@/lib/services";
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const;
 

@@ -64,6 +64,15 @@ export type Service = {
   relatedReading?: ServiceRelatedLink[];
   /** Commercial videos / showreel embedded on the service page. */
   videos?: ServiceVideo[];
+  /* ---- CMS-only fields (optional so the legacy seed data still type-checks) ---- */
+  shortDescription?: string;
+  coverAlt?: string;
+  pricingFromLKR?: number;
+  primaryKeyword?: string;
+  cta?: { label: string; href: string };
+  relatedServiceKeys?: Array<{ pillar: ServicePillar; slug: string }>;
+  relatedProjectSlugs?: string[];
+  seo?: import("./cms/seo").SeoFields;
 };
 
 export type Pillar = {
@@ -72,6 +81,12 @@ export type Pillar = {
   tagline: string;
   description: string;
   accent: string;
+  /* ---- CMS-only fields ---- */
+  num?: string;
+  headline?: string;
+  positioning?: string;
+  capabilities?: Array<{ name: string; desc: string }>;
+  seo?: import("./cms/seo").SeoFields;
 };
 
 export const pillars: Pillar[] = [
@@ -190,7 +205,7 @@ At Uniix Studio, we create motion graphics that are on-brand and built for perfo
     name: `Packaging Design`,
     rawName: `Packaging Design`,
     pageTitle: `Packaging Design in Sri Lanka | Uniix Studio`,
-    metaDescription: `Make your product impossible to ignore on the shelf. Uniix Studio creates retail-ready Packaging Design in Sri Lanka — labels, boxes, and unboxing experiences that sell. Get a free consultation!`,
+    metaDescription: `Retail-ready packaging design in Sri Lanka. Uniix Studio creates labels, boxes, and unboxing experiences that stand out on shelves and sell products.`,
     body: `## Packaging That Sells Before a Word Is Read
 
 On a crowded Sri Lankan shelf, your packaging has about three seconds to win a customer. Great packaging design is not decoration — it is your hardest-working salesperson, communicating quality, value, and personality the instant a shopper looks at it.
@@ -219,7 +234,7 @@ At Uniix Studio, we design packaging that is as practical as it is beautiful. We
     name: `Print & Collateral`,
     rawName: `Print & Collateral`,
     pageTitle: `Print & Collateral Design in Sri Lanka | Uniix Studio`,
-    metaDescription: `Professional Print & Collateral Design in Sri Lanka. Uniix Studio designs brochures, business cards, and marketing material that feel as good as they look. Get a free consultation!`,
+    metaDescription: `Professional print & collateral design in Sri Lanka. Uniix Studio creates brochures, business cards, and marketing material that feel as good as they look.`,
     body: `## Print That Feels as Good as It Looks
 
 Digital is everywhere, but print still closes deals. A beautifully designed brochure, a business card with weight, or a pitch deck handed across the table signals a level of care that a PDF rarely matches.
