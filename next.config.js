@@ -14,11 +14,28 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
 ];
 
+/**
+ * Client pitch sites shared at design.uniixstudio.com/<slug>. Each pitch is
+ * its own Vercel project built with NEXT_PUBLIC_BASE_PATH=/<slug> (and
+ * trailing slashes, to match this site); we proxy to it by host.
+ */
+const DESIGN_HOST = [{ type: "host", value: "design.uniixstudio.com" }];
+const PITCHES = {
+  tudawebrothers: "https://tudawe-pitch.vercel.app",
+};
+const pitchSlugs = Object.keys(PITCHES).join("|");
+
 const nextConfig = {
   reactStrictMode: true,
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      // Pitches are private share links — keep them out of search.
+      {
+        source: "/:path*",
+        has: DESIGN_HOST,
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
       {
         // Self-hosted fonts are content-stable; cache them for a year.
         source: "/fonts/:file*",
@@ -69,6 +86,13 @@ const nextConfig = {
     // Console → Pages → "Not found (404)" surfaces additional legacy URLs.
     const permanent = true;
     return [
+      // design.uniixstudio.com only serves pitches; anything else goes home.
+      {
+        source: `/:path((?!(?:${pitchSlugs})(?:/|$)).*)`,
+        has: DESIGN_HOST,
+        destination: "https://uniixstudio.com/",
+        permanent: false,
+      },
       // Core section pages
       { source: "/services-2", destination: "/services", permanent },
       { source: "/gallery", destination: "/portfolio", permanent },
@@ -93,6 +117,15 @@ const nextConfig = {
         permanent,
       },
     ];
+  },
+  async rewrites() {
+    return {
+      beforeFiles: Object.entries(PITCHES).map(([slug, origin]) => ({
+        source: `/${slug}/:path*`,
+        has: DESIGN_HOST,
+        destination: `${origin}/${slug}/:path*`,
+      })),
+    };
   },
 };
 
