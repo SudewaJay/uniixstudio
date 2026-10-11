@@ -20,6 +20,7 @@ type Payload = {
   company?: string;
   service?: string;
   budget?: string;
+  timeline?: string;
   message?: string;
   /** Honeypot — must be empty. Real users won't see this field. */
   website?: string;
@@ -93,6 +94,7 @@ export async function POST(req: Request) {
   const company = (data.company ?? "").trim();
   const service = (data.service ?? "").trim();
   const budget = (data.budget ?? "").trim();
+  const timeline = (data.timeline ?? "").trim();
 
   if (!name || !email || !message) {
     return NextResponse.json(
@@ -141,6 +143,7 @@ export async function POST(req: Request) {
     `Company: ${company || "—"}`,
     `Service: ${service || "—"}`,
     `Budget:  ${budget || "—"}`,
+    `Timing:  ${timeline || "—"}`,
     "",
     "Message:",
     message,
@@ -160,6 +163,7 @@ export async function POST(req: Request) {
         <tr><td style="color:#64748b;padding:4px 0">Company</td><td style="padding:4px 0">${escapeHtml(company || "—")}</td></tr>
         <tr><td style="color:#64748b;padding:4px 0">Service</td><td style="padding:4px 0">${escapeHtml(service || "—")}</td></tr>
         <tr><td style="color:#64748b;padding:4px 0">Budget</td><td style="padding:4px 0">${escapeHtml(budget || "—")}</td></tr>
+        <tr><td style="color:#64748b;padding:4px 0">Timing</td><td style="padding:4px 0">${escapeHtml(timeline || "—")}</td></tr>
       </table>
     </td></tr>
     <tr><td style="padding:8px 28px 28px">
