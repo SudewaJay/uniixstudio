@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Manrope, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThirdPartyScripts from "@/components/ThirdPartyScripts";
@@ -15,6 +15,20 @@ import Nav from "@/components/Nav";
 import PromoBar from "@/components/PromoBar";
 import Footer from "@/components/Footer";
 import "../globals.css";
+
+// Display face (headings). Variable font, so one file covers 300–700.
+const display = Space_Grotesk({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-space-grotesk",
+});
+
+// Text face (body copy, UI). Variable font, 200–800.
+const sans = Manrope({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-manrope",
+});
 
 const mono = JetBrains_Mono({
   subsets: ["latin"],
@@ -88,21 +102,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={mono.variable}>
-      <head>
-        {/*
-          Google Sans Flex is self-hosted (see @font-face in globals.css).
-          Preloading the latin subset lets it download in parallel with the
-          CSS instead of being discovered only after the stylesheet parses.
-        */}
-        <link
-          rel="preload"
-          href="/fonts/GoogleSansFlex-latin.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-      </head>
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+    >
       <body className="font-sans">
         <JsonLd data={siteSchema} />
         <a href="#main-content" className="skip-link">Skip to main content</a>
