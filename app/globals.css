@@ -464,6 +464,41 @@
   }
 }
 
+/* Client logo marquee (BrandStatement). Items carry their own right margin
+   (no flex gap) so -50% lands exactly on the start of the duplicate list. */
+.logo-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.logo-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 48s linear infinite;
+}
+.logo-marquee:hover .logo-marquee-track,
+.logo-marquee:focus-within .logo-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* No motion: show one copy of the logos as a centred, wrapping grid. */
+  .logo-marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .logo-marquee-track {
+    animation: none;
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 12px;
+    padding-inline: var(--gutter);
+  }
+  .logo-marquee-track > [aria-hidden="true"] {
+    display: none;
+  }
+}
+
 /* Availability dot */
 .status-dot {
   @apply w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse2;
@@ -756,6 +791,25 @@
 /* ==========================================================================
    Why Uniix (components/home/WhyUniix)
    ========================================================================== */
+/* Lime surface. Text stays ink: brand orange measures ~4:1 on this lime, so
+   the strike, eyebrow rule and accents switch to ink here. */
+.why-lime {
+  background: #c4e55c;
+  color: #12100e;
+}
+.why-lime .eyebrow {
+  color: #3a342d;
+}
+.why-lime .eyebrow::before {
+  background: currentColor;
+}
+.why-lime .why-strike {
+  background-image: linear-gradient(#12100e, #12100e);
+}
+.why-lime .why-row.is-in .why-strike {
+  color: rgba(58, 52, 45, 0.75);
+}
+
 .why-strike {
   position: relative;
   display: inline;
