@@ -1,4 +1,4 @@
-import { clients } from "@/lib/content";
+import { clientLogos } from "@/lib/content";
 import SmartImage from "../ui/SmartImage";
 import Reveal from "../Reveal";
 
@@ -11,6 +11,7 @@ import Reveal from "../Reveal";
  */
 export default function BrandStatement() {
   return (
+    <>
     <section id="brand-statement" className="on-dark relative overflow-hidden bg-bg-ink text-white section-tight">
       <div
         aria-hidden="true"
@@ -38,36 +39,52 @@ export default function BrandStatement() {
           </p>
         </Reveal>
 
-        {/* Evidence — real client marks. */}
-        <div className="mt-14 md:mt-20 border-t border-line-dark pt-10">
-          <Reveal>
-            <p className="t-meta text-white/45 text-center">
-              Trusted by ambitious teams across Colombo, Sydney &amp; the UK
-            </p>
-          </Reveal>
-          <ul className="mt-9 grid grid-cols-3 items-center gap-x-8 gap-y-9 sm:gap-x-12 lg:grid-cols-6">
-            {clients.map((c, i) => (
-              <li key={c.name}>
-                <Reveal delay={(i % 4) as 0 | 1 | 2 | 3} className="relative h-10 md:h-11">
-                  {c.logo ? (
-                    <SmartImage
-                      src={c.logo}
-                      alt={c.name}
-                      sizes="(min-width:1024px) 140px, 28vw"
-                      fit="contain"
-                      className="opacity-70 transition-opacity duration-std ease-uniix hover:opacity-100 [filter:brightness(0)_invert(1)]"
-                    />
-                  ) : (
-                    <span className="grid h-full place-items-center text-white/70 text-[26px] leading-none">
-                      {c.name}
-                    </span>
-                  )}
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </section>
+
+    {/*
+      Evidence — real client marks, in full colour. They sit on a light band
+      rather than the ink one: several marks use navy or black type that would
+      disappear on a dark background.
+
+      Full-bleed marquee. The list is rendered twice and the track slides by
+      exactly half its width, so the loop is seamless. The second copy is
+      hidden from assistive tech.
+    */}
+    <section aria-label="Clients" className="bg-bg py-12 md:py-16 border-b border-line">
+      <div className="wrap">
+        <Reveal>
+          <p className="t-meta text-ink-mute text-center">
+            Trusted by ambitious teams across Colombo, Sydney &amp; the UK
+          </p>
+        </Reveal>
+      </div>
+
+      <div className="logo-marquee relative mt-9 md:mt-10">
+        <ul className="logo-marquee-track items-center">
+          {[...clientLogos, ...clientLogos].map((c, i) => {
+            const duplicate = i >= clientLogos.length;
+            return (
+              <li
+                key={`${c.name}-${i}`}
+                aria-hidden={duplicate || undefined}
+                className="mr-10 md:mr-14"
+              >
+                <div className="relative h-14 w-32 md:h-16 md:w-40">
+                  <SmartImage
+                    src={c.logo}
+                    alt={duplicate ? "" : c.name}
+                    sizes="(min-width:768px) 160px, 128px"
+                    fit="contain"
+                    quality={85}
+                  />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+    </>
   );
 }
