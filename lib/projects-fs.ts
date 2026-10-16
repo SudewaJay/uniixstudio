@@ -45,6 +45,7 @@ const CURATED_ORDER = [
   "bilesma-natural-social-media",
   "rentmycar-lk",
   "st-lukes-medilab",
+  "cinecraft-media",
   "ecowave-energy",
   "sierra-energy-solutions",
   "zerro",

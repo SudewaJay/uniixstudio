@@ -542,6 +542,48 @@
   }
 }
 
+/* Cinematic spotlight — Cinecraft Media case study hero. The light fades up
+   first, then drifts slowly so the dark field never feels static. */
+.cc-light {
+  opacity: 0;
+  animation:
+    cc-light-in 1.4s var(--ease) forwards,
+    cc-drift 18s ease-in-out 1.4s infinite alternate;
+}
+@keyframes cc-light-in {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cc-drift {
+  from {
+    transform: translate3d(-2%, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(2%, -1.5%, 0) scale(1.06);
+  }
+}
+.cc-cue {
+  animation: cc-cue 2.4s var(--ease) 1.6s infinite;
+  transform-origin: top;
+}
+@keyframes cc-cue {
+  0% {
+    transform: scaleY(0);
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  51% {
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
 /* ==========================================================================
    Reduced motion — a clean static experience, not a degraded one.
    ========================================================================== */
@@ -563,6 +605,13 @@
   .marquee-track {
     animation: none;
     transform: none;
+  }
+  .cc-light {
+    opacity: 1;
+    animation: none;
+  }
+  .cc-cue {
+    animation: none;
   }
   .status-dot {
     animation: none;
