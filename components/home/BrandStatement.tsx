@@ -1,6 +1,7 @@
 import { clientLogos } from "@/lib/content";
 import SmartImage from "../ui/SmartImage";
 import Reveal from "../Reveal";
+import WorkCarousel from "./WorkCarousel";
 
 /**
  * Section 02 — the dark bridge between the hero and the pillars.
@@ -24,22 +25,19 @@ export default function BrandStatement() {
 
       <div className="wrap relative">
         <Reveal>
-          <p className="font-display font-medium leading-[1.05] tracking-[-0.03em] text-[clamp(32px,5.6vw,76px)] max-w-[18ch]">
-            Design <span className="accent font-normal t-italic">×</span> Technology{" "}
-            <span className="accent font-normal t-italic">×</span> Growth —{" "}
-            <span className="text-white/45">under one roof.</span>
+          <p className="mx-auto text-center font-display font-medium leading-[1.05] tracking-[-0.03em] text-[clamp(22px,6.2vw,76px)]">
+            <span className="block whitespace-nowrap">
+              Design <span className="accent font-normal t-italic">×</span> Technology{" "}
+              <span className="accent font-normal t-italic">×</span> Growth
+            </span>
+            <span className="block text-white/45">— under one roof.</span>
           </p>
         </Reveal>
-
-        <Reveal delay={1}>
-          <p className="t-lead mt-8 max-w-[58ch] text-white/70">
-            Most agencies bolt these together from three different teams. We run them as
-            one, so your brand, your site and your marketing all pull in the same
-            direction — and nothing gets lost in the handoff.
-          </p>
-        </Reveal>
-
       </div>
+
+      <Reveal delay={1} className="relative mt-12 md:mt-16">
+        <WorkCarousel />
+      </Reveal>
     </section>
 
     {/*
@@ -68,7 +66,7 @@ export default function BrandStatement() {
               <li
                 key={`${c.name}-${i}`}
                 aria-hidden={duplicate || undefined}
-                className="mr-10 md:mr-14"
+                className="mr-[55px] md:mr-[71px]"
               >
                 <div className="relative h-14 w-32 md:h-16 md:w-40">
                   <SmartImage
