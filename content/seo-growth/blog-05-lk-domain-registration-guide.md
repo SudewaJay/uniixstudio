@@ -1,0 +1,202 @@
+# Blog 05: .lk Domain Registration in Sri Lanka: Prices, Steps and Choosing the Right Name
+
+> **Source of truth:** `content/blog/lk-domain-registration-guide.mdx`. This file is a generated snapshot of that MDX for review and handover. If you edit the article, edit the MDX (or the post in the CMS), not this file.
+
+## SEO metadata
+
+| Field | Value |
+|---|---|
+| H1 | .lk Domain Registration in Sri Lanka: Prices, Steps and Choosing the Right Name |
+| Search title (`seoTitle`, also the meta title) | .lk Domain Registration: Prices and Step-by-Step Guide (54 chars) |
+| URL | `https://www.uniixstudio.com/blog/lk-domain-registration-guide/` |
+| Slug | `lk-domain-registration-guide` |
+| Meta description | How to register a .lk domain: categories and prices from the LK Domain Registry, .lk vs .com.lk vs .com, step-by-step registration and keeping ownership. (153 chars) |
+| Primary keyword | .lk domain registration |
+| Secondary keywords | lk domain price, how to register lk domain, .com.lk domain, .lk vs .com, Sri Lanka domain name, LK Domain Registry |
+| Category | Technology |
+| Planned go-live | 2026-11-17 |
+| Canonical | `https://www.uniixstudio.com/blog/lk-domain-registration-guide/` (set by the template) |
+| Robots | index, follow (template default) |
+| Open Graph image | `/blog/lk-domain-registration-guide/og.jpg` (1200×630) |
+| Cover image | `/blog/lk-domain-registration-guide/hero.webp` (1600×900). Alt: "Illustration of a browser address bar showing a .lk web address, with domain option cards for .lk, .com.lk, .web.lk and the Sinhala .ලංකා beneath it" |
+| Structured data | BlogPosting + BreadcrumbList. FAQPage off. |
+| Author | Uniix Studio (organisation byline) |
+| Body length | about 1,466 words, plus 6 FAQs |
+
+## Strategy brief
+
+| | |
+|---|---|
+| Search intent | Informational / how-to. |
+| Target reader | New businesses and anyone about to build a first website in Sri Lanka. |
+| Reader's problem | Confusing .lk categories, prices and deadlines; risk of a designer owning the domain. |
+| Unique angle | Registry-sourced categories and prices (dated), .lk vs .com.lk vs .com, step-by-step process, and the ownership rule. |
+| Funnel stage | Top |
+| Primary conversion | Website project enquiry via /contact/ (CTA: Start your website); secondary path to the web design packages guide. |
+| Supporting service page | `/services/technology/web-design/` |
+| Related services (template block) | `/services/technology/web-design/`, `/services/technology/web-development/`, `/services/technology/wordpress/` |
+| Related posts (template block) | `/blog/website-cost-sri-lanka-2026/`, `/blog/web-design-packages-sri-lanka/`, `/blog/google-my-business-setup-sri-lanka-2026/` |
+| Why selected | Local, evergreen demand; SERP dominated by foreign price aggregators; catches buyers at the start of a website project. |
+
+## Images
+
+| File (`public/blog/lk-domain-registration-guide/`) | Shows |
+|---|---|
+| `hero.webp / og.jpg` | Address bar with a .lk domain and category cards |
+| `domain-categories.svg` | Registry categories with example names and listed prices |
+
+All images are original vector illustrations in the brand palette, rendered by a script. No stock photography.
+
+## Key takeaways (shown beside the intro)
+
+- The LK Domain Registry sells .lk domains in price categories, from second-level names such as .com.lk to short premium names. Check current prices on its website before you apply.
+- A .lk or .com.lk address signals a Sri Lankan business. A .com suits businesses selling mainly abroad. Many businesses register both and redirect one to the other.
+- Always register the domain in your business's name, with your own email as a contact, even if a web agency handles the paperwork.
+
+## CTA block
+
+- **Heading:** Getting a new website as well as a domain?
+- **Copy:** We'll help you choose the name, register it in your business's name, and connect it to a fast website and professional email, so you own every part of it.
+- **Button:** Start your website → `/contact/`
+
+---
+
+# .lk Domain Registration in Sri Lanka: Prices, Steps and Choosing the Right Name
+
+Your domain name is your address online: on your business cards, your email, your Google Business Profile and every ad you run. For a Sri Lankan business, a .lk address tells customers straight away that you're local.
+
+But the .lk system isn't as simple as buying a .com. There are price categories, second-level names such as .com.lk, closed categories for schools and government, and a registration process with deadlines that catch people out.
+
+This guide explains how .lk domains work, what they cost, how to register one and the ownership mistake that causes the most trouble later.
+
+## How do you register a .lk domain?
+
+To register a .lk domain, check that the name is available on the LK Domain Registry's website, then submit an online application with the business's details as registrant. Confirm the verification email within 24 hours, provide supporting documents if your category needs them, and pay within three working days of approval. You can register for 1, 2, 5 or 10 years, directly with the registry or through a web company acting on your behalf.
+
+## Who runs .lk domains?
+
+The [LK Domain Registry](https://www.domains.lk/) is the national body that issues .lk web addresses, and has done since 1990. It sets the categories, prices and registration rules. Some web and hosting companies will register a .lk domain for you, but the registry's rules apply either way.
+
+## .lk, .com.lk or .com?
+
+This is the first decision, and it depends on who your customers are.
+
+| | **.lk** | **.com.lk** | **.com** |
+|---|---|---|---|
+| **Example** | yourbusiness.lk | yourbusiness.com.lk | yourbusiness.com |
+| **Signals** | A Sri Lankan business | A Sri Lankan commercial business | International or neutral |
+| **Length** | Shortest | Longer | Short |
+| **Typical fit** | Local brands that want a short, memorable address | Local businesses on a tighter budget | Exporters, tourism and businesses selling abroad |
+| **Registered through** | LK Domain Registry | LK Domain Registry | International registrars |
+
+A few practical points:
+
+- **If your customers are mainly in Sri Lanka,** a .lk or .com.lk address reinforces that you're local. Google can use a country-code domain as a signal that a site is relevant to that country.
+- **If you sell mainly abroad,** as many tour operators and exporters do, a .com is usually the better primary domain.
+- **Many businesses register both** and redirect one to the other, so customers who type the wrong one still find you, and nobody else can take the name.
+
+The extension matters much less than the rest of your website. Content, speed, mobile experience and your [Google Business Profile](/blog/google-my-business-setup-sri-lanka-2026/) have far more effect on whether local customers find you.
+
+## What does a .lk domain cost?
+
+The registry prices .lk domains in categories. These are the annual prices listed on the LK Domain Registry's homepage when we checked in October 2026:
+
+| Category | What it covers | Listed price per year |
+|---|---|---|
+| Budget | Second-level names only, such as .com.lk or .org.lk | LKR 1,000 |
+| Economy | A .lk name only | LKR 5,000 |
+| Standard | A .lk name plus second-level names (com.lk, org.lk, edu.lk, web.lk, hotel.lk) | LKR 8,000 |
+| Desirable | Three-letter names and 8 to 10 digit numeric names | LKR 15,000 |
+| Premium | Two-letter names and 2 to 7 digit numeric names | LKR 40,000 |
+
+Two cautions. First, prices change, so check the [registry's website](https://www.domains.lk/) before you apply. Second, the registry's homepage describes these prices as VAT inclusive, while its registration procedure page says fees exclude VAT. Confirm the final amount before you pay.
+
+If a web company registers the domain for you, it may charge a service fee on top of the registry's price. That's reasonable for the work involved, as long as the domain is registered in your name.
+
+![Comparison of .lk domain options showing the categories, from second-level names such as .com.lk to short premium names, with an example address for each](/blog/lk-domain-registration-guide/domain-categories.svg "The registry's categories, from second-level names to short premium names. Check current prices before applying.")
+
+## Open and closed categories
+
+Under .lk there are second-level categories, and not all of them are open to everyone. According to the registry's [naming structure](https://www.domains.lk/lk-domain-naming-structure/):
+
+- **Open categories** include .com.lk (suggested for commercial organisations), .org.lk (non-profits), .edu.lk (educational organisations), .hotel.lk (hotels) and .web.lk (websites).
+- **Closed categories** are restricted: .sch.lk is for schools, .gov.lk is for government organisations and departments, and .ac.lk is for universities and academic institutions. These are handled by separate bodies.
+
+Some names also need supporting documents. The registry's [registration procedure](https://www.domains.lk/domain-registration-step-by-step-procedure/) lists examples, such as a Central Bank licence for banking names, an Insurance Board licence for insurance names and a letter from the principal for schools.
+
+## Registering a .lk domain, step by step
+
+1. **Choose your name and check availability** on the registry's website. Have two or three alternatives ready.
+2. **Submit the online application.** Applications are handled in the order complete ones arrive, and a complete later application can take priority over an incomplete earlier one. Fill in every field.
+3. **Enter the business as the registrant.** If someone else applies on your behalf, the registry's rules say they must enter your details as registrant, not their own.
+4. **Confirm the verification email within 24 hours.** It goes to the administrative contact. Miss it and the request is removed.
+5. **Provide any supporting documents** your category needs.
+6. **Pay within three working days of approval,** or the application is cancelled.
+7. **Choose the registration period:** 1, 2, 5 or 10 years. A longer period reduces the risk of an accidental lapse.
+
+<aside data-tone="insight">
+
+**Register in your own name.** The most common domain problem we see is a business whose domain was registered by a former designer, in the designer's name or with the designer's email. When the relationship ends, moving the website or email becomes slow and stressful. Even when we handle registration for clients, the business is the registrant and its own email is a contact.
+
+</aside>
+
+## Choosing a good domain name
+
+A good domain is easy to say, spell and remember.
+
+- **Keep it short.** Every extra word is another chance for a typo.
+- **Make it easy to spell when spoken aloud.** Picture saying it over the phone. Avoid unusual spellings and double letters at word joins.
+- **Avoid hyphens and numbers** unless they're part of your brand.
+- **Match your business name** where you can. If the exact name isn't available, add a short word that describes what you do or where you are, such as "lk", "lanka" or your town.
+- **Check social handles** at the same time, so your name is consistent everywhere.
+- **Check trademarks** before you commit, especially for a new brand.
+
+If you're naming a new brand, our [brand identity](/services/design/brand-identity/) process covers names alongside logos and visual identity.
+
+## Sinhala and Tamil domain names
+
+The registry also offers internationalised domain names ending in **.ලංකා** and **.இலங்கை**. According to its naming structure page, you can request one free of charge for an existing .lk domain, as long as it's derived from your .lk name by transliteration or pronunciation. They can be useful in Sinhala or Tamil marketing. Keep your Latin-script .lk domain as the main address for email and most links, because it's easier for everyone to type.
+
+If you're also planning Sinhala or Tamil pages, our guide to [multilingual websites](/blog/multilingual-website-sinhala-tamil-english/) covers how to structure them.
+
+## After registration: connect it properly
+
+A domain on its own does nothing. Once it's registered:
+
+- **Point it at your website** using the DNS settings your web developer or host provides, and make sure both the `www` and plain versions work and redirect to one preferred address.
+- **Set up professional email**, such as name@yourbusiness.lk, with a provider like Google Workspace or Microsoft 365.
+- **Authenticate your email.** Set up SPF, DKIM and DMARC records so your messages reach inboxes. Google's [email sender guidelines](https://support.google.com/a/answer/81126) explain what major mailbox providers expect.
+- **Update everywhere:** your Google Business Profile, social profiles, business cards and directories.
+- **Set renewal reminders** well before expiry, and keep the contact email one you check. A lapsed domain takes your website and email offline.
+
+## The short version
+
+Choose .lk or .com.lk if your customers are in Sri Lanka, and a .com if you sell mainly abroad. Check current prices and categories on the LK Domain Registry's website, follow the registration deadlines carefully and, above all, register the domain in your own business's name.
+
+If you're getting a new website too, our [web design](/services/technology/web-design/) team can handle registration, DNS and email setup as part of the project, with you as the owner throughout. Our [web design packages guide](/blog/web-design-packages-sri-lanka/) explains what's usually included.
+
+## Frequently asked questions
+
+### How much does a .lk domain cost?
+
+When we checked in October 2026, the LK Domain Registry's homepage listed annual prices from LKR 1,000 for a second-level name such as .com.lk, LKR 5,000 for a .lk name, and LKR 8,000 for a package covering .lk plus second-level names, with higher prices for short and numeric names. The registry's pages differ on whether VAT is included, so confirm the total before paying.
+
+### What is the difference between .lk and .com.lk?
+
+A .lk domain is a top-level name, such as yourbusiness.lk. A .com.lk domain is a second-level name under .lk, such as yourbusiness.com.lk. Both are Sri Lankan addresses. The .lk name is shorter and costs more; .com.lk is cheaper and widely recognised by Sri Lankan customers.
+
+### Is .lk better than .com for SEO?
+
+A .lk domain tells search engines your site is relevant to Sri Lanka, which helps if your customers are here. A .com is neutral and better suited to a business targeting several countries. The domain extension matters far less than your content, site quality and Google Business Profile.
+
+### How long does .lk domain registration take?
+
+The registry handles applications in the order complete applications arrive. After you apply, the administrative contact must confirm a verification email within 24 hours, and payment is due within three working days of approval. Categories that need supporting documents can take longer.
+
+### Can I get a Sinhala or Tamil domain name?
+
+Yes. The LK Domain Registry offers internationalised domains ending in .ලංකා and .இலங்கை. According to the registry, you can request one free of charge for an existing .lk domain, as long as it is derived from your .lk name by transliteration or pronunciation.
+
+### Who should own my domain, me or my web designer?
+
+You should. Register the domain with your business as the registrant and your own email address as a contact. A web designer can manage the technical settings, but if the domain is in their name you may struggle to move your website or email later.

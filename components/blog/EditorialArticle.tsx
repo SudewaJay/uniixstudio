@@ -111,6 +111,17 @@ const markdownComponents: Components = {
       {children}
     </blockquote>
   ),
+  // Fenced code scrolls inside its own box instead of widening the column.
+  pre: ({ children }) => (
+    <pre className="my-8 overflow-x-auto rounded-xl border border-line bg-bg-warm p-5 font-mono text-[13.5px] leading-[1.7] text-ink [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-inherit">
+      {children}
+    </pre>
+  ),
+  code: ({ children }) => (
+    <code className="rounded-md bg-bg-warm px-1.5 py-0.5 font-mono text-[0.88em] text-ink">
+      {children}
+    </code>
+  ),
   // <aside data-tone="insight|uniix"> blocks in the markdown become callouts.
   aside: ({ children, ...rest }) => {
     const tone = (rest as Record<string, unknown>)["data-tone"];

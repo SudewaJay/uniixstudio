@@ -37,6 +37,17 @@ export default function ThirdPartyScripts({ analytics }: { analytics: SiteSettin
                 page_path: window.location.pathname,
                 anonymize_ip: true,
               });
+              // Enquiry clicks (WhatsApp, phone, email) as one GA4 event, so
+              // they can be marked as a key event and traced to landing pages.
+              document.addEventListener('click', function (e) {
+                var a = e.target && e.target.closest && e.target.closest('a[href]');
+                if (!a) return;
+                var href = a.getAttribute('href') || '';
+                var method = /^https:\\/\\/(wa\\.me|api\\.whatsapp\\.com)\\//.test(href) ? 'whatsapp'
+                  : href.indexOf('tel:') === 0 ? 'phone'
+                  : href.indexOf('mailto:') === 0 ? 'email' : null;
+                if (method) gtag('event', 'contact_click', { method: method, page_path: window.location.pathname });
+              }, { capture: true });
             `}
           </Script>
         </>

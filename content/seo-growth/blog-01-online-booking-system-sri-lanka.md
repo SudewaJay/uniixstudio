@@ -1,0 +1,244 @@
+# Blog 01: Online Booking Systems for Sri Lankan Businesses: Build, Buy or Wait?
+
+> **Source of truth:** `content/blog/online-booking-system-sri-lanka.mdx`. This file is a generated snapshot of that MDX for review and handover. If you edit the article, edit the MDX (or the post in the CMS), not this file.
+
+## SEO metadata
+
+| Field | Value |
+|---|---|
+| H1 | Online Booking Systems for Sri Lankan Businesses: Build, Buy or Wait? |
+| Search title (`seoTitle`, also the meta title) | Online Booking System in Sri Lanka: Build, Buy or Wait? (55 chars) |
+| URL | `https://www.uniixstudio.com/blog/online-booking-system-sri-lanka/` |
+| Slug | `online-booking-system-sri-lanka` |
+| Meta description | Should your Sri Lankan business build, buy or wait on an online booking system? A practical guide to booking flows, local payments, data protection and cost. (157 chars) |
+| Primary keyword | online booking system Sri Lanka |
+| Secondary keywords | booking website Sri Lanka, appointment booking system, custom booking platform, booking system development, WhatsApp booking, venue booking software |
+| Category | Technology |
+| Planned go-live | 2026-10-20 |
+| Canonical | `https://www.uniixstudio.com/blog/online-booking-system-sri-lanka/` (set by the template) |
+| Robots | index, follow (template default) |
+| Open Graph image | `/blog/online-booking-system-sri-lanka/og.jpg` (1200×630) |
+| Cover image | `/blog/online-booking-system-sri-lanka/hero.webp` (1600×900). Alt: "Illustration of a venue calendar with online, cash and walk-in bookings per court, beside a phone showing time slots labelled available, held, booked and closed" |
+| Structured data | BlogPosting + BreadcrumbList (emitted by the template). FAQ shown visibly; FAQPage schema intentionally off (`faqSchema: false`). |
+| Author | Uniix Studio (organisation byline) |
+| Body length | about 2,202 words, plus 6 FAQs |
+
+## Strategy brief
+
+| | |
+|---|---|
+| Search intent | Commercial investigation: an owner deciding whether and how to add online bookings. |
+| Target reader | Owners of venues, clinics, salons, rentals, tour operators and tutors in Sri Lanka. |
+| Reader's problem | Missed calls, double bookings and no way to book out of hours; unsure whether to buy software or build. |
+| Unique angle | Build, buy or wait, with evidence from three real projects, including one where the right answer was not to build yet (RentMyCar.lk). |
+| Funnel stage | Middle / bottom |
+| Primary conversion | Booking-system consultation via /contact/ (CTA: Plan your booking system). |
+| Supporting service page | `/services/technology/web-development/` |
+| Related services (template block) | `/services/technology/web-development/`, `/services/design/ui-ux-design/`, `/services/technology/mobile-apps/`, `/services/growth/seo/` |
+| Related posts (template block) | `/blog/payment-gateway-sri-lanka-website/`, `/blog/website-cost-sri-lanka-2026/`, `/blog/mobile-app-vs-web-app-which-does-your-business-need/` |
+| Why selected | Strongest evidence advantage (CricBook), weak Sri Lankan SERP, high project value, no existing post on the topic. |
+
+## Images
+
+| File (`public/blog/online-booking-system-sri-lanka/`) | Shows |
+|---|---|
+| `hero.webp / og.jpg` | Venue calendar beside a phone booking grid with labelled slot states |
+| `booking-routes.svg` | Three routes to online bookings and when to choose each |
+
+All images are original vector illustrations in the brand palette, rendered by a script. No stock photography.
+
+## Key takeaways (shown beside the intro)
+
+- An online booking system pays off when you sell time or capacity (courts, rooms, appointments, vehicles) and double bookings or missed calls are costing you customers.
+- There are three sensible routes: a WhatsApp or call-first enquiry flow, ready-made booking software, or a custom platform. The right one depends on how unusual your booking rules are.
+- In Sri Lanka, plan around local payment gateways (Stripe doesn't support Sri Lankan businesses), cash at the counter, and the Personal Data Protection Act provisions that apply from 1 January 2027.
+
+## CTA block
+
+- **Heading:** Thinking about online bookings?
+- **Copy:** Tell us how bookings work in your business today. We'll map the flow, recommend whether to build, buy or wait, and give you a realistic scope before any design starts.
+- **Button:** Plan your booking system → `/contact/`
+
+---
+
+# Online Booking Systems for Sri Lankan Businesses: Build, Buy or Wait?
+
+A customer finds your business on Google at 10.30 at night. They want to book a court for Saturday, a room for next weekend or an appointment for Monday morning. Your website says "Call us". Nobody answers, so they book with whoever lets them do it online.
+
+That's the case for an online booking system. But it isn't the whole story. We've built booking platforms, and we've also told clients not to build one yet. The right answer depends on what you sell, how your bookings work today and how much of that complexity a customer should see.
+
+This guide is for Sri Lankan business owners weighing up online bookings: venues, clinics, salons, tour operators, rentals, tutors and anyone else who sells time or capacity.
+
+## Do you need an online booking system?
+
+You need an online booking system when you sell time or limited capacity, when customers want to book outside your working hours, and when phone and WhatsApp bookings are causing missed enquiries, double bookings or unreliable records. If your bookings are few, flexible and need a conversation first, a clear WhatsApp or call-first flow is often the better place to start.
+
+A quick way to tell: count how many booking-related messages you answer each week, and how often two people are promised the same slot. If both numbers are going up, a system will pay for itself in staff time alone.
+
+## What an online booking system actually does
+
+"Booking system" covers very different products, from a calendar link to a two-sided marketplace. Most real ones combine six parts:
+
+- **Availability:** what can be booked, when, and at what price. This is where your business rules live: opening hours, peak rates, minimum durations, closures and maintenance.
+- **The booking flow:** how a customer chooses a service, a time and a resource, then confirms.
+- **Holds and confirmation:** reserving the slot while the customer pays, then confirming it with a reference they can show at the counter.
+- **Payments:** online payment, deposits, or pay at the venue.
+- **The owner's console:** one calendar showing online, phone and walk-in bookings together, plus customers, staff and pricing.
+- **Reporting and settlement:** what was booked, what was paid, and what is still owed.
+
+Customers only see the first four. Owners live in the last two. Most booking projects that disappoint got the customer side right and the owner side wrong.
+
+![Decision diagram comparing three routes to online bookings: a WhatsApp or call-first flow, ready-made booking software and a custom booking platform, with the business signals that point to each](/blog/online-booking-system-sri-lanka/booking-routes.svg "Three routes to online bookings, and the signals that point to each one.")
+
+## Three routes: WhatsApp-first, ready-made software or custom
+
+### Route 1: a WhatsApp or call-first enquiry flow
+
+This isn't a booking system at all, and that's the point. Every page has one clear action, usually "WhatsApp us" or "Call", with the details the customer needs before they message: prices, what's included, availability windows and how to confirm.
+
+It's the right start when bookings need a conversation, volumes are manageable, or you're still learning what customers ask for. When we built [RentMyCar.lk](/portfolio/rentmycar-lk/), a peer-to-peer vehicle rental marketplace, we deliberately didn't build a booking engine on day one. Every listing leads to a call or a WhatsApp message to the owner. Travellers wanted a conversation, owners wanted enquiries, and launching quickly mattered more than matching global platforms feature for feature. Booking infrastructure is the next phase, on top of a category that already works.
+
+[Wasana Drivers](/portfolio/wasana/) follows the same logic: a fast, mobile-first site with clear vehicle categories and a one-tap WhatsApp quotation flow, built for travellers on airport Wi-Fi.
+
+### Route 2: ready-made booking software
+
+Scheduling tools and booking plugins cover common patterns well: one person, one service, one time slot. Think consultations, classes and simple appointments. You get reminders, calendar sync and a booking page in days rather than months.
+
+Check four things before you commit:
+
+1. **Local payments.** Many international tools connect to Stripe, which [doesn't list Sri Lanka as a supported country](https://stripe.com/global). Confirm the tool works with a Sri Lankan gateway, or that taking payment at the venue is acceptable.
+2. **Your booking rules.** Courts, rooms, vehicles and equipment rarely fit a "staff member and service" model. If you're bending the tool to fit, you'll keep bending it.
+3. **Your website and SEO.** Many tools put booking pages on their own domain or inside an embedded frame. That's fine for taking bookings, but those pages don't build search visibility for your website.
+4. **Data and exit.** Can you export your customers and booking history if you leave?
+
+### Route 3: a custom booking platform
+
+A custom platform makes sense when your booking rules are your business: per-court pricing, mixed online and walk-in bookings, deposits, multiple venues, or a marketplace where you take a commission. It costs more and takes longer, but it fits how you actually operate, and you own it.
+
+| | WhatsApp or call-first | Ready-made software | Custom platform |
+|---|---|---|---|
+| **Best for** | Bookings that need a conversation; early stage | Standard appointments and classes | Unusual rules, marketplaces, multi-venue |
+| **Time to launch** | Days | Days to weeks | Months |
+| **Running cost** | Staff time | Monthly subscription | Hosting, maintenance, improvements |
+| **Double-booking protection** | Manual | Built in, for supported patterns | Designed around your rules |
+| **Local payments** | Bank transfer, cash, payment links | Depends on the tool | Any gateway you integrate |
+| **Search visibility** | Your website does the work | Often limited | Designed in from the start |
+| **You own the data** | Yes, but scattered | Depends on export options | Yes |
+
+## How to decide: six questions
+
+Answer these before you speak to any developer, including us.
+
+1. **What exactly is booked?** A person's time, a room, a court, a vehicle or a seat? Some businesses have more than one.
+2. **What are the rules?** Write down opening hours, durations, peak and off-peak prices, buffers between bookings, cancellation terms and who can override them.
+3. **How do people pay?** In full online, a deposit, or at the counter? In Sri Lanka, cash at the venue is often expected, so the system should record it rather than pretend it doesn't happen.
+4. **Where do bookings come from today?** Phone, WhatsApp, walk-ins, Facebook messages, regular weekly customers. All of them have to land in one calendar.
+5. **Who runs it day to day?** A receptionist, an owner on their phone, several branch managers? Design the console for that person.
+6. **Is booking your product or a feature?** If online booking is how you make money, as in a marketplace, it deserves custom work. If it's a convenience on top of a service, buy before you build.
+
+## What building CricBook taught us about booking UX
+
+[CricBook](/portfolio/cricbook/) is a booking platform for indoor cricket and futsal courts in Sri Lanka, which Uniix Studio designed and built end to end. It has two sides: a player app for finding and booking courts, and a venue console for owners. A few decisions made the difference.
+
+**Label slot states, don't just colour them.** Every slot is marked available, held, booked or closed in words as well as colour. Colour alone fails people with colour-vision deficiencies and fails everyone in bright sunlight.
+
+**Hold the slot during checkout.** When a player starts paying, the slot is held so nobody else can take it mid-booking. If payment doesn't complete, it's released.
+
+**Let the venue's rules win.** Opening hours, peak windows, rates, maintenance blocks and holidays are set per court, because a cricket cage and a futsal pitch aren't priced the same.
+
+**Pay the way the venue works.** Players can pay online by card or mobile wallet, pay a deposit, or reserve and pay cash at the venue where the venue allows it.
+
+**One calendar for every channel.** Online, cash, walk-in and regular bookings land court by court in one live calendar. Fill a slot at the counter and it goes off sale online immediately.
+
+**Make month-end easy.** Owners get one statement showing what came in online, what came in as cash, the commission due and what settles to the bank.
+
+<aside data-tone="insight">
+
+**Design the owner's side first.** If staff can't run their day from the console, they'll go back to a notebook and WhatsApp within a month, and the online calendar will stop being true. Our [UI/UX design](/services/design/ui-ux-design/) work on booking products starts with the person behind the counter.
+
+</aside>
+
+## Payments for online bookings in Sri Lanka
+
+Online payment reduces no-shows, but it adds a dependency. In Sri Lanka you'll integrate a local internet payment gateway, such as PayHere, WEBXPAY, PAYable or a bank's own gateway, rather than Stripe. Each has different fees, supported cards and wallets, settlement times and plugins.
+
+Two design points matter more than which gateway you pick:
+
+- **Confirm on the gateway's server-to-server notification, not on the customer's redirect.** Customers close tabs and lose signal. The booking should be confirmed when the gateway tells your server the payment succeeded.
+- **Decide what happens when payment fails.** Release the hold, tell the customer clearly, and offer to pay at the venue if the business allows it.
+
+Our guide to [payment gateways for Sri Lankan websites](/blog/payment-gateway-sri-lanka-website/) compares the options and the questions to ask each provider.
+
+## Customer data and the PDPA
+
+A booking system collects names, phone numbers and, for clinics and some services, sensitive details. Sri Lanka's Personal Data Protection Act, No. 9 of 2022, is coming into force in stages. A July 2026 gazette set [1 January 2027 as the date key provisions take effect](https://www.ft.lk/front-page/Data-protection-compliance-regime-takes-effect-on-1-Jan-2027/44-795776), including obligations for organisations that control and process personal data.
+
+This isn't legal advice, and you should take advice on your own obligations. In practice, a well-designed booking system makes compliance easier. It collects only what the booking needs, explains why, keeps data in one secured place instead of scattered WhatsApp chats and spreadsheets, limits staff access by role, and lets you delete records you no longer need.
+
+## Booking pages that can be found on Google
+
+A booking system is only useful if people reach it. Customers search for the thing and the place, such as "futsal court Malabe", "dental clinic Negombo" or "airport transfer Katunayake", rather than for your brand.
+
+On CricBook we built the structure around how players phrase those searches: sport pages, area pages and venue pages, each linking down to bookable slots, with technical SEO and structured data across every route. That only works because the booking platform and the public website are one product. A booking widget dropped into an iframe on one page can take bookings, but it can't rank for "indoor cricket near Nugegoda".
+
+If search is a major channel for you, make sure your booking pages are real, crawlable pages on your own domain. Our [SEO services](/services/growth/seo/) cover this structure.
+
+## What drives the cost of a booking system
+
+We won't quote a single price here, because there isn't an honest one. A booking system's cost is driven by scope. The biggest factors are:
+
+- **User types:** customers only, or customers plus owners, staff and admins.
+- **Booking rules:** a simple time slot is cheap; per-resource pricing, buffers, recurring bookings and deposits are not.
+- **Payments:** one gateway with full payment is simpler than deposits, refunds, cash reconciliation and commission splits.
+- **The owner console:** calendars, walk-ins, staff permissions and reporting are often half the work.
+- **Notifications:** email, SMS or WhatsApp confirmations and reminders.
+- **Apps:** a responsive web app first, with native apps only if the case is proven.
+
+For context on how websites and web apps are priced in Sri Lanka, see our [website cost guide](/blog/website-cost-sri-lanka-2026/). And if you're unsure whether you need an app at all, our article on [mobile apps vs web apps](/blog/mobile-app-vs-web-app-which-does-your-business-need/) will help.
+
+## Checklist before you brief a developer
+
+- What is being booked, and how many of each resource you have
+- Opening hours, durations, prices and peak periods, per resource
+- Cancellation, rescheduling and no-show rules
+- Payment options: full, deposit, at the venue, or a mix
+- Every channel bookings arrive through today
+- Who manages bookings day to day, and on what device
+- Notifications customers and staff should receive
+- Reports the owner needs at the end of each day and month
+- Which pages should be found on Google
+- What success looks like in three months: fewer missed calls, fewer double bookings, more online bookings
+
+Bring this list to any developer and you'll get a far more accurate estimate. Our [web development](/services/technology/web-development/) team uses the same list to scope booking projects.
+
+## The short version
+
+If customers need a conversation, start with a clear WhatsApp-first flow and do it well. If your bookings are standard appointments, buy proven software that works with local payments. If your booking rules are your business, build a platform around them, designed for the owner as much as the customer.
+
+Whichever route you choose, keep one calendar as the truth, plan for local payments and cash, and protect the customer data you collect.
+
+## Frequently asked questions
+
+### How much does an online booking system cost in Sri Lanka?
+
+It depends on the route. Ready-made booking software usually costs a monthly subscription plus setup time. A custom booking platform is a software project, so its cost is driven by the number of user types, booking rules, payment options, integrations and the admin console you need. Get a scoped estimate after the booking rules are written down, not before.
+
+### Can I take online payments for bookings in Sri Lanka?
+
+Yes, through a Sri Lankan payment gateway such as PayHere, WEBXPAY, PAYable or a bank's internet payment gateway. Stripe does not currently list Sri Lanka as a supported country, so plan around a local gateway. Many Sri Lankan venues also keep cash at the counter as an option, and a good booking system records both.
+
+### Is WhatsApp enough for taking bookings?
+
+For many small businesses, yes, at first. A clear WhatsApp or call button on every page converts well and costs little. It stops being enough when staff can't keep up, when the same slot is promised twice, or when you need reliable reports on what was booked and paid.
+
+### Should a booking system be a mobile app or a website?
+
+Start with a responsive web app. Customers can book from a Google search result or a shared link without installing anything, and it can be installed to the home screen as a progressive web app. Native apps make sense later, when repeat customers book often enough to keep an app installed.
+
+### How do I stop double bookings?
+
+Keep one calendar as the single source of truth for every channel: online bookings, phone bookings, walk-ins and regular customers. When a customer starts checking out, hold the slot for a short time so nobody else can take it, and release it automatically if payment fails.
+
+### Do you build booking systems for businesses outside Colombo?
+
+Yes. Uniix Studio is based in Colombo and works with businesses across Sri Lanka and abroad. Discovery workshops and reviews run over calls and shared links, and we meet in person when it helps the project.

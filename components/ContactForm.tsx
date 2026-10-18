@@ -19,6 +19,31 @@ const budgets = [
   "Not sure yet",
 ];
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+/**
+ * Where the enquiry came from: the form's page, plus the same-site page the
+ * visitor arrived from (e.g. a blog post's CTA), so leads can be traced back
+ * to the article that produced them.
+ */
+function pageSource(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  const here = window.location.pathname;
+  try {
+    const ref = new URL(document.referrer);
+    if (ref.origin === window.location.origin && ref.pathname !== here) {
+      return `${here} ← ${ref.pathname}`;
+    }
+  } catch {
+    // No referrer, or not a valid URL.
+  }
+  return here;
+}
+
 export default function ContactForm({
   whatsapp,
   whatsappLink,
@@ -56,7 +81,7 @@ export default function ContactForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          source: source ?? (typeof window !== "undefined" ? window.location.pathname : undefined),
+          source: source ?? pageSource(),
         }),
       });
       const data = (await res.json().catch(() => ({}))) as {
@@ -72,6 +97,11 @@ export default function ContactForm({
         return;
       }
       setSent(true);
+      // GA4 key event; a no-op when analytics isn't loaded.
+      window.gtag?.("event", "generate_lead", {
+        form_name: "contact",
+        lead_source: source ?? pageSource(),
+      });
     } catch {
       setError(
         "Network error — please try again, or email us directly at hey@uniixstudio.com.",
