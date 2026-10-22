@@ -9,6 +9,10 @@
  *   npm run cms:seed                          create missing documents only (safe default)
  *   SEED_UPDATE_EXISTING=1 npm run cms:seed   also overwrite documents matched by slug
  *   SEED_DRY_RUN=1 npm run cms:seed           report what would happen, write nothing
+ *   SEED_BLOG_SLUGS=a,b npm run cms:seed      only create/update those blog posts; nothing else
+ *
+ * On a live CMS, prefer SEED_BLOG_SLUGS for new posts: a full run that creates
+ * any post re-applies `relatedPosts` from the files to every existing post.
  *
  * Idempotent: documents are matched by slug (or natural key), never duplicated.
  * Globals are only written when empty, or with --update-existing.
@@ -44,6 +48,12 @@ import { SERVICE_LINK_MAP } from '../../lib/service-links'
 
 const UPDATE = process.env.SEED_UPDATE_EXISTING === '1'
 const DRY = process.env.SEED_DRY_RUN === '1'
+/**
+ * Comma-separated blog slugs. When set, only those posts are seeded and every
+ * other collection and global is left alone — the safe way to publish new MDX
+ * posts to a live CMS without the related-posts pass touching existing posts.
+ */
+const ONLY_POSTS = process.env.SEED_BLOG_SLUGS?.split(',').map((s) => s.trim()).filter(Boolean)
 const ROOT = process.cwd()
 const ctx = { disableRevalidate: true }
 
@@ -389,8 +399,21 @@ async function seedSimpleCollections() {
   })
 }
 
+/** Targeted runs skip the other seeders, so look up the ids they would have recorded. */
+async function loadExistingIds() {
+  const find = (collection: 'services' | 'blog-posts') =>
+    payload.find({ collection, limit: 1000, depth: 0, pagination: false, draft: true, overrideAccess: true, context: ctx })
+  for (const s of (await find('services')).docs as { id: number; slug: string }[]) ids.services.set(s.slug, s.id)
+  for (const p of (await find('blog-posts')).docs as { id: number; slug: string }[]) ids.posts.set(p.slug, p.id)
+}
+
 async function seedBlog() {
-  const all = filePosts()
+  const all = filePosts().filter((p) => !ONLY_POSTS || ONLY_POSTS.includes(p.slug))
+  if (ONLY_POSTS) {
+    const missing = ONLY_POSTS.filter((s) => !all.some((p) => p.slug === s))
+    if (missing.length) warnings.push(`SEED_BLOG_SLUGS: no MDX file for ${missing.join(', ')}`)
+    await loadExistingIds()
+  }
   for (const a of new Map(all.map((p) => [p.author.name, p.author])).values()) {
     const id = await upsert('authors', { slug: { equals: slugify(a.name) } }, { name: a.name, slug: slugify(a.name), role: a.role, initial: a.initial })
     if (id) ids.authors.set(a.name, id)
@@ -616,16 +639,20 @@ async function seedGlobals() {
 async function main() {
   payload = await getPayload({ config })
   editorConfig = (payload.config.editor as unknown as { editorConfig: SanitizedServerEditorConfig }).editorConfig
-  console.log(`\nSeeding Uniix CMS  (update-existing=${UPDATE} dry-run=${DRY})\n`)
+  console.log(`\nSeeding Uniix CMS  (update-existing=${UPDATE} dry-run=${DRY}${ONLY_POSTS ? ` posts=${ONLY_POSTS.join(',')}` : ''})\n`)
 
-  await seedPillars()
-  await seedIndustries()
-  await seedServices()
-  await seedProjects()
-  await seedSimpleCollections()
-  await seedBlog()
-  await seedLocations()
-  await seedGlobals()
+  if (ONLY_POSTS) {
+    await seedBlog()
+  } else {
+    await seedPillars()
+    await seedIndustries()
+    await seedServices()
+    await seedProjects()
+    await seedSimpleCollections()
+    await seedBlog()
+    await seedLocations()
+    await seedGlobals()
+  }
 
   console.table(stats)
   if (warnings.length) {
