@@ -18,6 +18,7 @@ import Nav from "@/components/Nav";
 import PromoBar from "@/components/PromoBar";
 import Footer from "@/components/Footer";
 import PreviewBanner from "@/components/PreviewBanner";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import "../globals.css";
 
 const mono = JetBrains_Mono({
@@ -126,6 +127,7 @@ export default async function RootLayout({
           settings={settings}
           locations={locations.map(({ slug, name }) => ({ slug, name }))}
         />
+        <WhatsAppButton link={settings.whatsappLink} />
         <Analytics />
         <SpeedInsights />
         <ThirdPartyScripts analytics={settings.analytics} />
