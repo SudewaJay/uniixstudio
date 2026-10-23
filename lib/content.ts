@@ -81,6 +81,25 @@ export const clients = [
   },
 ];
 
+/**
+ * Full-colour client logos for the homepage marquee (BrandStatement). They
+ * sit on a light band, so the original artwork is used as-is.
+ */
+export const clientLogos = [
+  { name: "Ausihelp Support Care", logo: "/clients/color/ausihelp.png" },
+  { name: "Wasana Drivers in Sri Lanka", logo: "/clients/color/wasana.png" },
+  { name: "EcoWave Energy", logo: "/clients/color/ecowave.png" },
+  { name: "Green Home Construction", logo: "/clients/color/green-home.png" },
+  { name: "Himishaa Tour", logo: "/clients/color/himishaa.png" },
+  { name: "Jay", logo: "/clients/color/jay.png" },
+  { name: "Nozomi Educational Institute", logo: "/clients/color/nozomi.png" },
+  { name: "Rent My Car LK", logo: "/clients/color/rentmycar.png" },
+  { name: "Coventry Business Club", logo: "/clients/color/coventry.png" },
+  { name: "Sierra Facility Management", logo: "/clients/color/sierra.png" },
+  { name: "Zerro", logo: "/clients/color/zerro.png" },
+  { name: "Bilesma Natural", logo: "/clients/color/bilesma.svg" },
+];
+
 export const services = [
   {
     slug: "design",
