@@ -287,7 +287,7 @@ const INDUSTRY_PROJECT: Record<string, string> = {
 }
 
 async function seedProjects() {
-  const CURATED_ORDER = ['cricbook', 'bilesma-natural', 'bilesma-natural-social-media', 'rentmycar-lk', 'st-lukes-medilab', 'ecowave-energy', 'sierra-energy-solutions', 'zerro', 'wasana', 'terraflow', 'coventry']
+  const CURATED_ORDER = ['cricbook', 'bilesma-natural', 'bilesma-natural-social-media', 'rentmycar-lk', 'st-lukes-medilab', 'cinecraft-media', 'ecowave-energy', 'sierra-energy-solutions', 'zerro', 'wasana', 'terraflow', 'coventry']
   for (const p of fileProjects()) {
     const order = CURATED_ORDER.indexOf(p.slug)
     const industrySlug = Object.entries(INDUSTRY_PROJECT).find(([, slug]) => slug === p.slug)?.[0]
@@ -586,7 +586,7 @@ async function seedGlobals() {
     results: { eyebrow: 'Results', heading: 'Creative work,', headingAccent: 'measured.', support: 'Every project ties creative decisions back to a business outcome — not to impressions and likes.' },
     clientStories: { eyebrow: 'Client stories', heading: 'What clients actually say.' },
     insights: { eyebrow: 'Insights', heading: 'Field notes for', headingAccent: 'ambitious teams.' },
-    featuredWork: ['cricbook', 'rentmycar-lk', 'st-lukes-medilab', 'ecowave-energy'].map(pid).filter(Boolean),
+    featuredWork: ['cricbook', 'rentmycar-lk', 'st-lukes-medilab', 'cinecraft-media', 'ecowave-energy'].map(pid).filter(Boolean),
     pillarProof: [
       { pillar: ids.pillars.get('design'), project: pid('ecowave-energy'), evidence: 'Brand Identity' },
       { pillar: ids.pillars.get('growth'), project: pid('st-lukes-medilab'), evidence: 'Local SEO' },

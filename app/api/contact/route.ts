@@ -26,6 +26,7 @@ type Payload = {
   company?: string;
   service?: string;
   budget?: string;
+  timeline?: string;
   message?: string;
   /** Page or campaign the form was submitted from. */
   source?: string;
@@ -141,6 +142,7 @@ export async function POST(req: Request) {
   const company = (data.company ?? "").trim();
   const service = (data.service ?? "").trim();
   const budget = (data.budget ?? "").trim();
+  const timeline = (data.timeline ?? "").trim();
   const source = (data.source ?? "").trim().slice(0, 200);
 
   if (!name || !email || !message) {
@@ -169,11 +171,13 @@ export async function POST(req: Request) {
     );
   }
 
-  if ([name, company, service, budget].some((v) => v.length > 300)) {
+  if ([name, company, service, budget, timeline].some((v) => v.length > 300)) {
     return NextResponse.json({ ok: false, error: "One of the fields is too long." }, { status: 400 });
   }
 
-  const submissionId = await storeSubmission({ name, email, company, service, budget, message, source });
+  // The CMS has no timeline field, so it travels with the message there.
+  const storedMessage = timeline ? `${message}\n\nTiming: ${timeline}` : message;
+  const submissionId = await storeSubmission({ name, email, company, service, budget, message: storedMessage, source });
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -197,6 +201,7 @@ export async function POST(req: Request) {
     `Company: ${company || "—"}`,
     `Service: ${service || "—"}`,
     `Budget:  ${budget || "—"}`,
+    `Timing:  ${timeline || "—"}`,
     "",
     "Message:",
     message,
@@ -216,6 +221,7 @@ export async function POST(req: Request) {
         <tr><td style="color:#64748b;padding:4px 0">Company</td><td style="padding:4px 0">${escapeHtml(company || "—")}</td></tr>
         <tr><td style="color:#64748b;padding:4px 0">Service</td><td style="padding:4px 0">${escapeHtml(service || "—")}</td></tr>
         <tr><td style="color:#64748b;padding:4px 0">Budget</td><td style="padding:4px 0">${escapeHtml(budget || "—")}</td></tr>
+        <tr><td style="color:#64748b;padding:4px 0">Timing</td><td style="padding:4px 0">${escapeHtml(timeline || "—")}</td></tr>
       </table>
     </td></tr>
     <tr><td style="padding:8px 28px 28px">

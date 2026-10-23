@@ -35,6 +35,8 @@ import CaseStudyNarrative from "@/components/CaseStudyNarrative";
 import CricBookCaseStudy from "@/components/portfolio/cricbook/CricBookCaseStudy";
 import BilesmaCaseStudy from "@/components/portfolio/bilesma/BilesmaCaseStudy";
 import BilesmaSocialCaseStudy from "@/components/portfolio/bilesma-social/BilesmaSocialCaseStudy";
+import StLukesCaseStudy from "@/components/portfolio/st-lukes/StLukesCaseStudy";
+import CinecraftCaseStudy from "@/components/portfolio/cinecraft/CinecraftCaseStudy";
 
 export async function generateStaticParams() {
   return (await getDetailedProjects()).map((p) => ({ slug: p.slug }));
@@ -161,6 +163,32 @@ export default async function ProjectDetailPage({
       <>
         <JsonLd data={pageSchema} />
         <BilesmaSocialCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+        />
+      </>
+    );
+  }
+
+  if (project.slug === "st-lukes-medilab") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <StLukesCaseStudy
+          project={project}
+          nextProject={nextProject}
+          prevProject={prevProject}
+        />
+      </>
+    );
+  }
+
+  if (project.slug === "cinecraft-media") {
+    return (
+      <>
+        <JsonLd data={pageSchema} />
+        <CinecraftCaseStudy
           project={project}
           nextProject={nextProject}
           prevProject={prevProject}
