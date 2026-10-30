@@ -74,6 +74,7 @@ function FilmLayer({
         <NextImage
           src={film.poster}
           alt=""
+          aria-hidden="true"
           fill
           sizes="100vw"
           quality={70}

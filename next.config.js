@@ -1,5 +1,7 @@
 import { createRequire } from 'node:module';
 import { withPayload } from '@payloadcms/next/withPayload';
+import { seoRedirects } from './redirects.mjs';
+import { blogMergeRedirects } from './lib/blog-decisions.mjs';
 
 const require = createRequire(import.meta.url);
 
@@ -94,29 +96,12 @@ const nextConfig = {
         destination: "https://uniixstudio.com/",
         permanent: false,
       },
-      // Core section pages
       { source: "/services-2", destination: "/services", permanent },
-      { source: "/gallery", destination: "/portfolio", permanent },
-      { source: "/contacts", destination: "/contact", permanent },
-      { source: "/blogs", destination: "/blog", permanent },
-      // Old WordPress portfolio taxonomy — collapse all into the portfolio hub
-      { source: "/portfolio_group/:slug*", destination: "/portfolio", permanent },
-      // Legacy root-level blog posts (WordPress published posts at the root)
-      {
-        source: "/10-of-the-best-social-media-analytics-tools-for-smart-marketers",
-        destination: "/blog",
-        permanent,
-      },
-      {
-        source: "/pixels-rediscovered-a-nostalgic-yet-contemporary-trend",
-        destination: "/blog",
-        permanent,
-      },
-      {
-        source: "/abstract-gradients-a-kaleidoscope-of-colors",
-        destination: "/blog",
-        permanent,
-      },
+      { source: "/abstract-gradients-a-kaleidoscope-of-colors", destination: "/blog", permanent },
+      // Legacy WordPress URLs + consolidated location sub-pages (see redirects.mjs).
+      ...seoRedirects,
+      // Blog posts merged into a stronger post (lib/blog-decisions.mjs).
+      ...blogMergeRedirects,
     ];
   },
   async rewrites() {

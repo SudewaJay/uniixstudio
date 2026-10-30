@@ -627,6 +627,7 @@ export default function CinematicReel({ films }: { films: ReelFilm[] }) {
                     <NextImage
                       src={f.poster}
                       alt=""
+                      aria-hidden="true"
                       fill
                       sizes="(min-width:1024px) 18vw, (min-width:640px) 40vw, 62vw"
                       quality={60}

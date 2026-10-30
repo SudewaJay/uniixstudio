@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import { hasPageMeta, pageMeta } from "@/lib/seo-metadata";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import { getPillar, getService, getServices, getServicesForPillar } from "@/lib/cms/services";
 import { buildMetadata } from "@/lib/cms/seo";
+import { getProjects } from "@/lib/cms/projects";
+import { getPosts } from "@/lib/cms/blog";
+import { keepPostsForService } from "@/lib/blog-decisions.mjs";
 import { notFoundOrRedirect } from "@/lib/cms/redirects";
 import {
   ServiceProcessTimeline,
@@ -34,8 +38,10 @@ export async function generateMetadata({
   const service = await getService(pillar, serviceSlug);
   if (!service) return { title: "Service" };
   // The dynamic opengraph-image route supplies the social image by default.
+  const path = `/services/${pillar}/${serviceSlug}/`;
+  if (hasPageMeta(path)) return pageMeta(path, { seo: service.seo });
   return buildMetadata({
-    path: `/services/${pillar}/${serviceSlug}/`,
+    path,
     title: service.pageTitle,
     description: service.metaDescription,
     seo: service.seo,
@@ -48,12 +54,28 @@ export default async function ServiceDetailPage({
   params: Promise<{ pillar: string; service: string }>;
 }) {
   const { pillar: pillarSlug, service: serviceSlug } = await params;
-  const [service, pillar, pillarServices] = await Promise.all([
+  const [service, pillar, pillarServices, projects, posts] = await Promise.all([
     getService(pillarSlug, serviceSlug),
     getPillar(pillarSlug),
     getServicesForPillar(pillarSlug),
+    getProjects(),
+    getPosts(),
   ]);
   if (!service || !pillar) return notFoundOrRedirect(`/services/${pillarSlug}/${serviceSlug}/`);
+
+  // Related reading: the strongest guides for this service (lib/blog-decisions.mjs).
+  const guides = keepPostsForService(`${pillarSlug}/${serviceSlug}`)
+    .map((slug) => posts.find((p) => p.slug === slug))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  const guideHrefs = new Set(guides.map((g) => `/blog/${g.slug}/`));
+  const extraReading = (service.relatedReading ?? []).filter(
+    (r) => !guideHrefs.has(r.href.endsWith("/") ? r.href : `${r.href}/`),
+  );
+
+  // Case studies the editor attached to this service (Services → Related projects).
+  const work = (service.relatedProjectSlugs ?? [])
+    .map((slug) => projects.find((p) => p.slug === slug && p.hasDetail))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   // Editor-picked related services first, then siblings in the same pillar.
   const picked = (service.relatedServiceKeys ?? []).map((k) => pillarServices.find((s) => s.slug === k.slug)).filter(
@@ -259,13 +281,55 @@ export default async function ServiceDetailPage({
         <ServicePricingTiers tiers={service.pricingTiers} accent={pillar.accent} />
       )}
 
+      {/* Selected work for this service */}
+      {work.length > 0 && (
+        <section className="py-16 md:py-20 border-t border-line">
+          <div className="wrap">
+            <Reveal>
+              <div className="font-mono text-[11px] tracking-[0.22em] uppercase mb-4" style={{ color: pillar.accent }}>
+                Selected work
+              </div>
+              <h2 className="font-display font-medium mb-8 tracking-[-0.02em]" style={{ fontSize: "clamp(24px,2.6vw,36px)" }}>
+                {service.name} projects
+              </h2>
+            </Reveal>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {work.map((p, i) => (
+                <Reveal key={p.slug} delay={(i % 3) as 0 | 1 | 2}>
+                  <Link
+                    href={`/portfolio/${p.slug}/`}
+                    className="group block h-full rounded-2xl border border-line bg-bg-paper overflow-hidden hover:border-brand-3 transition-colors"
+                  >
+                    {p.coverImage && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.coverImage}
+                        alt={p.coverAlt ?? `${p.title} — ${service.name.toLowerCase()} by Uniix Studio`}
+                        loading="lazy"
+                        className="w-full aspect-[16/10] object-cover"
+                      />
+                    )}
+                    <div className="p-6">
+                      <h3 className="font-display font-medium text-[19px] tracking-[-0.01em] mb-1 group-hover:text-brand-4 transition-colors">
+                        {p.title}
+                      </h3>
+                      <p className="text-ink-2 text-[14px] leading-[1.55] line-clamp-3">{p.summary}</p>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Video showcase (commercial reel) */}
       {service.videos && service.videos.length > 0 && (
         <VideoShowcase videos={service.videos} accent={pillar.accent} />
       )}
 
       {/* Related reading — internal-link topic cluster */}
-      {service.relatedReading && service.relatedReading.length > 0 && (
+      {(guides.length > 0 || extraReading.length > 0) && (
         <section className="py-16 md:py-20 border-t border-line">
           <div className="wrap">
             <Reveal>
@@ -282,8 +346,28 @@ export default async function ServiceDetailPage({
                 Continue the thread
               </h2>
             </Reveal>
+            {guides.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                {guides.map((g, i) => (
+                  <Reveal key={g.slug} delay={(i % 3) as 0 | 1 | 2}>
+                    <Link
+                      href={`/blog/${g.slug}/`}
+                      className="group block h-full rounded-2xl border border-line bg-bg-paper p-6 hover:border-brand-3 transition-colors"
+                    >
+                      <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-mute block mb-3">
+                        {g.category} · {g.readTime}
+                      </span>
+                      <h3 className="font-display font-medium text-[18px] leading-[1.25] tracking-[-0.01em] mb-2 group-hover:text-brand-4 transition-colors">
+                        {g.title}
+                      </h3>
+                      <p className="text-ink-2 text-[14px] leading-[1.55] line-clamp-3">{g.excerpt}</p>
+                    </Link>
+                  </Reveal>
+                ))}
+              </div>
+            )}
             <ul className="flex flex-wrap gap-3">
-              {service.relatedReading.map((r) => (
+              {extraReading.map((r) => (
                 <li key={r.href}>
                   <Link
                     href={r.href}

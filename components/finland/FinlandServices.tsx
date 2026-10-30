@@ -98,7 +98,7 @@ export default function FinlandServices({ projects, c }: { projects: FiProjects;
                               className="group flex items-center gap-3 lg:hidden"
                             >
                               <span className="relative block h-12 w-16 overflow-hidden rounded-[8px] bg-bg-warm">
-                                <SmartImage src={p.coverImage} alt="" sizes="64px" quality={55} />
+                                <SmartImage src={p.coverImage} alt={`${p.title} project by Uniix Studio`} sizes="64px" quality={55} />
                               </span>
                               <span className="text-[13px] text-ink-mute">
                                 {t.related} · <span className="text-ink">{p.title}</span>

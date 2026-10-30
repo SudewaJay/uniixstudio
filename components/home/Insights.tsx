@@ -46,7 +46,7 @@ export default function Insights({ posts, copy }: { posts: BlogPost[]; copy?: Se
               <div className="frame aspect-[16/10]">
                 <SmartImage
                   src={lead.coverImage}
-                  alt=""
+                  alt={lead.coverAlt || `Cover image for “${lead.title}”`}
                   sizes="(min-width:1024px) 55vw, 92vw"
                 />
               </div>
@@ -86,7 +86,7 @@ export default function Insights({ posts, copy }: { posts: BlogPost[]; copy?: Se
                     <div className="frame aspect-square w-24 shrink-0 sm:w-32">
                       <SmartImage
                         src={post.coverImage}
-                        alt=""
+                        alt={post.coverAlt || `Cover image for “${post.title}”`}
                         sizes="(min-width:640px) 128px, 96px"
                       />
                     </div>

@@ -7,7 +7,7 @@ import { imageSrc } from './helpers'
 /** The shared SEO group (identical shape on every collection). */
 export type SeoFields = NonNullable<CmsProject['seo']>
 
-type MetaInput = {
+export type MetaInput = {
   /** Site path, e.g. "/portfolio/foo/" — becomes the canonical URL. */
   path: string
   /** Default <title> when the editor sets no meta title. */
@@ -43,7 +43,8 @@ export function buildMetadata(input: MetaInput): Metadata {
 
   return {
     metadataBase: new URL(site.url),
-    title,
+    // Absolute: titles already carry the brand, so the layout template must not append it again.
+    title: { absolute: title },
     description,
     alternates: { canonical },
     robots: noIndex || seo?.noFollow ? { index: !noIndex, follow: !seo?.noFollow } : undefined,

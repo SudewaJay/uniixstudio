@@ -698,7 +698,7 @@ export default function CricBookCaseStudy({
                   Book. Play. <span style={{ color: CB.mint }}>Compete.</span>
                 </p>
                 <div className="hidden md:block w-[16%] max-w-[210px] translate-y-[30%]">
-                  <PhoneFrame src={img.app.confirmed} alt="" sizes="210px" />
+                  <PhoneFrame src={img.app.confirmed} alt="CricBook app booking-confirmed screen" sizes="210px" />
                 </div>
               </div>
             </div>

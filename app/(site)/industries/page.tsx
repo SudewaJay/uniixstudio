@@ -7,7 +7,7 @@ import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: "Industries We Serve | Uniix Studio — Sri Lanka Digital Agency",
+  title: { absolute: "Industries We Serve | Uniix Studio — Sri Lanka Digital Agency" },
   description:
     "Tailored digital solutions across education, healthcare, e-commerce, finance, real estate, travel, corporate and SaaS — delivered globally by Uniix Studio.",
   alternates: { canonical: site.canonical("/industries/") },
@@ -40,7 +40,7 @@ export default async function IndustriesIndexPage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={ind.image}
-                    alt=""
+                    alt={`${ind.name} industry`}
                     loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />

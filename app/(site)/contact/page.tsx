@@ -1,22 +1,57 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo-metadata";
 import PageHeader from "@/components/PageHeader";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
-import { site as siteConfig } from "@/lib/content";
 import { getSiteSettings } from "@/lib/cms/site";
-import { breadcrumbSchema } from "@/lib/schema";
+import Link from "next/link";
+import { getLocations } from "@/lib/cms/locations";
+import { breadcrumbSchema, faqPageSchema, schemaGraph } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: "Contact Uniix Studio | Hire a Creative Digital Agency in Sri Lanka",
-  description:
-    "Start a project with Uniix Studio. Tell us about your goals and we'll be in touch within 24 hours. Based in Colombo, working with brands across Sri Lanka, Australia and the UK.",
-  alternates: { canonical: siteConfig.canonical("/contact/") },
-};
+export const metadata: Metadata = pageMeta("/contact/");
+
+const NEXT_STEPS = [
+  {
+    title: "Tell us about the project",
+    body: "Send the form or a WhatsApp message: what you need, rough timing and any links you already have.",
+  },
+  {
+    title: "We reply within 24 hours",
+    body: "A real person on the team comes back with questions and honest thoughts on whether we're the right fit.",
+  },
+  {
+    title: "You get a clear plan and quote",
+    body: "If it's a fit, we send the scope, timeline and a fixed quote before any work starts.",
+  },
+];
+
+/** Shown on the page and fed to FAQPage schema, so the two always match. */
+const FAQS = [
+  {
+    question: "How quickly will you reply?",
+    answer:
+      "Within 24 hours. Every enquiry gets a real response from a person on the Uniix Studio team, not an auto-reply.",
+  },
+  {
+    question: "How much does a project cost?",
+    answer:
+      "It depends on scope. Our service pages list package starting prices for logo design, brand identity, web design and more, and you'll get a fixed quote before any work starts.",
+  },
+  {
+    question: "Do you only work with businesses in Sri Lanka?",
+    answer:
+      "No. We're based in Sri Lanka and work with brands across Sri Lanka, Australia and the UK.",
+  },
+  {
+    question: "What should I include in my first message?",
+    answer:
+      "What you want to build, your rough timeline and budget, and links to your current website or social pages if you have them. A short message is fine; we'll ask follow-up questions.",
+  },
+];
 
 export default async function ContactPage() {
-  const site = await getSiteSettings();
+  const [site, locations] = await Promise.all([getSiteSettings(), getLocations()]);
   const crumbs = breadcrumbSchema([
     { name: "Home", url: "/" },
     { name: "Contact", url: "/contact/" },
@@ -24,7 +59,7 @@ export default async function ContactPage() {
 
   return (
     <>
-      <JsonLd data={crumbs} />
+      <JsonLd data={schemaGraph(crumbs, faqPageSchema(FAQS))} />
       <PageHeader
         eyebrow="Get in touch"
         title={
@@ -155,6 +190,75 @@ export default async function ContactPage() {
                 </div>
               </aside>
             </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* What happens next */}
+      <section className="pb-20 md:pb-28">
+        <div className="wrap">
+          <Reveal>
+            <span className="eyebrow">What happens next</span>
+          </Reveal>
+          <ol className="mt-8 grid md:grid-cols-3 gap-5">
+            {NEXT_STEPS.map((step, i) => (
+              <Reveal key={step.title} delay={(i % 3) as 0 | 1 | 2}>
+                <li className="h-full bg-bg-paper border border-line rounded-lg2 p-7">
+                  <span className="font-mono text-[11px] tracking-[0.14em] text-brand-4 block mb-3">0{i + 1}</span>
+                  <h2 className="font-display font-medium text-[20px] tracking-[-0.01em] mb-2">{step.title}</h2>
+                  <p className="text-ink-2 text-[15px] leading-[1.6]">{step.body}</p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Service area */}
+      <section className="pb-20 md:pb-28">
+        <div className="wrap">
+          <div className="border-t border-line pt-12 grid lg:grid-cols-[1fr_1.4fr] gap-8 lg:gap-16">
+            <h2 className="display" style={{ fontSize: "clamp(32px,3.5vw,48px)" }}>
+              Where we <span className="italic-display gradient-text">work.</span>
+            </h2>
+            <div className="text-ink-2 text-[17px] leading-[1.65] max-w-[60ch]">
+              <p>
+                {/* TODO(sudewa): say whether clients can meet you in person, and where. */}
+                Our studio is in {site.location}, and we work with brands across Sri Lanka, Australia and the UK. These
+                are the areas we cover locally:
+              </p>
+              {locations.length > 0 && (
+                <ul className="mt-5 flex flex-wrap gap-2">
+                  {locations.map((l) => (
+                    <li key={l.slug}>
+                      <Link
+                        href={`/locations/${l.slug}/`}
+                        className="inline-flex px-4 py-2 rounded-full bg-bg-paper border border-line text-[14px] text-ink hover:border-brand-3 transition-colors"
+                      >
+                        {l.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="pb-24 md:pb-32">
+        <div className="wrap max-w-3xl">
+          <h2 className="display mb-8" style={{ fontSize: "clamp(32px,3.5vw,48px)" }}>
+            Before you <span className="italic-display gradient-text">get in touch.</span>
+          </h2>
+          <div className="divide-y divide-line border-t border-line">
+            {FAQS.map((f) => (
+              <div key={f.question} className="py-6">
+                <h3 className="font-display font-medium text-[19px] mb-2">{f.question}</h3>
+                <p className="text-ink-2 text-[16px] leading-[1.65]">{f.answer}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

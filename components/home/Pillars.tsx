@@ -227,7 +227,7 @@ export default function Pillars({
                           <span className="frame relative size-20 shrink-0 rounded-[14px]">
                             <SmartImage
                               src={p.proof.coverImage}
-                              alt=""
+                              alt={`${p.proof.title} project by Uniix Studio`}
                               sizes="80px"
                             />
                           </span>
@@ -281,7 +281,7 @@ export default function Pillars({
                     {activeProof && (
                       <SmartImage
                         src={activeProof.coverImage}
-                        alt=""
+                        alt={`${activeProof.title} — ${activeProof.evidence} by Uniix Studio`}
                         sizes="(min-width:1280px) 38vw, 42vw"
                       />
                     )}

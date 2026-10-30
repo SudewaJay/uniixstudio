@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo-metadata";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import CTASection from "@/components/CTASection";
@@ -7,28 +8,21 @@ import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import SmartImage from "@/components/ui/SmartImage";
 import { getAbout, getSiteSettings } from "@/lib/cms/site";
-import { getFeaturedTestimonials, getTeam, getWhyPoints } from "@/lib/cms/content";
-import { buildMetadata } from "@/lib/cms/seo";
+import { getFeaturedClients, getFeaturedTestimonials, getTeam, getWhyPoints } from "@/lib/cms/content";
 import { site } from "@/lib/content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [about, settings] = await Promise.all([getAbout(), getSiteSettings()]);
-  return buildMetadata({
-    path: "/about/",
-    title: "About Uniix Studio | Creative Design Agency in Sri Lanka",
-    description:
-      "Meet the team behind Uniix Studio — a Colombo-based creative agency working with ambitious brands across Sri Lanka, Australia and the UK. No middlemen.",
-    seo: about.seo,
-    fallbackImage: settings.defaultOgImage,
-  });
+  return pageMeta("/about/", { seo: about.seo, fallbackImage: settings.defaultOgImage });
 }
 
 export default async function AboutPage() {
-  const [about, team, whyPoints, testimonials] = await Promise.all([
+  const [about, team, whyPoints, testimonials, clients] = await Promise.all([
     getAbout(),
     getTeam(),
     getWhyPoints(),
     getFeaturedTestimonials(),
+    getFeaturedClients(),
   ]);
   const hero = about.hero ?? {};
   const story = (about.story?.paragraphs ?? []).map((p) => p.paragraph);
@@ -85,6 +79,49 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      {/* Proof: marketplace rating + client logos */}
+      <section className="pb-20 md:pb-28">
+        <div className="wrap">
+          <div className="grid lg:grid-cols-[1fr_2fr] gap-10 lg:gap-16 items-center border-t border-line pt-12">
+            <Reveal>
+              <div>
+                <div className="font-display font-medium tracking-[-0.03em] text-ink" style={{ fontSize: "clamp(56px,6vw,88px)" }}>
+                  5.0<span className="text-ink-mute text-[0.4em] align-top ml-1">/5</span>
+                </div>
+                {/* TODO(sudewa): link the Fiverr profile and add the review count (e.g. "from 40+ reviews"). */}
+                <p className="mt-2 text-ink-2 text-[16px] leading-[1.55] max-w-[32ch]">
+                  Average client rating on Fiverr, where we also work with clients overseas.
+                </p>
+              </div>
+            </Reveal>
+            {clients.length > 0 && (
+              <Reveal delay={1}>
+                <div>
+                  <span className="eyebrow">Brands we&apos;ve worked with</span>
+                  <ul className="mt-6 grid grid-cols-3 sm:grid-cols-6 items-center gap-x-8 gap-y-8">
+                    {clients.map((c) => (
+                      <li key={c.name} className="relative h-10">
+                        {c.logo ? (
+                          <SmartImage
+                            src={c.logo}
+                            alt={c.alt || `${c.name} logo`}
+                            sizes="(min-width:1024px) 120px, 28vw"
+                            fit="contain"
+                            className="opacity-70 transition-opacity hover:opacity-100 [filter:brightness(0)]"
+                          />
+                        ) : (
+                          <span className="grid h-full place-items-center text-ink-2 text-[18px] leading-none">{c.name}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Mission & Vision */}
       <section className="py-20 md:py-28 bg-bg-warm">
         <div className="wrap">
@@ -132,7 +169,9 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Founder / Team */}
+      {/* Founder / Team
+          TODO(sudewa): the only Team entry is named "Uniix Studio" — add the founder's real name, photo
+          and a fuller bio (background, years in practice, notable work) in CMS → Team. */}
       <section className="py-20 md:py-28">
         <div className="wrap">
           <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-end mb-14">

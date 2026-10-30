@@ -80,13 +80,22 @@ export default function Hero({}: HeroProps = {}) {
 
       {/* Main Centered Hero Content */}
       <div className="wrap relative z-10 flex flex-1 flex-col items-center justify-center text-center px-4 sm:px-6">
-        {/* Main Headline */}
-        <h1 className="t-display text-white max-w-[1180px] font-medium leading-[0.92] sm:leading-[0.90] tracking-[-0.058em] text-[clamp(44px,7.2vw,104px)]">
+        {/* The page's only H1 carries the search phrase; it sits as a quiet
+            kicker so the display line below keeps the hero's look. */}
+        <h1
+          className="rise-in mb-5 sm:mb-6 font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.2em] text-white/70"
+          style={{ animationDelay: "40ms" }}
+        >
+          Logo, Branding &amp; Web Design Studio in Sri Lanka
+        </h1>
+
+        {/* Main Headline (visual only — not a heading) */}
+        <p className="t-display text-white max-w-[1180px] font-medium leading-[0.92] sm:leading-[0.90] tracking-[-0.058em] text-[clamp(44px,7.2vw,104px)]">
           <span className="mask-line">
             <span style={{ animationDelay: "100ms" }} className="block">
               We build brands
             </span>
-          </span>
+          </span>{" "}
           <span className="mask-line mt-1 sm:mt-2">
             <span
               style={{ animationDelay: "220ms" }}
@@ -95,7 +104,7 @@ export default function Hero({}: HeroProps = {}) {
               people remember.
             </span>
           </span>
-        </h1>
+        </p>
 
         {/* Minimal Supporting Text */}
         <p

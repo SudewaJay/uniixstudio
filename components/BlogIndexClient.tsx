@@ -75,7 +75,7 @@ export default function BlogIndexClient({ posts }: { posts: BlogCard[] }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={featured.coverImage}
-            alt=""
+            alt={`Cover image for “${featured.title}”`}
             className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           />
           <div
@@ -234,7 +234,7 @@ export default function BlogIndexClient({ posts }: { posts: BlogCard[] }) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={post.coverImage}
-                    alt=""
+                    alt={`Cover image for “${post.title}”`}
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
