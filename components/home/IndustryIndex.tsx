@@ -256,7 +256,7 @@ function PreviewSlide({
     <div className={clsx("ind-slide absolute inset-0", on && "is-on")} aria-hidden={!on || undefined}>
       {proof ? (
         <>
-          <SmartImage src={proof.image} alt="" sizes={sizes} quality={65} />
+          <SmartImage src={proof.image} alt={`${proof.label} — ${name} project by Uniix Studio`} sizes={sizes} quality={65} />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" />
         </>
       ) : (

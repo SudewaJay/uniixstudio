@@ -404,7 +404,7 @@ export default async function BlogPostPage({
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={rp.coverImage}
-                      alt=""
+                      alt={rp.coverAlt || `Cover image for “${rp.title}”`}
                       loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />

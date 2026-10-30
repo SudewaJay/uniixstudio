@@ -160,6 +160,7 @@ export default function HeroShowreel({ films }: { films: ReelFilm[] }) {
           key={film.vimeoId}
           src={film.poster}
           alt=""
+          aria-hidden="true"
           fill
           priority={i === 0}
           loading={i === 0 ? undefined : "lazy"}

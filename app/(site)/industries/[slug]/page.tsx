@@ -83,7 +83,7 @@ export default async function IndustryDetailPage({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={industry.image}
-              alt=""
+              alt={`${industry.name} — branding and websites by Uniix Studio`}
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
@@ -182,7 +182,7 @@ export default async function IndustryDetailPage({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={ind.image}
-                    alt=""
+                    alt={`${ind.name} industry`}
                     loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />

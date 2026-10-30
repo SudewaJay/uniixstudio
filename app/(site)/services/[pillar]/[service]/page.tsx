@@ -6,6 +6,7 @@ import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import { getPillar, getService, getServices, getServicesForPillar } from "@/lib/cms/services";
 import { buildMetadata } from "@/lib/cms/seo";
+import { getProjects } from "@/lib/cms/projects";
 import { notFoundOrRedirect } from "@/lib/cms/redirects";
 import {
   ServiceProcessTimeline,
@@ -51,12 +52,18 @@ export default async function ServiceDetailPage({
   params: Promise<{ pillar: string; service: string }>;
 }) {
   const { pillar: pillarSlug, service: serviceSlug } = await params;
-  const [service, pillar, pillarServices] = await Promise.all([
+  const [service, pillar, pillarServices, projects] = await Promise.all([
     getService(pillarSlug, serviceSlug),
     getPillar(pillarSlug),
     getServicesForPillar(pillarSlug),
+    getProjects(),
   ]);
   if (!service || !pillar) return notFoundOrRedirect(`/services/${pillarSlug}/${serviceSlug}/`);
+
+  // Case studies the editor attached to this service (Services → Related projects).
+  const work = (service.relatedProjectSlugs ?? [])
+    .map((slug) => projects.find((p) => p.slug === slug && p.hasDetail))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   // Editor-picked related services first, then siblings in the same pillar.
   const picked = (service.relatedServiceKeys ?? []).map((k) => pillarServices.find((s) => s.slug === k.slug)).filter(
@@ -260,6 +267,48 @@ export default async function ServiceDetailPage({
       {/* Pricing tiers */}
       {service.pricingTiers && service.pricingTiers.length > 0 && (
         <ServicePricingTiers tiers={service.pricingTiers} accent={pillar.accent} />
+      )}
+
+      {/* Selected work for this service */}
+      {work.length > 0 && (
+        <section className="py-16 md:py-20 border-t border-line">
+          <div className="wrap">
+            <Reveal>
+              <div className="font-mono text-[11px] tracking-[0.22em] uppercase mb-4" style={{ color: pillar.accent }}>
+                Selected work
+              </div>
+              <h2 className="font-display font-medium mb-8 tracking-[-0.02em]" style={{ fontSize: "clamp(24px,2.6vw,36px)" }}>
+                {service.name} projects
+              </h2>
+            </Reveal>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {work.map((p, i) => (
+                <Reveal key={p.slug} delay={(i % 3) as 0 | 1 | 2}>
+                  <Link
+                    href={`/portfolio/${p.slug}/`}
+                    className="group block h-full rounded-2xl border border-line bg-bg-paper overflow-hidden hover:border-brand-3 transition-colors"
+                  >
+                    {p.coverImage && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.coverImage}
+                        alt={p.coverAlt ?? `${p.title} — ${service.name.toLowerCase()} by Uniix Studio`}
+                        loading="lazy"
+                        className="w-full aspect-[16/10] object-cover"
+                      />
+                    )}
+                    <div className="p-6">
+                      <h3 className="font-display font-medium text-[19px] tracking-[-0.01em] mb-1 group-hover:text-brand-4 transition-colors">
+                        {p.title}
+                      </h3>
+                      <p className="text-ink-2 text-[14px] leading-[1.55] line-clamp-3">{p.summary}</p>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
 
       {/* Video showcase (commercial reel) */}

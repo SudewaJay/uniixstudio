@@ -386,7 +386,7 @@ export default function BilesmaSocialCaseStudy({
                         style={{ background: `linear-gradient(160deg, ${w.from}, ${w.to})` }}
                       >
                         <div className="absolute inset-x-[14%] top-[12%] aspect-[4/5] overflow-hidden rounded-[10px] shadow-[0_18px_40px_-14px_rgba(0,0,0,.55)] transition-transform duration-std ease-uniix group-hover:-translate-y-1.5 group-hover:rotate-[-2deg] motion-reduce:transition-none">
-                          <SmartImage src={p.src} alt="" sizes="(min-width:1024px) 12vw, 32vw" />
+                          <SmartImage src={p.src} alt={`Bilesma Natural ${w.name} social media post by Uniix Studio`} sizes="(min-width:1024px) 12vw, 32vw" />
                         </div>
                       </div>
                       <figcaption className="mt-3">

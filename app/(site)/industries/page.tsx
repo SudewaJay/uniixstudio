@@ -40,7 +40,7 @@ export default async function IndustriesIndexPage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={ind.image}
-                    alt=""
+                    alt={`${ind.name} industry`}
                     loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />

@@ -164,7 +164,7 @@ export default function BrandSection() {
               <p className="mt-8 t-meta text-ink-mute">Venue card</p>
               <div className="mt-4 flex max-w-[420px] overflow-hidden rounded-2xl bg-white shadow-sm2 ring-1 ring-black/5">
                 <div className="relative w-[38%] flex-none">
-                  <SmartImage src={img.photo.court1} alt="" sizes="160px" />
+                  <SmartImage src={img.photo.court1} alt="Indoor cricket court photo on a CricBook venue card" sizes="160px" />
                 </div>
                 <div className="p-4">
                   <span className="inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em]" style={{ background: "#E6FBF3", color: "#067A52" }}>
