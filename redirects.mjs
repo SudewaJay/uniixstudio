@@ -52,6 +52,6 @@ export const seoRedirects = [
   { source: '/layouts/:path*', destination: '/', permanent: true },
 
   // ---- Location consolidation: one strong page per city ----
-  // Merge the useful copy from these sub-pages into the city page BEFORE deploying.
-  // PHASE2: { source: '/locations/:city(colombo|negombo|ja-ela|wattala)/:service(web-design|web-development|ecommerce)', destination: '/locations/:city/', permanent: true },
+  // Their copy now renders as sections on the city page (CMS: Location pages).
+  { source: '/locations/:city(colombo|negombo|ja-ela|wattala)/:service(web-design|web-development|ecommerce)', destination: '/locations/:city/', permanent: true },
 ]

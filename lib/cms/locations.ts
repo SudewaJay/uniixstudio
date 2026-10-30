@@ -78,10 +78,6 @@ export function getLocationServices(): Promise<LocationService[]> {
   })
 }
 
-export async function getLocationService(area: string, service: string): Promise<LocationService | undefined> {
-  return (await getLocationServices()).find((l) => l.area === area && l.service === service)
-}
-
 export async function locationServicesFor(area: string): Promise<LocationService[]> {
   return (await getLocationServices()).filter((l) => l.area === area)
 }

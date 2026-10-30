@@ -14,7 +14,6 @@ import type { Service, Pillar } from "@/lib/services";
 import type { Project } from "@/lib/projects";
 import type { Location } from "@/lib/locations";
 import type { SiteSettings } from "@/lib/cms/site";
-import type { LocationService } from "@/lib/location-services";
 
 const SITE_URL = site.url.replace(/\/$/, "");
 const LOGO_URL = `${SITE_URL}/uniix-logo.svg`;
@@ -113,7 +112,8 @@ export function localBusinessAreaSchema(loc: Location, biz: Business) {
   const pageUrl = `${SITE_URL}/locations/${loc.slug}/`;
   return {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
+    // ProfessionalService is a LocalBusiness subtype; both are named so either reader matches.
+    "@type": ["LocalBusiness", "ProfessionalService"],
     "@id": `${pageUrl}#localbusiness`,
     name: `${biz.name} — ${loc.name}`,
     url: pageUrl,
@@ -142,35 +142,6 @@ export function localBusinessAreaSchema(loc: Location, biz: Business) {
     },
     sameAs: sameAs(biz),
     priceRange: "$$",
-  };
-}
-
-/**
- * Service schema for a /locations/[area]/[service] combo page — a specific
- * service scoped to a specific town.
- */
-export function locationServiceSchema(ls: LocationService, loc: Location) {
-  const pageUrl = `${SITE_URL}/locations/${ls.area}/${ls.service}/`;
-  return {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "@id": `${pageUrl}#service`,
-    name: `${ls.serviceLabel} in ${loc.name}`,
-    serviceType: ls.serviceLabel,
-    description: ls.metaDescription,
-    provider: { "@id": `${SITE_URL}/#organization` },
-    areaServed: {
-      "@type": "City",
-      name: loc.name,
-      ...(loc.geo && {
-        geo: {
-          "@type": "GeoCoordinates",
-          latitude: loc.geo.lat,
-          longitude: loc.geo.lng,
-        },
-      }),
-    },
-    url: pageUrl,
   };
 }
 

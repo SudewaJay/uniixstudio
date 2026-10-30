@@ -5,7 +5,7 @@ import { getPillars, getServices } from "@/lib/cms/services";
 import { getPosts } from "@/lib/cms/blog";
 import { getDetailedProjects } from "@/lib/cms/projects";
 import { getIndustries } from "@/lib/cms/industries";
-import { getLocations, getLocationServices } from "@/lib/cms/locations";
+import { getLocations } from "@/lib/cms/locations";
 import { getPageSummaries } from "@/lib/cms/pages";
 import type { SeoFields } from "@/lib/cms/seo";
 
@@ -25,14 +25,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const baseUrl = (path: string) => `${site.url}${path}/`.replace(/\/+$/, "/");
 
-  const [pillars, services, posts, projects, industries, locations, locationServices, pages] = await Promise.all([
+  const [pillars, services, posts, projects, industries, locations, pages] = await Promise.all([
     getPillars(),
     getServices(),
     getPosts(),
     getDetailedProjects(),
     getIndustries(),
     getLocations(),
-    getLocationServices(),
     getPageSummaries(),
   ]);
 
@@ -60,12 +59,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticRoutes,
     ...pillars.map((p) => ({ path: `/services/${p.slug}`, priority: 0.85, freq: "monthly" as const, seo: p.seo })),
     ...locations.map((l) => ({ path: `/locations/${l.slug}`, priority: 0.85, freq: "monthly" as const, seo: l.seo })),
-    ...locationServices.map((ls) => ({
-      path: `/locations/${ls.area}/${ls.service}`,
-      priority: 0.8,
-      freq: "monthly" as const,
-      seo: ls.seo,
-    })),
     ...services.map((s) => ({ path: `/services/${s.pillar}/${s.slug}`, priority: 0.8, freq: "monthly" as const, seo: s.seo })),
     ...industries.map((i) => ({ path: `/industries/${i.slug}`, priority: 0.7, freq: "monthly" as const, seo: i.seo })),
     ...projects.map((p) => ({ path: `/portfolio/${p.slug}`, priority: 0.85, freq: "monthly" as const, seo: p.seo })),
