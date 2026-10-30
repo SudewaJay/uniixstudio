@@ -16,7 +16,7 @@ import { getProjects } from "@/lib/cms/projects";
 import { getPillars, getServices } from "@/lib/cms/services";
 import { getIndustries } from "@/lib/cms/industries";
 import { getFeaturedPosts } from "@/lib/cms/blog";
-import { getFeaturedClients, getFeaturedTestimonials, getProcess, getWhyPoints } from "@/lib/cms/content";
+import { getFeaturedTestimonials, getProcess, getWhyPoints } from "@/lib/cms/content";
 import { getHomepage, getSiteSettings, getStats, toCopy } from "@/lib/cms/site";
 import { getShowreelFilms } from "@/lib/cms/showreel";
 import { isDoc } from "@/lib/cms/helpers";
@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [home, films, projects, pillars, services, industries, posts, clients, testimonials, stages, why, stats] =
+  const [home, films, projects, pillars, services, industries, posts, testimonials, stages, why, stats] =
     await Promise.all([
       getHomepage(),
       getShowreelFilms(),
@@ -38,7 +38,6 @@ export default async function HomePage() {
       getServices(),
       getIndustries(),
       getFeaturedPosts(3),
-      getFeaturedClients(),
       getFeaturedTestimonials(),
       getProcess(),
       getWhyPoints(),
@@ -85,7 +84,7 @@ export default async function HomePage() {
   return (
     <>
       {/* 01 */} <Hero films={films} />
-      {/* 02 */} <BrandStatement clients={clients} body={home.brandStatement?.body ?? undefined} trustLine={home.brandStatement?.trustLine ?? undefined} />
+      {/* 02 */} <BrandStatement trustLine={home.brandStatement?.trustLine ?? undefined} />
       {/* 03 */} <Pillars pillars={homePillars} proof={pillarProof} copy={toCopy(home.pillars)} />
       {/* 04 */} <WorkShowcase items={homeWork} copy={toCopy(home.work)} />
       {/* 05 */} <IndustryIndex industries={industries.map(({ slug, name, description, accent }) => ({ slug, name, description, accent }))} proof={industryProof} copy={toCopy(home.industries)} />

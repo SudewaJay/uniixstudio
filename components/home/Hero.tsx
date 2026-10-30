@@ -17,7 +17,7 @@ export default function Hero({}: HeroProps = {}) {
     <section
       data-nav-invert
       aria-label="Introduction"
-      className="on-dark relative isolate flex min-h-[720px] h-[100svh] w-full flex-col justify-between overflow-hidden bg-bg-ink text-white"
+      className="on-dark relative isolate flex h-[680px] md:h-[800px] w-full flex-col justify-between overflow-hidden bg-bg-ink text-white"
     >
       {/* Background HTML5 Video Layer with Fallback Poster */}
       <div

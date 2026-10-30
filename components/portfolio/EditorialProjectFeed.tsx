@@ -403,15 +403,15 @@ function SplitDossierStory({
               {/* Live Metric Pills */}
               <div className="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-line">
                 <div>
-                  <div className="t-numeral text-[28px] text-brand-ink">24h</div>
+                  <div className="t-numeral text-[28px] text-brand-ink">100/100</div>
                   <div className="t-meta text-ink-mute text-[10px] mt-1">
-                    Report Turnaround
+                    Lighthouse SEO
                   </div>
                 </div>
                 <div>
-                  <div className="t-numeral text-[28px] text-brand-ink">500+</div>
+                  <div className="t-numeral text-[28px] text-brand-ink">58</div>
                   <div className="t-meta text-ink-mute text-[10px] mt-1">
-                    Partner Doctors
+                    Published Test Prices
                   </div>
                 </div>
               </div>
