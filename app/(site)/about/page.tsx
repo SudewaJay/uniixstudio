@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo-metadata";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import CTASection from "@/components/CTASection";
@@ -8,19 +9,11 @@ import JsonLd from "@/components/JsonLd";
 import SmartImage from "@/components/ui/SmartImage";
 import { getAbout, getSiteSettings } from "@/lib/cms/site";
 import { getFeaturedTestimonials, getTeam, getWhyPoints } from "@/lib/cms/content";
-import { buildMetadata } from "@/lib/cms/seo";
 import { site } from "@/lib/content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [about, settings] = await Promise.all([getAbout(), getSiteSettings()]);
-  return buildMetadata({
-    path: "/about/",
-    title: "About Uniix Studio | Creative Design Agency in Sri Lanka",
-    description:
-      "Meet the team behind Uniix Studio — a Colombo-based creative agency working with ambitious brands across Sri Lanka, Australia and the UK. No middlemen.",
-    seo: about.seo,
-    fallbackImage: settings.defaultOgImage,
-  });
+  return pageMeta("/about/", { seo: about.seo, fallbackImage: settings.defaultOgImage });
 }
 
 export default async function AboutPage() {

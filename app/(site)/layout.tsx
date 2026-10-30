@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThirdPartyScripts from "@/components/ThirdPartyScripts";
 import { site } from "@/lib/content";
+import { SEO } from "@/lib/seo-metadata";
 import {
   organizationSchema,
   localBusinessSchema,
@@ -28,9 +29,9 @@ const mono = JetBrains_Mono({
 });
 
 /**
- * Site-wide defaults, driven by CMS Site Settings. Pages MUST set their own
- * absolute title (no template suffix — avoids "X · Uniix Studio · Uniix
- * Studio") and their own canonical: a layout-level canonical would be
+ * Site-wide defaults, driven by CMS Site Settings. Pages SHOULD set their own
+ * absolute title (buildMetadata/pageMeta do) — the template only catches bare
+ * fallbacks like "Service" — and their own canonical: a layout-level canonical would be
  * inherited by every child page and make them all duplicates of "/".
  * (Meta keywords are intentionally omitted — ignored by Google since 2009.)
  */
@@ -43,8 +44,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(site.url),
     title: {
-      default: `${s.name} | Creative Design & Digital Agency in Sri Lanka`,
-      template: `%s`,
+      default: SEO["/"].title,
+      template: `%s | ${s.name}`,
     },
     description: s.description,
     authors: [{ name: s.name }],

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo-metadata";
 import Hero from "@/components/home/Hero";
 import BrandStatement from "@/components/home/BrandStatement";
 import Pillars, { type HomePillar, type PillarProof } from "@/components/home/Pillars";
@@ -18,20 +19,13 @@ import { getFeaturedPosts } from "@/lib/cms/blog";
 import { getFeaturedClients, getFeaturedTestimonials, getProcess, getWhyPoints } from "@/lib/cms/content";
 import { getHomepage, getSiteSettings, getStats, toCopy } from "@/lib/cms/site";
 import { getShowreelFilms } from "@/lib/cms/showreel";
-import { buildMetadata } from "@/lib/cms/seo";
 import { isDoc } from "@/lib/cms/helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [home, settings] = await Promise.all([getHomepage(), getSiteSettings()]);
-  const meta = buildMetadata({
-    path: "/",
-    title: `${settings.name} | Creative Design & Digital Agency in Sri Lanka`,
-    description: settings.description,
-    seo: home.seo,
-    fallbackImage: settings.defaultOgImage,
-  });
-  // The homepage keeps the layout's default title unless an editor overrides it.
-  return home.seo?.metaTitle ? meta : { ...meta, title: undefined };
+  // Never return `title: undefined` here: Next resolves an explicit undefined
+  // title to an empty one, which is how the homepage lost its <title>.
+  return pageMeta("/", { seo: home.seo, fallbackImage: settings.defaultOgImage });
 }
 
 export default async function HomePage() {

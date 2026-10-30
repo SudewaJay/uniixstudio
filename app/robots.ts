@@ -6,9 +6,11 @@ import { site } from "@/lib/content";
  * Blocking them prevents the site from being learned and cited by
  * ChatGPT, Claude, Perplexity, Gemini, and Bing Copilot — which is
  * the entire point of GEO (Generative Engine Optimization).
+ *
+ * Disallowed: the CMS admin and API, Next's generated OG/Twitter image
+ * routes, feeds, and the search template URL — none of them are content.
  */
-/** The CMS admin, its API and preview endpoints are never content. */
-const PRIVATE = ["/admin/", "/api/"];
+const disallow = ["/admin/", "/api/", "/*opengraph-image*", "/*twitter-image*", "/*/feed/", "/search"];
 
 export default function robots(): MetadataRoute.Robots {
   const agents = [
@@ -17,6 +19,7 @@ export default function robots(): MetadataRoute.Robots {
     // AI training + answer crawlers — explicitly allowed
     "GPTBot",
     "ChatGPT-User",
+    "OAI-SearchBot",
     "ClaudeBot",
     "anthropic-ai",
     "PerplexityBot",
@@ -24,8 +27,13 @@ export default function robots(): MetadataRoute.Robots {
     "CCBot",
     "Applebot-Extended",
   ];
+  // Link-preview bots must still fetch the OG images, or shared links lose their cards.
+  const previewBots = ["Twitterbot", "facebookexternalhit", "LinkedInBot"];
   return {
-    rules: agents.map((userAgent) => ({ userAgent, allow: "/", disallow: PRIVATE })),
+    rules: [
+      ...agents.map((userAgent) => ({ userAgent, allow: "/", disallow })),
+      ...previewBots.map((userAgent) => ({ userAgent, allow: "/", disallow: ["/admin/", "/api/"] })),
+    ],
     sitemap: `${site.url}/sitemap.xml`,
     host: site.url,
   };

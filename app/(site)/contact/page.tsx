@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo-metadata";
 import PageHeader from "@/components/PageHeader";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
-import { site as siteConfig } from "@/lib/content";
 import { getSiteSettings } from "@/lib/cms/site";
 import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: "Contact Uniix Studio | Hire a Creative Digital Agency in Sri Lanka",
-  description:
-    "Start a project with Uniix Studio. Tell us about your goals and we'll be in touch within 24 hours. Based in Colombo, working with brands across Sri Lanka, Australia and the UK.",
-  alternates: { canonical: siteConfig.canonical("/contact/") },
-};
+export const metadata: Metadata = pageMeta("/contact/");
 
 export default async function ContactPage() {
   const site = await getSiteSettings();

@@ -46,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/contact", priority: 0.8, freq: "monthly" },
     { path: "/showreel", priority: 0.75, freq: "monthly" },
     { path: "/locations", priority: 0.8, freq: "monthly" },
+    { path: "/privacy-policy", priority: 0.3, freq: "monthly" },
     // Listed only once its placeholders are replaced (it's noindex until then).
     ...(finlandHasPlaceholders
       ? []

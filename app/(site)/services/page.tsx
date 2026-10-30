@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo-metadata";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import ProcessSection from "@/components/ProcessSection";
 import CTASection from "@/components/CTASection";
 import Reveal from "@/components/Reveal";
 import { getPillars, getServices } from "@/lib/cms/services";
-import { buildMetadata } from "@/lib/cms/seo";
 import { splitAccent } from "@/lib/text";
 
-export const metadata: Metadata = buildMetadata({
-  path: "/services/",
-  title: "Services — Brand, Web & Digital Marketing | Uniix Studio",
-  description:
-    "Brand identity, web design, performance marketing and SEO — all under one roof. Explore Uniix Studio's three pillars: Design, Technology, Growth.",
-});
+export const metadata: Metadata = pageMeta("/services/");
 
 export default async function ServicesPage() {
   const [pillars, allServices] = await Promise.all([getPillars(), getServices()]);

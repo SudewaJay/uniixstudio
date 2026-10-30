@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { hasPageMeta, pageMeta } from "@/lib/seo-metadata";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import PageHeader from "@/components/PageHeader";
@@ -34,8 +35,10 @@ export async function generateMetadata({
   const service = await getService(pillar, serviceSlug);
   if (!service) return { title: "Service" };
   // The dynamic opengraph-image route supplies the social image by default.
+  const path = `/services/${pillar}/${serviceSlug}/`;
+  if (hasPageMeta(path)) return pageMeta(path, { seo: service.seo });
   return buildMetadata({
-    path: `/services/${pillar}/${serviceSlug}/`,
+    path,
     title: service.pageTitle,
     description: service.metaDescription,
     seo: service.seo,

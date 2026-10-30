@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { hasPageMeta, pageMeta } from "@/lib/seo-metadata";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
@@ -27,8 +28,10 @@ export async function generateMetadata({
   const { area } = await params;
   const loc = (await getLocations()).find((l) => l.slug === area);
   if (!loc) return { title: "Location" };
+  const path = `/locations/${loc.slug}/`;
+  if (hasPageMeta(path)) return pageMeta(path, { seo: loc.seo });
   return buildMetadata({
-    path: `/locations/${loc.slug}/`,
+    path,
     title: `Web Design & Development in ${loc.name} | Uniix Studio`,
     description: loc.metaDescription,
     seo: loc.seo,

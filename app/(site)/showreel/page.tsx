@@ -17,7 +17,7 @@ const canonical = site.canonical("/showreel/");
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: "Showreel — Commercial Video Work | Uniix Studio",
+  title: { absolute: "Showreel — Commercial Video Work | Uniix Studio" },
   description:
     "Selected commercial videos directed, edited and motion-led by Uniix Studio for client brands across Sri Lanka, Australia and the UK.",
   alternates: { canonical },

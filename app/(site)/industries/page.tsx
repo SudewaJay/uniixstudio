@@ -7,7 +7,7 @@ import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: "Industries We Serve | Uniix Studio — Sri Lanka Digital Agency",
+  title: { absolute: "Industries We Serve | Uniix Studio — Sri Lanka Digital Agency" },
   description:
     "Tailored digital solutions across education, healthcare, e-commerce, finance, real estate, travel, corporate and SaaS — delivered globally by Uniix Studio.",
   alternates: { canonical: site.canonical("/industries/") },

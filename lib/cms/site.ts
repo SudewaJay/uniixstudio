@@ -149,6 +149,12 @@ export type FooterData = {
 const toLinks = (list: Footer['links']) =>
   (list ?? []).map((l) => ({ label: l.label ?? '', href: l.href ?? '/', newTab: Boolean(l.newTab) })).filter((l) => l.label)
 
+/** The privacy policy is a coded route, so it's always linked even when the CMS lists no legal links. */
+const withPrivacyPolicy = (links: FooterData['legalLinks']) =>
+  links.some((l) => l.href.replace(/\/+$/, '') === '/privacy-policy')
+    ? links
+    : [...links, { label: 'Privacy Policy', href: '/privacy-policy/' }]
+
 export function getFooter(): Promise<FooterData> {
   return cmsQuery(['global', 'footer'], [globalTag('footer')], async (draft) => {
     const f = await readGlobal<Footer>('footer', draft)
@@ -161,7 +167,7 @@ export function getFooter(): Promise<FooterData> {
       description: str(f.description),
       links: toLinks(f.links),
       showLocations: f.showLocations !== false,
-      legalLinks: toLinks(f.legalLinks),
+      legalLinks: withPrivacyPolicy(toLinks(f.legalLinks)),
       copyright: str(f.copyright),
     }
   })
