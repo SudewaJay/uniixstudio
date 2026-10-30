@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module';
 import { withPayload } from '@payloadcms/next/withPayload';
 import { seoRedirects } from './redirects.mjs';
+import { blogMergeRedirects } from './lib/blog-decisions.mjs';
 
 const require = createRequire(import.meta.url);
 
@@ -99,6 +100,8 @@ const nextConfig = {
       { source: "/abstract-gradients-a-kaleidoscope-of-colors", destination: "/blog", permanent },
       // Legacy WordPress URLs + consolidated location sub-pages (see redirects.mjs).
       ...seoRedirects,
+      // Blog posts merged into a stronger post (lib/blog-decisions.mjs).
+      ...blogMergeRedirects,
     ];
   },
   async rewrites() {

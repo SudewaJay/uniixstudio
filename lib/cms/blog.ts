@@ -2,6 +2,7 @@ import 'server-only'
 import type { Where } from 'payload'
 import type { BlogPost as CmsBlogPost, Pillar } from '@/payload-types'
 import type { BlogPost } from '@/lib/blog-fs'
+import { isMergedPost } from '@/lib/blog-decisions.mjs'
 import { cmsQuery, readOpts } from './cache'
 import { docs, isDoc, isoDate, resolveImage, richTextToMarkdown, str } from './helpers'
 import { getPayloadClient } from './payload'
@@ -76,8 +77,10 @@ export function getPosts(): Promise<BlogPost[]> {
       pagination: false,
       select: { body: false },
     })
-    // `select` omits the body; toPost(…, false) never reads it.
-    return Promise.all(res.docs.map((d) => toPost(d as CmsBlogPost, false)))
+    // `select` omits the body; toPost(…, false) never reads it. Merged posts
+    // 301 to their target, so they're never listed or linked.
+    const live = res.docs.filter((d) => !isMergedPost(d.slug))
+    return Promise.all(live.map((d) => toPost(d as CmsBlogPost, false)))
   })
 }
 

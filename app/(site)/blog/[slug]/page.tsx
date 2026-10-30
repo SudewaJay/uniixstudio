@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { isNoIndexPost } from "@/lib/blog-decisions.mjs";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -41,6 +42,8 @@ export async function generateMetadata({
     publishedTime: post.publishDate,
     modifiedTime: post.updatedDate,
     seo: post.seo,
+    // Pruned in the SEO pass: stays live and linked, out of the index (lib/blog-decisions.mjs).
+    noIndex: isNoIndexPost(slug),
   });
 }
 

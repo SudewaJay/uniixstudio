@@ -8,6 +8,7 @@ import { getIndustries } from "@/lib/cms/industries";
 import { getLocations } from "@/lib/cms/locations";
 import { getPageSummaries } from "@/lib/cms/pages";
 import type { SeoFields } from "@/lib/cms/seo";
+import { isMergedPost, isNoIndexPost } from "@/lib/blog-decisions.mjs";
 
 /**
  * Built from the CMS: only published documents are ever returned by the
@@ -62,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...services.map((s) => ({ path: `/services/${s.pillar}/${s.slug}`, priority: 0.8, freq: "monthly" as const, seo: s.seo })),
     ...industries.map((i) => ({ path: `/industries/${i.slug}`, priority: 0.7, freq: "monthly" as const, seo: i.seo })),
     ...projects.map((p) => ({ path: `/portfolio/${p.slug}`, priority: 0.85, freq: "monthly" as const, seo: p.seo })),
-    ...posts.map((p) => ({
+    ...posts.filter((p) => !isNoIndexPost(p.slug) && !isMergedPost(p.slug)).map((p) => ({
       path: `/blog/${p.slug}`,
       priority: 0.7,
       freq: "monthly" as const,

@@ -7,6 +7,8 @@ import Reveal from "@/components/Reveal";
 import { getPillar, getService, getServices, getServicesForPillar } from "@/lib/cms/services";
 import { buildMetadata } from "@/lib/cms/seo";
 import { getProjects } from "@/lib/cms/projects";
+import { getPosts } from "@/lib/cms/blog";
+import { keepPostsForService } from "@/lib/blog-decisions.mjs";
 import { notFoundOrRedirect } from "@/lib/cms/redirects";
 import {
   ServiceProcessTimeline,
@@ -52,13 +54,23 @@ export default async function ServiceDetailPage({
   params: Promise<{ pillar: string; service: string }>;
 }) {
   const { pillar: pillarSlug, service: serviceSlug } = await params;
-  const [service, pillar, pillarServices, projects] = await Promise.all([
+  const [service, pillar, pillarServices, projects, posts] = await Promise.all([
     getService(pillarSlug, serviceSlug),
     getPillar(pillarSlug),
     getServicesForPillar(pillarSlug),
     getProjects(),
+    getPosts(),
   ]);
   if (!service || !pillar) return notFoundOrRedirect(`/services/${pillarSlug}/${serviceSlug}/`);
+
+  // Related reading: the strongest guides for this service (lib/blog-decisions.mjs).
+  const guides = keepPostsForService(`${pillarSlug}/${serviceSlug}`)
+    .map((slug) => posts.find((p) => p.slug === slug))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  const guideHrefs = new Set(guides.map((g) => `/blog/${g.slug}/`));
+  const extraReading = (service.relatedReading ?? []).filter(
+    (r) => !guideHrefs.has(r.href.endsWith("/") ? r.href : `${r.href}/`),
+  );
 
   // Case studies the editor attached to this service (Services → Related projects).
   const work = (service.relatedProjectSlugs ?? [])
@@ -317,7 +329,7 @@ export default async function ServiceDetailPage({
       )}
 
       {/* Related reading — internal-link topic cluster */}
-      {service.relatedReading && service.relatedReading.length > 0 && (
+      {(guides.length > 0 || extraReading.length > 0) && (
         <section className="py-16 md:py-20 border-t border-line">
           <div className="wrap">
             <Reveal>
@@ -334,8 +346,28 @@ export default async function ServiceDetailPage({
                 Continue the thread
               </h2>
             </Reveal>
+            {guides.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                {guides.map((g, i) => (
+                  <Reveal key={g.slug} delay={(i % 3) as 0 | 1 | 2}>
+                    <Link
+                      href={`/blog/${g.slug}/`}
+                      className="group block h-full rounded-2xl border border-line bg-bg-paper p-6 hover:border-brand-3 transition-colors"
+                    >
+                      <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-mute block mb-3">
+                        {g.category} · {g.readTime}
+                      </span>
+                      <h3 className="font-display font-medium text-[18px] leading-[1.25] tracking-[-0.01em] mb-2 group-hover:text-brand-4 transition-colors">
+                        {g.title}
+                      </h3>
+                      <p className="text-ink-2 text-[14px] leading-[1.55] line-clamp-3">{g.excerpt}</p>
+                    </Link>
+                  </Reveal>
+                ))}
+              </div>
+            )}
             <ul className="flex flex-wrap gap-3">
-              {service.relatedReading.map((r) => (
+              {extraReading.map((r) => (
                 <li key={r.href}>
                   <Link
                     href={r.href}
