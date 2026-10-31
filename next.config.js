@@ -25,6 +25,7 @@ const DESIGN_HOST = [{ type: "host", value: "design.uniixstudio.com" }];
 const PITCHES = {
   tudawebrothers: "https://tudawe-pitch.vercel.app",
   streetburgersl: "https://streetburger-pitch.vercel.app",
+  avenrahotels: "https://avenra-pitch.vercel.app",
 };
 const pitchSlugs = Object.keys(PITCHES).join("|");
 
