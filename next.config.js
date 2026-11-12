@@ -27,6 +27,7 @@ const PITCHES = {
   streetburgersl: "https://streetburger-pitch.vercel.app",
   pressplaylk: "https://pressplay-pitch.vercel.app",
   avenrahotels: "https://avenra-pitch.vercel.app",
+  samaiapp: "https://samai-pitch.vercel.app",
 };
 const pitchSlugs = Object.keys(PITCHES).join("|");
 
