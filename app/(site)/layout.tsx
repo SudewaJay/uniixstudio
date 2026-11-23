@@ -125,7 +125,7 @@ export default async function RootLayout({
         {preview && <PreviewBanner />}
         <PromoBar promo={promo} socials={settings.socials} />
         <Nav nav={nav} />
-        <main id="main-content">{children}</main>
+        <main id="main-content" tabIndex={-1} className="outline-none">{children}</main>
         <Footer
           footer={footer}
           settings={settings}

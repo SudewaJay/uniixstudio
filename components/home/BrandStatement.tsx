@@ -33,7 +33,6 @@ export default function BrandStatement({ trustLine }: { trustLine?: string }) {
               Design <span className="accent font-normal t-italic">×</span> Technology{" "}
               <span className="accent font-normal t-italic">×</span> Growth
             </span>
-            <span className="block text-white/45">— under one roof.</span>
           </p>
         </Reveal>
       </div>

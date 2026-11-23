@@ -760,56 +760,8 @@
 }
 
 /* ==========================================================================
-   Industries index (components/home/IndustryIndex)
+   How we work — stage line drawings (components/home/studio/ProcessLine)
    ========================================================================== */
-.ind-row .ind-name {
-  transition: color var(--dur-std) var(--ease), transform var(--dur-std) var(--ease);
-}
-.ind-list.has-active .ind-row:not(.is-active) .ind-name {
-  color: rgba(18, 16, 14, 0.28);
-}
-.ind-row.is-active .ind-name {
-  transform: translateX(10px);
-}
-.ind-row .ind-rule {
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-reveal) var(--ease);
-}
-.ind-row.is-active .ind-rule {
-  transform: scaleX(1);
-}
-.ind-preview {
-  clip-path: inset(100% 0 0 0);
-  transition: clip-path 520ms var(--ease), opacity 300ms var(--ease);
-  opacity: 0;
-}
-.ind-preview.is-shown {
-  clip-path: inset(0 0 0 0);
-  opacity: 1;
-}
-.ind-slide {
-  opacity: 0;
-  transform: scale(1.08);
-  filter: blur(6px);
-  transition: opacity 480ms var(--ease), transform 900ms var(--ease), filter 480ms var(--ease);
-}
-.ind-slide.is-on {
-  opacity: 1;
-  transform: none;
-  filter: none;
-}
-
-/* ==========================================================================
-   How we work (components/home/ProcessJourney)
-   ========================================================================== */
-.proc-panel {
-  transition: flex-grow 700ms var(--ease), background-color var(--dur-std) var(--ease),
-    color var(--dur-std) var(--ease), border-color var(--dur-std) var(--ease);
-}
-.proc-panel:not(.is-on):hover {
-  border-color: rgba(18, 16, 14, 0.28);
-}
 /* Strokes draw in when their stage opens; resting stages show them static. */
 .proc-glyph .proc-line {
   stroke-dasharray: 1;
@@ -826,67 +778,6 @@
 @keyframes proc-draw {
   from { stroke-dashoffset: 1; }
   to { stroke-dashoffset: 0; }
-}
-.proc-chip {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity var(--dur-std) var(--ease), transform var(--dur-std) var(--ease);
-}
-.proc-chip.is-in {
-  opacity: 1;
-  transform: none;
-}
-
-/* ==========================================================================
-   Why Uniix (components/home/WhyUniix)
-   ========================================================================== */
-/* Lime surface. Text stays ink: brand orange measures ~4:1 on this lime, so
-   the strike, eyebrow rule and accents switch to ink here. */
-.why-lime {
-  background: #c4e55c;
-  color: #12100e;
-}
-.why-lime .eyebrow {
-  color: #3a342d;
-}
-.why-lime .eyebrow::before {
-  background: currentColor;
-}
-.why-lime .why-strike {
-  background-image: linear-gradient(#12100e, #12100e);
-}
-.why-lime .why-row.is-in .why-strike {
-  color: rgba(58, 52, 45, 0.75);
-}
-
-.why-strike {
-  position: relative;
-  display: inline;
-  background-image: linear-gradient(#bf4508, #bf4508);
-  background-repeat: no-repeat;
-  background-position: 0 58%;
-  /* Width animates from 0 → 100%; a background rule wraps with the text,
-     unlike a pseudo-element, so multi-line phrases strike correctly. */
-  background-size: 0% 1.5px;
-  transition: background-size 700ms var(--ease) 150ms, color 700ms var(--ease) 150ms;
-}
-.why-row.is-in .why-strike {
-  background-size: 100% 1.5px;
-  color: rgba(92, 85, 77, 0.7);
-}
-.why-claim {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity var(--dur-reveal) var(--ease) 420ms, transform var(--dur-reveal) var(--ease) 420ms;
-}
-.why-row.is-in .why-claim {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .why-strike { background-size: 100% 1.5px; }
-  .why-claim,
-  .proc-chip { opacity: 1; transform: none; }
 }
 
 /* ==========================================================================
@@ -915,4 +806,174 @@
     animation: none;
   }
   .cb-pulse { top: 20px; }
+}
+
+/* ==========================================================================
+   Homepage — What We Do → footer (components/home/studio, components/footer)
+   Motion language: "wipe and pin". House easing, three durations.
+   ========================================================================== */
+
+/* Roll text: label rolls up, a copy rolls in from below. */
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  line-height: 1.25;
+}
+.roll-a,
+.roll-b {
+  display: block;
+  transition: transform var(--dur-std) var(--ease);
+}
+.roll-b {
+  position: absolute;
+  inset: 0;
+  transform: translateY(105%);
+  color: #f5a623;
+}
+.group:hover .roll-a,
+.group:focus-visible .roll-a { transform: translateY(-105%); }
+.group:hover .roll-b,
+.group:focus-visible .roll-b { transform: translateY(0); }
+
+.magnetic {
+  transition: transform 500ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  will-change: transform;
+}
+
+/* What we do ----------------------------------------------------------- */
+.disc-track::-webkit-scrollbar { display: none; }
+.disc-nudge { animation: disc-nudge 1.8s var(--ease) infinite; }
+@keyframes disc-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+.disc-img { transition: transform 1200ms var(--ease); }
+.disc-panel:hover .disc-img { transform: scale(1.05); }
+.disc-svc-arrow {
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity var(--dur-micro) var(--ease), transform var(--dur-micro) var(--ease);
+}
+.disc-svc:hover .disc-svc-arrow,
+.disc-svc:focus-visible .disc-svc-arrow { opacity: 1; transform: none; }
+.gc-line {
+  stroke-dasharray: 1;
+  animation: proc-draw 2400ms var(--ease) both;
+}
+
+/* Why Uniix — comparison board --------------------------------------- */
+.approach-strike {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 55%;
+  background-size: 100% 0.06em;
+}
+.approach-board:has(.approach-range:focus-visible) .approach-knob {
+  outline: 2px solid #12100e;
+  outline-offset: 4px;
+}
+
+/* How we work — pinned stages (desktop) ------------------------------- */
+@media (min-width: 1024px) {
+  /* Outgoing stage leaves fast; incoming waits for it, so two stages are
+     never legible on top of each other. */
+  .proc-stage {
+    transition: opacity 420ms var(--ease) 240ms, transform 700ms var(--ease) 240ms;
+  }
+  .proc-stage.is-off {
+    opacity: 0;
+    transform: translateY(28px);
+    pointer-events: none;
+    transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+  }
+  .proc-stage .proc-num {
+    display: inline-block;
+    transition: transform 700ms var(--ease), opacity 500ms var(--ease);
+  }
+  .proc-stage.is-off .proc-num { transform: translateY(40%); opacity: 0; }
+  .proc-deliv {
+    transition: opacity var(--dur-std) var(--ease), transform var(--dur-std) var(--ease);
+  }
+  .proc-stage.is-off .proc-deliv { opacity: 0; transform: translateY(8px); }
+}
+
+/* Studio — toolkit marquee -------------------------------------------- */
+.studio-row { animation: marquee 60s linear infinite; }
+.studio-row.is-rev { animation-direction: reverse; }
+.studio-marquee:hover .studio-row { animation-play-state: paused; }
+.studio-tool {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.55);
+  transition: color var(--dur-std) var(--ease);
+}
+.studio-row span:hover .studio-tool { color: #fff; }
+
+/* Start a project — brief builder ------------------------------------ */
+.brief-select {
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  border-radius: 0;
+  transition: border-color var(--dur-micro) var(--ease), color var(--dur-micro) var(--ease);
+}
+.brief-select:hover { color: #fff; border-color: #fff; }
+.brief-select:focus-visible {
+  outline: 3px solid #12100e;
+  outline-offset: 4px;
+}
+.brief-select option {
+  font-size: 16px;
+  color: #12100e;
+  background: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roll-a, .roll-b, .magnetic, .disc-img, .proc-stage, .proc-stage .proc-num, .proc-deliv { transition: none !important; }
+  .disc-nudge, .studio-row, .gc-line { animation: none !important; }
+}
+
+/* ---------------------------------------------------------------- Hero beams */
+.hero-beam {
+  position: relative;
+  overflow: hidden;
+  animation: hero-breathe var(--beam-dur, 6s) ease-in-out infinite;
+}
+/* A band of light that rises up each column, staggered per column. */
+.hero-beam::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -40%;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255,220,160,0) 0%, rgba(255,200,120,0.55) 50%, rgba(255,220,160,0) 100%);
+  mix-blend-mode: screen;
+  animation: hero-streak 6s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  animation-delay: var(--streak-delay, 0s);
+}
+@keyframes hero-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@keyframes hero-streak {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  70% { opacity: 0.8; }
+  100% { transform: translateY(-350%); opacity: 0; }
+}
+.hero-horizon {
+  transform-origin: bottom;
+  animation: hero-horizon 7s ease-in-out infinite;
+}
+@keyframes hero-horizon {
+  0%, 100% { opacity: 0.7; transform: scaleY(0.9); }
+  50% { opacity: 1; transform: scaleY(1.15); }
+}
+.hero-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-beam, .hero-horizon { animation: none; }
+  .hero-beam::after { display: none; }
 }

@@ -559,10 +559,7 @@ async function seedGlobals() {
     enabled: true,
     rotateInterval: 3800,
     taglines: [
-      'Creative Digital Agency · Colombo · Working globally',
-      'Brand identities · Performance websites · Growth systems',
-      '50+ projects shipped · 3× average traffic lift in 90 days',
-      'Available for Q3 2026 — 2 slots left',
+      'Creative digital agency in Colombo, Sri Lanka',
     ].map((text) => ({ text })),
   })
   await upsertGlobal('stats', (d) => !(d.entries as unknown[])?.length, {
