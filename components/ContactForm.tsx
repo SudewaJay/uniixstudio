@@ -136,6 +136,22 @@ export default function ContactForm({
     if (hasNavigated.current) headingRef.current?.focus();
   }, [step]);
 
+  // Prefill from the homepage brief builder (/contact/?service=…&timeline=…&message=…).
+  // Only values that match this form's own options are accepted.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const service = q.get("service") ?? "";
+    const timeline = q.get("timeline") ?? "";
+    const message = (q.get("message") ?? "").slice(0, 500);
+    if (!service && !timeline && !message) return;
+    setForm((f) => ({
+      ...f,
+      service: services.includes(service) ? service : f.service,
+      timeline: timelines.includes(timeline) ? timeline : f.timeline,
+      message: message || f.message,
+    }));
+  }, []);
+
   const update = <K extends keyof Form>(key: K, value: string) => {
     setForm((f) => ({ ...f, [key]: value }));
     setErrors((e) => (e[key] ? { ...e, [key]: undefined } : e));

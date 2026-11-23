@@ -1,16 +1,14 @@
 import Link from "next/link";
 import type { ReelFilm } from "./HeroShowreel";
+import HeroBeams from "./HeroBeams";
 
 interface HeroProps {
   films?: ReelFilm[];
 }
 
 /**
- * Cinematic Hero Section.
- *
- * Full-bleed, full-height HTML5 video hero with layered dark cinematic overlays,
- * minimal centered typography, dual action CTAs, and a subtle scroll indicator.
- * Seamlessly integrates under the inverted header via `data-nav-invert`.
+ * Homepage hero: centred headline over the orange light-column backdrop
+ * (HeroBeams). Sits under the inverted header via `data-nav-invert`.
  */
 export default function Hero({}: HeroProps = {}) {
   return (
@@ -19,60 +17,7 @@ export default function Hero({}: HeroProps = {}) {
       aria-label="Introduction"
       className="on-dark relative isolate flex h-[680px] md:h-[800px] w-full flex-col justify-between overflow-hidden bg-bg-ink text-white"
     >
-      {/* Background HTML5 Video Layer with Fallback Poster */}
-      <div
-        className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-bg-ink"
-        aria-hidden="true"
-        style={{
-          backgroundImage: "url('/images/hero-poster.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="/images/hero-poster.jpg"
-          className="hero-video absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.88] contrast-[1.04]"
-        >
-          <source media="(max-width: 768px)" src="/videos/hero-mobile.mp4" type="video/mp4" />
-          <source src="/videos/hero.mp4" type="video/mp4" />
-          <source src="/videos/hero.webm" type="video/webm" />
-        </video>
-
-        {/* Layer 1: Dark Directional Gradient Overlay for Navigation & Bottom Contrast */}
-        <div
-          className="hero-overlay absolute inset-0 z-[1] pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(14,11,8,0.75) 0%, rgba(14,11,8,0.26) 30%, rgba(14,11,8,0.36) 65%, rgba(14,11,8,0.92) 100%)",
-          }}
-        />
-
-        {/* Layer 2: Editorial Center Vignette for Flawless Typographic Contrast */}
-        <div
-          className="absolute inset-0 z-[2] pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(14,11,8,0.22) 0%, rgba(14,11,8,0.70) 100%)",
-          }}
-        />
-
-        {/* Layer 3: Warm Amber Atmospheric Light in Peripheral Deep Shadows */}
-        <div
-          className="absolute inset-0 z-[2] pointer-events-none opacity-30 mix-blend-screen"
-          style={{
-            background:
-              "radial-gradient(50% 50% at 85% 85%, rgba(217,84,11,0.25) 0%, transparent 70%)",
-          }}
-        />
-
-        {/* Layer 4: Soft Edge Fade Seamlessly Connecting into BrandStatement */}
-        <div className="absolute inset-x-0 bottom-0 h-32 z-[3] pointer-events-none bg-gradient-to-b from-transparent to-bg-ink" />
-      </div>
+      <HeroBeams />
 
       {/* Optical Header Clearance Spacer:
           Balances the fixed top announcement bar (36px) + header (~68px) = ~104px */}
@@ -111,7 +56,7 @@ export default function Hero({}: HeroProps = {}) {
           className="rise-in mt-6 sm:mt-7 max-w-[640px] text-white/80 font-normal leading-[1.55] sm:leading-[1.6] text-[clamp(15px,1.2vw,17.5px)] tracking-[-0.01em]"
           style={{ animationDelay: "380ms" }}
         >
-          Brand identities, digital experiences, and growth systems for ambitious companies.
+          Branding, websites and digital marketing, from Colombo.
         </p>
 
         {/* Dual CTA Buttons */}
