@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import PortfolioArchiveClient from "@/components/portfolio/PortfolioArchiveClient";
+import WorkIntro from "@/components/work/WorkIntro";
+import FeaturedWork, { type Feature } from "@/components/work/FeaturedWork";
+import ProjectIndex, { type IndexProject } from "@/components/work/ProjectIndex";
+import EnquiryClose from "@/components/studio/EnquiryClose";
+import { getSiteSettings } from "@/lib/cms/site";
+import { LOGO_ONLY_PROJECTS, OWN_PRODUCTS } from "@/lib/studio";
 import { getProjects } from "@/lib/cms/projects";
 import type { Project } from "@/lib/projects";
 import { site } from "@/lib/content";
@@ -35,14 +40,17 @@ export const metadata: Metadata = {
   },
 };
 
-/** Only what the archive cards render — keeps case-study payloads off the client. */
-function toCard(p: Project): Project {
-  const { slug, title, overline, year, feature, headline, summary, bg, bigText, bigClass, coverImage, tags, audienceTier, client, industry, services, deliverables, hasDetail } = p;
-  return { slug, title, overline, year, feature, headline, summary, bg, bigText, bigClass, coverImage, tags, audienceTier, client, industry, services, deliverables, hasDetail };
-}
+/** Flagship projects and the composition each one gets. */
+const FEATURES: Array<{ slug: string; layout: Feature["layout"] }> = [
+  { slug: "cricbook", layout: "cinema" },
+  { slug: "rentmycar-lk", layout: "split-right" },
+  { slug: "st-lukes-medilab", layout: "split-left" },
+  { slug: "ecowave-energy", layout: "wide" },
+  { slug: "bilesma-natural", layout: "trio" },
+];
 
 export default async function PortfolioPage() {
-  const allProjects = await getProjects();
+  const [allProjects, settings] = await Promise.all([getProjects(), getSiteSettings()]);
   const crumbs = breadcrumbSchema([
     { name: "Home", url: "/" },
     { name: "Portfolio", url: "/portfolio/" },
@@ -66,10 +74,60 @@ export default async function PortfolioPage() {
     },
   };
 
+  const real = (p: Project) => Boolean(p.coverImage) && !LOGO_ONLY_PROJECTS.has(p.slug);
+  const years = allProjects.map((p) => Number(p.year)).filter(Boolean);
+
+  const features: Feature[] = FEATURES.flatMap(({ slug, layout }) => {
+    const p = allProjects.find((x) => x.slug === slug);
+    if (!p || !real(p)) return [];
+    return [
+      {
+        slug: p.slug,
+        title: p.title,
+        headline: p.headline,
+        overline: p.overline,
+        year: p.year,
+        cover: p.coverImage,
+        coverAlt: `${p.title}: ${p.overline}`,
+        extra: (p.gallery ?? []).slice(0, 2),
+        own: OWN_PRODUCTS.has(p.slug),
+        layout,
+      },
+    ];
+  });
+
+  const index: IndexProject[] = [...allProjects]
+    .sort((a, b) => Number(b.year) - Number(a.year))
+    .map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      year: p.year,
+      overline: p.overline,
+      industry: p.industry,
+      tier: p.audienceTier,
+      descriptors: [...(p.tags ?? []), ...(p.services ?? []), p.overline].map((t) => t.toLowerCase()),
+      cover: real(p) ? p.coverImage : undefined,
+      own: OWN_PRODUCTS.has(p.slug),
+    }));
+
+  const shots = ["rentmycar-lk", "bilesma-natural", "cricbook"]
+    .map((slug) => allProjects.find((p) => p.slug === slug))
+    .filter((p): p is Project => Boolean(p && real(p)))
+    .map((p) => ({ src: p.coverImage, alt: p.title }));
+
   return (
     <>
       <JsonLd data={schemaGraph(crumbs, collectionSchema)} />
-      <PortfolioArchiveClient initialProjects={allProjects.map(toCard)} />
+      <WorkIntro count={allProjects.length} from={String(Math.min(...years))} to={String(Math.max(...years))} shots={shots} />
+      <FeaturedWork items={features} />
+      <ProjectIndex projects={index} />
+      <EnquiryClose
+        heading={<>The next case study could be yours.</>}
+        primaryLabel="Discuss a similar project"
+        email={settings.email}
+        whatsappLink={settings.whatsappLink}
+        whatsappText="Hi Uniix, I'd like to discuss a project similar to your portfolio work."
+      />
     </>
   );
 }

@@ -20,6 +20,8 @@ import {
 } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import EditorialArticle from "@/components/blog/EditorialArticle";
+import ReadingProgress from "@/components/blog/ReadingProgress";
+import { headingId, outline, textOf } from "@/lib/headings";
 
 export async function generateStaticParams() {
   return (await getPosts()).map((p) => ({ slug: p.slug }));
@@ -90,6 +92,16 @@ export default async function BlogPostPage({
   // link equity flows both ways (post ↔ service-area page).
   const servingAreas = locations.filter((l) => l.relatedPosts.includes(slug));
 
+  const toc = outline(post.body);
+  const recommended = (post.relatedServices ?? [])
+    .map((key) => {
+      const [pillar, s] = key.split("/");
+      const svc = allServices.find((x) => x.pillar === pillar && x.slug === s);
+      return svc ? { href: `/services/${pillar}/${s}/`, name: svc.name, desc: svc.metaDescription } : null;
+    })
+    .filter((x): x is { href: string; name: string; desc: string } => Boolean(x))
+    .slice(0, 2);
+
   const schemas: object[] = [
     articleSchema(post),
     breadcrumbSchema([
@@ -117,8 +129,9 @@ export default async function BlogPostPage({
   }
 
   return (
-    <article>
+    <article id="article">
       <JsonLd data={pageSchema} />
+      <ReadingProgress />
       {/* Header */}
       <section className="pt-32 md:pt-40 pb-12 md:pb-16">
         <div className="wrap">
@@ -181,7 +194,26 @@ export default async function BlogPostPage({
       {/* Body */}
       <section className="pb-20 md:pb-28">
         <div className="wrap">
-          <div className="max-w-[68ch] mx-auto prose-uniix">
+          <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,68ch)_minmax(0,1fr)] xl:gap-12">
+          {toc.length >= 4 ? (
+            <nav aria-label="On this page" className="hidden xl:block">
+              <div className="sticky top-[calc(var(--header-h)+40px)] ml-auto max-w-[240px]">
+                <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-ink-mute">On this page</p>
+                <ol className="mt-4 border-l border-ink/15">
+                  {toc.map((h) => (
+                    <li key={h.id}>
+                      <a href={`#${h.id}`} className="-ml-px block border-l border-transparent py-1.5 pl-4 text-[13.5px] leading-[1.4] text-ink-2 transition-colors hover:border-brand-ink hover:text-ink">
+                        {h.text}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </nav>
+          ) : (
+            <div className="hidden xl:block" />
+          )}
+          <div className="max-w-[68ch] mx-auto prose-uniix xl:mx-0">
             <Reveal amount="some">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
@@ -252,7 +284,8 @@ export default async function BlogPostPage({
                   ),
                   h2: ({ children }) => (
                     <h2
-                      className="font-display font-medium text-ink mt-12 mb-5 leading-[1.15] tracking-[-0.015em]"
+                      id={headingId(textOf(children))}
+                      className="scroll-mt-[calc(var(--header-h)+24px)] font-display font-medium text-ink mt-12 mb-5 leading-[1.15] tracking-[-0.015em]"
                       style={{ fontSize: "clamp(24px,2.6vw,32px)" }}
                     >
                       {children}
@@ -299,6 +332,28 @@ export default async function BlogPostPage({
                 {post.body}
               </ReactMarkdown>
             </Reveal>
+
+            {recommended.length > 0 && (
+              <aside aria-labelledby="rec-title" className="mt-16 border-t-2 border-ink pt-6">
+                <h2 id="rec-title" className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-mute">
+                  How we can help
+                </h2>
+                <ul className="mt-4">
+                  {recommended.map((r) => (
+                    <li key={r.href} className="border-b border-ink/12">
+                      <Link href={r.href} className="group grid gap-1 py-5">
+                        <span className="font-display text-[22px] font-medium tracking-[-0.025em] text-ink group-hover:text-brand-ink">
+                          {r.name} <span aria-hidden="true">↗</span>
+                        </span>
+                        <span className="line-clamp-2 text-[15px] leading-[1.55] text-ink-2">{r.desc}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            )}
+          </div>
+          <div className="hidden xl:block" />
           </div>
         </div>
       </section>

@@ -30,6 +30,7 @@ import ProcessTimeline from "@/components/portfolio/case-study/ProcessTimeline";
 import SelectedViewsGallery from "@/components/portfolio/case-study/SelectedViewsGallery";
 import NextProjectExhibition from "@/components/portfolio/case-study/NextProjectExhibition";
 import CaseStudyCTA from "@/components/portfolio/case-study/CaseStudyCTA";
+import { LOGO_ONLY_PROJECTS } from "@/lib/studio";
 import SocialCampaignCarousel from "@/components/SocialCampaignCarousel";
 import CaseStudyNarrative from "@/components/CaseStudyNarrative";
 import CricBookCaseStudy from "@/components/portfolio/cricbook/CricBookCaseStudy";
@@ -208,7 +209,7 @@ export default async function ProjectDetailPage({
       <ProjectDossier project={project} />
 
       {/* 03. Impact & Results Metrics (when available) */}
-      {project.stats && project.stats.length > 0 && (
+      {project.stats && project.stats.length > 0 && !LOGO_ONLY_PROJECTS.has(project.slug) && (
         <ProjectMetrics stats={project.stats} />
       )}
 
