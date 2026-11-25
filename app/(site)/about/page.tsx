@@ -1,46 +1,44 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo-metadata";
-import PageHeader from "@/components/PageHeader";
-import Reveal from "@/components/Reveal";
-import CTASection from "@/components/CTASection";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import { breadcrumbSchema, schemaGraph } from "@/lib/schema";
+import { breadcrumbSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
+import Reveal from "@/components/Reveal";
 import SmartImage from "@/components/ui/SmartImage";
 import { getAbout, getSiteSettings } from "@/lib/cms/site";
-import { getFeaturedClients, getFeaturedTestimonials, getTeam, getWhyPoints } from "@/lib/cms/content";
-import { site } from "@/lib/content";
+import { getFeaturedClients } from "@/lib/cms/content";
+import { getPillars } from "@/lib/cms/services";
+import { DISCIPLINES, FOUNDED, MARKETS } from "@/lib/studio";
+import ScrollStatement from "@/components/about/ScrollStatement";
+import DisciplineVenn, { type VennItem } from "@/components/about/DisciplineVenn";
+import EnquiryClose from "@/components/studio/EnquiryClose";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [about, settings] = await Promise.all([getAbout(), getSiteSettings()]);
   return pageMeta("/about/", { seo: about.seo, fallbackImage: settings.defaultOgImage });
 }
 
-export default async function AboutPage() {
-  const [about, team, whyPoints, testimonials, clients] = await Promise.all([
-    getAbout(),
-    getTeam(),
-    getWhyPoints(),
-    getFeaturedTestimonials(),
-    getFeaturedClients(),
-  ]);
-  const hero = about.hero ?? {};
-  const story = (about.story?.paragraphs ?? []).map((p) => p.paragraph);
-  const members = team.filter((m) => m.featured).length ? team.filter((m) => m.featured) : team;
-  const awards = about.awards ?? [];
+const PRINCIPLES = [
+  { title: "Strategy before execution", line: "We agree what the work has to achieve before anything is designed." },
+  { title: "Direct collaboration", line: "You talk to the people doing the work, not an account manager." },
+  { title: "Creative and technical craft", line: "Design and code are held to the same standard." },
+  { title: "Transparent communication", line: "Clear scope, clear quotes and regular check-ins." },
+  { title: "Long-term relationships", line: "We stay on after launch to look after what we built." },
+];
 
-  // Person nodes only for real, named people (not the studio placeholder).
-  const people = members
-    .filter((m) => m.name !== site.name)
-    .map((m) => ({
-      "@context": "https://schema.org",
-      "@type": "Person",
-      name: m.name,
-      jobTitle: m.role,
-      worksFor: { "@id": `${site.url}/#organization` },
-      ...(m.photo ? { image: m.photo.src } : {}),
-      ...(m.links.length ? { sameAs: m.links.map((l) => l.href) } : {}),
-    }));
+export default async function AboutPage() {
+  const [about, clients, pillars, settings] = await Promise.all([
+    getAbout(),
+    getFeaturedClients(),
+    getPillars(),
+    getSiteSettings(),
+  ]);
+  const story = (about.story?.paragraphs ?? []).map((p) => p.paragraph).filter(Boolean);
+  const year = new Date().getFullYear();
+
+  const venn: VennItem[] = DISCIPLINES.map((d) => {
+    const p = pillars.find((x) => x.slug === d.slug);
+    return { slug: d.slug, label: d.label, tagline: p?.tagline ?? "", capabilities: (p?.capabilities ?? []).map((c) => c.name) };
+  });
 
   const crumbs = breadcrumbSchema([
     { name: "Home", url: "/" },
@@ -49,247 +47,147 @@ export default async function AboutPage() {
 
   return (
     <>
-      <JsonLd data={people.length ? schemaGraph(crumbs, ...people) : crumbs} />
-      <PageHeader
-        eyebrow={hero.eyebrow ?? "About Uniix Studio"}
-        title={
-          <>
-            {hero.heading ?? "A studio for"}{" "}
-            <span className="italic-display gradient-text">{hero.headingAccent ?? "work that lasts."}</span>
-          </>
-        }
-        lede={hero.lede ?? undefined}
+      <JsonLd data={crumbs} />
+
+      {/* ------------------------------------------------------------ Intro */}
+      <section aria-labelledby="about-title" className="relative overflow-hidden bg-bg pb-16 pt-[calc(var(--header-h)+56px)] md:pb-24 md:pt-[calc(var(--header-h)+88px)]">
+        <div className="wrap-wide">
+          <p className="rise-in font-mono text-[11px] uppercase tracking-[0.2em] text-ink-mute" style={{ animationDelay: "40ms" }}>
+            About Uniix Studio
+          </p>
+          <h1
+            id="about-title"
+            className="mt-8 font-display font-medium leading-[0.9] tracking-[-0.055em] text-ink text-[clamp(44px,7.2vw,128px)]"
+          >
+            <span className="mask-line block">
+              <span className="block" style={{ animationDelay: "120ms" }}>
+                One team for the brand,
+              </span>
+            </span>
+            <span className="mask-line block">
+              <span className="block" style={{ animationDelay: "220ms" }}>
+                the build <span className="text-brand-ink">and the growth.</span>
+              </span>
+            </span>
+          </h1>
+        </div>
+
+        <div className="wrap-wide mt-16 flex flex-col gap-8 md:mt-24 md:flex-row md:items-end md:justify-between">
+          <p className="rise-in max-w-[38ch] text-[clamp(17px,1.4vw,21px)] leading-[1.45] text-ink-2" style={{ animationDelay: "420ms" }}>
+            A design and technology studio in Colombo, working with clients in {MARKETS.slice(0, -1).join(", ")} and the UK.
+          </p>
+          <p aria-hidden="true" className="about-year select-none font-display font-medium leading-[0.75] tracking-[-0.06em] text-[clamp(96px,17vw,300px)]">
+            {FOUNDED}
+          </p>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------ Story */}
+      <section id="story" aria-labelledby="story-title" className="border-t border-ink/10 bg-bg-paper py-24 md:py-36">
+        <div className="wrap-wide grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
+          <div className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:h-fit">
+            <h2 id="story-title" className="font-display font-medium leading-[0.92] tracking-[-0.05em] text-ink text-[clamp(40px,5vw,84px)]">
+              Why Uniix exists
+            </h2>
+            <ol className="mt-10 border-t border-ink/15">
+              {[
+                { when: String(FOUNDED), what: "Started as a graphic design studio" },
+                { when: "Then", what: "Websites, apps and platforms" },
+                { when: "Now", what: "Design, technology and growth" },
+              ].map((m) => (
+                <li key={m.when} className="grid grid-cols-[84px_minmax(0,1fr)] border-b border-ink/15 py-4 text-[15.5px]">
+                  <span className="font-mono text-[12px] uppercase tracking-[0.14em] text-brand-ink">{m.when}</span>
+                  <span className="text-ink-2">{m.what}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="flex flex-col gap-8">
+            {story.map((p, i) => (
+              <Reveal key={i}>
+                <p
+                  className={
+                    i === 0
+                      ? "font-display text-[clamp(24px,2.5vw,38px)] font-medium leading-[1.2] tracking-[-0.025em] text-ink"
+                      : "max-w-[60ch] text-[clamp(17px,1.3vw,19px)] leading-[1.65] text-ink-2"
+                  }
+                >
+                  {p}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- Philosophy */}
+      <ScrollStatement
+        id="philosophy"
+        label="What we believe"
+        text="Great design should be accountable to business outcomes."
+        accent={["accountable"]}
       />
 
-      {/* Story */}
-      <section className="py-20 md:py-28">
-        <div className="wrap">
-          <div className="grid lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-24 items-start">
-            <Reveal>
-              <span className="eyebrow">{about.story?.eyebrow ?? "Our story"}</span>
-            </Reveal>
-            <Reveal delay={1}>
-              <div className="flex flex-col gap-6 text-[18px] leading-[1.65] text-ink-2 max-w-[60ch]">
-                {story.map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
+      {/* ------------------------------------------------------ Disciplines */}
+      <DisciplineVenn items={venn} />
 
-      {/* Proof: marketplace rating + client logos */}
-      <section className="pb-20 md:pb-28">
-        <div className="wrap">
-          <div className="grid lg:grid-cols-[1fr_2fr] gap-10 lg:gap-16 items-center border-t border-line pt-12">
-            <Reveal>
-              <div>
-                <div className="font-display font-medium tracking-[-0.03em] text-ink" style={{ fontSize: "clamp(56px,6vw,88px)" }}>
-                  5.0<span className="text-ink-mute text-[0.4em] align-top ml-1">/5</span>
-                </div>
-                {/* TODO(sudewa): link the Fiverr profile and add the review count (e.g. "from 40+ reviews"). */}
-                <p className="mt-2 text-ink-2 text-[16px] leading-[1.55] max-w-[32ch]">
-                  Average client rating on Fiverr, where we also work with clients overseas.
-                </p>
-              </div>
-            </Reveal>
-            {clients.length > 0 && (
-              <Reveal delay={1}>
-                <div>
-                  <span className="eyebrow">Brands we&apos;ve worked with</span>
-                  <ul className="mt-6 grid grid-cols-3 sm:grid-cols-6 items-center gap-x-8 gap-y-8">
-                    {clients.map((c) => (
-                      <li key={c.name} className="relative h-10">
-                        {c.logo ? (
-                          <SmartImage
-                            src={c.logo}
-                            alt={c.alt || `${c.name} logo`}
-                            sizes="(min-width:1024px) 120px, 28vw"
-                            fit="contain"
-                            className="opacity-70 transition-opacity hover:opacity-100 [filter:brightness(0)]"
-                          />
-                        ) : (
-                          <span className="grid h-full place-items-center text-ink-2 text-[18px] leading-none">{c.name}</span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Mission & Vision */}
-      <section className="py-20 md:py-28 bg-bg-warm">
-        <div className="wrap">
-          <div className="grid md:grid-cols-2 gap-6">
-            <Reveal>
-              <div className="bg-bg-paper border border-line rounded-lg2 p-10 md:p-12 h-full">
-                <span className="eyebrow">{about.mission?.eyebrow ?? "Mission"}</span>
-                <h3
-                  className="display mt-5 mb-5"
-                  style={{ fontSize: "clamp(32px,3.5vw,44px)" }}
-                >
-                  {about.mission?.heading}{" "}
-                  <span className="italic-display gradient-text">{about.mission?.headingAccent}</span>
+      {/* -------------------------------------------------------- Approach */}
+      <section id="approach" aria-labelledby="approach-title" className="bg-bg py-24 md:py-36">
+        <div className="wrap-wide">
+          <h2 id="approach-title" className="font-display font-medium leading-[0.9] tracking-[-0.05em] text-ink text-[clamp(44px,6vw,100px)]">
+            How we work
+          </h2>
+          <ol className="mt-14 border-t border-ink/15 md:mt-20">
+            {PRINCIPLES.map((p, i) => (
+              <li key={p.title} className="about-row group grid gap-2 border-b border-ink/15 py-7 md:grid-cols-[88px_minmax(0,1fr)_minmax(0,1fr)] md:items-baseline md:gap-8 md:py-9">
+                <span className="font-mono text-[12px] tabular-nums text-ink-mute">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="font-display text-[clamp(26px,3vw,46px)] font-medium leading-[1] tracking-[-0.035em] text-ink transition-colors duration-std group-hover:text-brand-ink">
+                  {p.title}
                 </h3>
-                <p className="text-ink-2 text-[16px] leading-[1.6] max-w-[44ch]">{about.mission?.body}</p>
-              </div>
-            </Reveal>
-            <Reveal delay={1}>
-              <div className="bg-ink text-white rounded-lg2 p-10 md:p-12 h-full relative overflow-hidden">
-                <div
-                  className="absolute pointer-events-none"
-                  style={{
-                    top: "-30%",
-                    right: "-20%",
-                    width: "70%",
-                    height: "100%",
-                    background:
-                      "radial-gradient(closest-side, rgba(232,98,26,.4), transparent 70%)",
-                  }}
-                />
-                <div className="relative">
-                  <span className="eyebrow text-white/70">{about.vision?.eyebrow ?? "Vision"}</span>
-                  <h3
-                    className="display mt-5 mb-5"
-                    style={{ fontSize: "clamp(32px,3.5vw,44px)" }}
-                  >
-                    {about.vision?.heading}{" "}
-                    <span className="italic-display gradient-text">{about.vision?.headingAccent}</span>
-                  </h3>
-                  <p className="text-white/80 text-[16px] leading-[1.6] max-w-[44ch]">{about.vision?.body}</p>
-                </div>
-              </div>
-            </Reveal>
-          </div>
+                <p className="max-w-[40ch] text-[16px] leading-[1.55] text-ink-2">{p.line}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      {/* Founder / Team
-          TODO(sudewa): the only Team entry is named "Uniix Studio" — add the founder's real name, photo
-          and a fuller bio (background, years in practice, notable work) in CMS → Team. */}
-      <section className="py-20 md:py-28">
-        <div className="wrap">
-          <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-end mb-14">
-            <Reveal>
-              <span className="eyebrow">{about.team?.eyebrow ?? "The team"}</span>
-              <h2 className="display mt-4" style={{ fontSize: "clamp(40px,5vw,72px)" }}>
-                {about.team?.heading ?? "Senior people."}
-                <br />
-                <span className="italic-display gradient-text">{about.team?.headingAccent ?? "Direct lines."}</span>
-              </h2>
-            </Reveal>
-            <Reveal delay={1}>
-              <p className="text-[clamp(16px,1.3vw,18px)] text-ink-2 max-w-[42ch] leading-[1.55]">
-                {about.team?.support}
-              </p>
-            </Reveal>
-          </div>
-
-          <div className="flex flex-col gap-6">
-            {members.map((m) => (
-              <Reveal key={m.id}>
-                <div className="bg-bg-paper border border-line rounded-lg2 p-8 md:p-12 grid md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center">
-                  {m.photo ? (
-                    <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-soft">
-                      <SmartImage src={m.photo.src} alt={m.photo.alt || m.name} sizes="160px" />
-                    </div>
+      {/* --------------------------------------------------------- Clients */}
+      {clients.length > 0 && (
+        <section id="clients" aria-labelledby="clients-title" className="border-t border-ink/10 bg-bg-paper py-20 md:py-28">
+          <div className="wrap-wide grid gap-10 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:items-center">
+            <h2 id="clients-title" className="font-display font-medium leading-[0.95] tracking-[-0.045em] text-ink text-[clamp(32px,3.6vw,56px)]">
+              Clients
+            </h2>
+            <ul className="grid grid-cols-2 border-l border-t border-ink/10 sm:grid-cols-3">
+              {clients.map((c) => (
+                <li key={c.name} className="grid h-28 place-items-center border-b border-r border-ink/10 p-6 md:h-36">
+                  {c.logo ? (
+                    <span className="relative block h-10 w-full max-w-[150px] md:h-12">
+                      <SmartImage
+                        src={c.logo}
+                        alt={c.alt || `${c.name} logo`}
+                        sizes="150px"
+                        fit="contain"
+                        className="opacity-60 transition-[opacity,filter] duration-std [filter:grayscale(1)_brightness(0)] hover:opacity-100 hover:[filter:none]"
+                      />
+                    </span>
                   ) : (
-                    <div
-                      aria-hidden="true"
-                      className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-brand-grad text-white grid place-items-center font-display font-bold text-6xl shadow-soft"
-                    >
-                      {m.initial}
-                    </div>
+                    <span className="text-[17px] text-ink-2">{c.name}</span>
                   )}
-                  <div>
-                    <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-brand-4 mb-2">
-                      {m.role}
-                    </div>
-                    <h3
-                      className="font-display font-medium mb-3"
-                      style={{ fontSize: "clamp(28px,3vw,36px)", letterSpacing: "-0.02em" }}
-                    >
-                      {m.name}
-                    </h3>
-                    {m.bio && <p className="text-ink-2 text-[16px] leading-[1.6] max-w-[60ch]">{m.bio}</p>}
-                    {m.links.length > 0 && (
-                      <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
-                        {m.links.map((l) => (
-                          <li key={l.href}>
-                            <a href={l.href} target="_blank" rel="noopener noreferrer" className="link-cta text-[14px]">
-                              {l.label} <span className="cta-arrow">↗</span>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+                </li>
+              ))}
+            </ul>
           </div>
+        </section>
+      )}
 
-          {awards.length > 0 && (
-            <Reveal>
-              <div className="mt-14">
-                <span className="eyebrow">Awards &amp; certifications</span>
-                <ul className="mt-6 grid gap-x-8 sm:grid-cols-2 border-t border-line">
-                  {awards.map((a) => (
-                    <li key={a.id ?? a.title} className="flex items-baseline justify-between gap-4 border-b border-line py-4">
-                      <span className="font-display text-[18px] font-medium">{a.title}</span>
-                      <span className="t-meta text-ink-mute">
-                        {[a.issuer, a.year].filter(Boolean).join(" · ")}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          )}
-        </div>
-      </section>
-
-      {/* Why choose us */}
-      <section className="py-20 md:py-28 bg-bg-warm">
-        <div className="wrap">
-          <div className="grid lg:grid-cols-[1fr_auto] gap-8 lg:gap-12 items-end mb-14">
-            <Reveal>
-              <span className="eyebrow">{about.why?.eyebrow ?? "Why choose us"}</span>
-              <h2 className="display mt-4" style={{ fontSize: "clamp(40px,5vw,72px)" }}>
-                {about.why?.heading ?? "Five reasons"}{" "}
-                <span className="italic-display gradient-text">{about.why?.headingAccent ?? "clients stay."}</span>
-              </h2>
-            </Reveal>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {whyPoints.map((p, i) => (
-              <Reveal key={p.num} delay={(i % 4) as 0 | 1 | 2 | 3}>
-                <div className="bg-bg-paper border border-line rounded-lg2 p-8 md:p-10 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-sm2">
-                  <span className="font-mono text-[11px] tracking-[0.18em] text-brand-4">
-                    {p.num}
-                  </span>
-                  <h4
-                    className="font-display font-medium mt-4 mb-3"
-                    style={{ fontSize: "24px", letterSpacing: "-0.015em" }}
-                  >
-                    {p.title}
-                  </h4>
-                  <p className="text-ink-2 text-[15px] leading-[1.55]">{p.desc}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <TestimonialsSection items={testimonials} />
-      <CTASection />
+      <EnquiryClose
+        heading={<>Come and meet the studio.</>}
+        note={`Colombo, since ${FOUNDED}. ${year - FOUNDED} years of brands, websites and products.`}
+        email={settings.email}
+        whatsappLink={settings.whatsappLink}
+        whatsappText="Hi Uniix, I'd like to have a chat about a project."
+      />
     </>
   );
 }
