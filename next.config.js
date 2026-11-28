@@ -28,6 +28,7 @@ const PITCHES = {
   pressplaylk: "https://pressplay-pitch.vercel.app",
   avenrahotels: "https://avenra-pitch.vercel.app",
   samaiapp: "https://samai-pitch.vercel.app",
+  insideleadership: "https://insideleadership-pitch.vercel.app",
 };
 const pitchSlugs = Object.keys(PITCHES).join("|");
 
